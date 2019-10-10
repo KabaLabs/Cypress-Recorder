@@ -4,6 +4,7 @@
   "description": "A chrome developer tool that records user interaction with a web application and generates cypress code to allow the developer to replicate that particular session.",
   "main": "index.js",
   "scripts": {
+    "start": "$(npm bin)/tsc --noEmit --watch & $(npm bin)/parcel ./src/index.html",
     "test": "jest --verbose"
   },
   "author": "",
@@ -12,15 +13,21 @@
     "@babel/core": "^7.6.3",
     "@babel/preset-env": "^7.6.3",
     "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.12",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.1",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
     "babel-jest": "^24.9.0",
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
+    "parcel-bundler": "^1.12.4",
+    "react-test-renderer": "^16.10.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@types/node": "^12.7.12"
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
   }
 }
