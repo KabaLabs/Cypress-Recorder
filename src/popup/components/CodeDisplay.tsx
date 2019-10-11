@@ -4,6 +4,6 @@ export interface CodeDisplayProps { }
 
 export const CodeDisplay = (props: CodeDisplayProps) => (
   <div>
-    <CodeDisplay>we has CodeDisplay</CodeDisplay>
+    we has CodeDisplay
   </div>
 );
