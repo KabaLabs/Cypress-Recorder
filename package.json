@@ -4,7 +4,7 @@
   "description": "A chrome developer tool that records user interaction with a web application and generates cypress code to allow the developer to replicate that particular session.",
   "main": "index.js",
   "scripts": {
-    "start": "$(npm bin)/tsc --noEmit --watch & $(npm bin)/parcel ./src/index.html",
+    "start": "$(npm bin)/tsc --noEmit && $(npm bin)/parcel ./src/popup/index.html",
     "test": "jest --verbose"
   },
   "author": "",
