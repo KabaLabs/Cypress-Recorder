@@ -1,5 +1,17 @@
 {
   "compilerOptions": {
-    "jsx": "react"
-  }
+    "jsx": "react",
+    // "target": "es6",
+    // "allowJs": true
+  },
+  // "files": [
+  //   "./src/popup/index.tsx",
+  //   "./src/popup/components/App.tsx",
+  //   "./src/popup/components/Button.tsx",
+  //   "./src/popup/components/CodeDisplay.tsx",
+  //   "./src/background/background.ts"
+  // ],
+  // "exclude": [
+  //   "node_modules"
+  // ]
 }
