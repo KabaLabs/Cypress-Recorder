@@ -4,22 +4,16 @@ import { Footer } from './Footer';
 import { ActiveRecordingBox } from './ActiveRecordingBox';
 import { CodeDisplay } from './CodeDisplay';
 import { LandingBox } from './LandingBox';
+import { EventData } from '../../types/types';
 
 export type RecState =
   | { recStatus: 'off' }
   | { recStatus: 'on' }
-  | { recStatus: 'done', data: RecData };
-
-type RecordedEvent = {
-  type: String,
-  frameId: Number,
-}
-
-type RecData = RecordedEvent[];
+  | { recStatus: 'done', data: EventData };
 
 export type RecAction =
   | { type: 'startRec' }
-  | { type: 'stopRec', payload: RecData }
+  | { type: 'stopRec', payload: EventData }
   | { type: 'resetRec' };
 
 function recReducer(state: RecState, action: RecAction): RecState {

@@ -10,6 +10,7 @@ export const ToggleButton = ({ recStatus }: ToggleButtonProps) => {
 
   const handleClick = (): void => {
     let type: String;
+    chrome.runtime.sendMessage({ type: 'startRec' });
     if (recStatus === 'off') type = 'startRec';
     else if (recStatus === 'on') type = 'resetRec';
     dispatch({ type });
