@@ -13,3 +13,7 @@ export type EventAction = {
   type: String,
   payload?: RecordedEvent,
 }
+
+export type controlAction = {
+  type: String,
+};

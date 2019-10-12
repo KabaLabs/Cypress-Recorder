@@ -1,15 +1,21 @@
-export type controlAction = {
-  type: String,
-}
+import { controlAction } from '../types/types';
+
 
 function startRecording(): void {
-  // chrome.runtime.onConnect()
-  chrome.tabs.executeScript({ file: '../content-scripts/event-recorder.js', allFrames: true });
-  
+  chrome.runtime.onConnect.addListener((port) => {
+    console.log(`connection between content script and background opened on port ${port}`);
+    port.onDisconnect.addListener(() => {
+      console.log('connection between content script and background closed');
+    });
+  });
+  chrome.tabs.executeScript({ file: 'eventRecorder.js', allFrames: true }, (res) => {
+    const lastErr = chrome.runtime.lastError;
+    if (lastErr) console.log(lastErr);
+  });
 }
 
 function stopRecording(): void {
-  chrome.runtime.
+  // chrome.runtime.
 }
 
 function resetRecording(): void {
