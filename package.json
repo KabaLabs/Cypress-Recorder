@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx tsc --noEmit && npx parcel build ./src/popup/index.html ./src/background/background.ts",
     "test": "jest --verbose",
-    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist"
+    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist",
+    "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json"
   },
   "author": "",
   "license": "ISC",
