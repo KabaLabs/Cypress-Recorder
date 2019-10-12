@@ -3,18 +3,16 @@
     "version": "0.0.1",
     "description": "A dev tool that records user interaction with a web application and generates cypress code to allow the developer to replicate that particular session.",
     "manifest_version": 2,
-    "background": {
-      "scripts": [
-        "background.js"
-      ],
-      "persistent": false
-    },
     "permissions": [
       "activeTab",
       "storage",
       "webNavigation"
     ],
-    "page_action": {
-      "default_popup": "index.html"
+    "background": {
+      "scripts": ["./background/background.js"],
+      "persistent": false
+    },
+    "browser_action": {
+      "default_popup": "./popup/index.html"
     }
   }
