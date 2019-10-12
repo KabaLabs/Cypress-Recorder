@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-export interface HeaderProps { }
+export interface FooterProps { }
 
-export const Header = (props: HeaderProps) => (
+export const Footer = (props: FooterProps) => (
   <div>
     
   </div>

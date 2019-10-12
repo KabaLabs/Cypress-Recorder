@@ -1,12 +1,17 @@
 import * as React from 'react';
-// import { Button } from './ToggleButton';
-// import { CodeDisplay } from './CodeDisplay';
+import { Header } from './Header';
+import { Footer } from './Footer';
+import { LandingBox } from './LandingBox';
 
-export interface AppProps { }
+export const App: React.FC = () => {
+  const [isRecording, setIsRecording] = React.useState<Boolean>(false);
+  const [hasRecorded, setHasRecordered] = React.useState<Boolean>(false);
 
-export const App = (props: AppProps) => (
-  <div>
-    {/* <CodeDisplay />
-    <Button /> */}
-  </div>
-);
+  return (
+    <div id="App">
+      <Header />
+      <LandingBox />
+      <Footer />
+    </div>
+  );
+};
