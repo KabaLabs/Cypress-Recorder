@@ -1,19 +1,19 @@
 /**
- * Code Generator is the function that actually generates the Cypress code that will simulate 
+ * Code Generator is the function that actually generates the Cypress code that will simulate
  * the recorded user session.
- * 
+ *
  * Each time the user records, this function will generate:
  * - a 'describe' function block with a placeholder for the user to title their test. It contains:
- * - an 'it' function block with a placeholder for a description of the interactions taking place. It contains:
+ * - an 'it' function block with a placeholder for a description of the interactions taking place.
+ *  It contains:
  * - a cy.visit command for the current url
  * - each subsequest user interaction with the browser, e.g. (cy.get('element').click)
  */
 
- /**
+/**
   * SAMPLE CODE:
   * cy.get('.action-email')
-    .type('fake@email.com').should('have.value', 'fake@email.com')
-    
+    .type('fake@email.com').should('have.value', 'fake@email.com')   
     cy.get('.action-btn').click() <= you can pass coordinates in
 
     cy.get('.action-form')
@@ -22,4 +22,14 @@
     .next().should('contain', 'Your form has been submitted!')
   */
 
-  
+// declare global variables: url, viewport size
+function createCode(event: any) {
+  switch (event) {
+    case (event.type === click):
+      return `cy.get${event.location}.click()`;
+    case (event.type === keydown):
+      return `cy.get${event.location}.type(${event.data})`;
+    default:
+      throw new Error('no cases hit');
+  }
+}
