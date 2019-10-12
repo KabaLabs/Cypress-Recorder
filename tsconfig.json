@@ -1,17 +1,9 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    // "target": "es6",
-    // "allowJs": true
+    "noEmit": true
   },
-  // "files": [
-  //   "./src/popup/index.tsx",
-  //   "./src/popup/components/App.tsx",
-  //   "./src/popup/components/Button.tsx",
-  //   "./src/popup/components/CodeDisplay.tsx",
-  //   "./src/background/background.ts"
-  // ],
-  // "exclude": [
-  //   "node_modules"
-  // ]
+  "exclude": [
+    "node_modules"
+  ]
 }
