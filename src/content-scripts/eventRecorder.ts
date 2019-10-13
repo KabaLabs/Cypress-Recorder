@@ -1,4 +1,4 @@
-import { controlActionTypes, ParsedEvent } from '../types/types';
+import { RecAction, ParsedEvent } from '../types/types';
 import eventTypes from '../constants/events';
 import finder from '@medv/finder';
 
@@ -11,20 +11,18 @@ function initialize(): void {
   addDOMListeners();
 }
 
-function handleControlMessages(action: controlActionTypes): void {
-  if (action && action.type) {
-    switch (action.type) {
-      case 'startRec':
-        addDOMListeners();
-        break;
-      case 'stopRec':
-        removeDOMListeners();
-        break;
-      case 'resetRec':
-        break;
-      default:
-        throw new Error(`Unexpected control message type ${action}`);
-    }
+function handleControlMessages(action: RecAction): void {
+  switch (action) {
+    case 'startRec':
+      addDOMListeners();
+      break;
+    case 'stopRec':
+      removeDOMListeners();
+      break;
+    case 'resetRec':
+      break;
+    default:
+      throw new Error(`Unexpected control message type ${action}`);
   }
 }
 

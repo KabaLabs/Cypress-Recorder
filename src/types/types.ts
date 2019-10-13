@@ -14,10 +14,10 @@ export type EventAction = {
   payload?: RecordedEvent,
 }
 
-export type controlActionTypes =
-  | { type: 'startRec' }
-  | { type: 'stopRec' }
-  | { type: 'resetRec' };
+export type RecAction =
+  | 'startRec'
+  | 'stopRec'
+  | 'resetRec';
 
 export type ParsedEvent = {
   selector: String,

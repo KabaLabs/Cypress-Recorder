@@ -4,27 +4,23 @@ import { Footer } from './Footer';
 import { ActiveRecordingBox } from './ActiveRecordingBox';
 import { CodeDisplay } from './CodeDisplay';
 import { LandingBox } from './LandingBox';
-// import { EventData } from '../../types/types';
+import { RecAction } from '../../types/types';
 
-export type RecStatus =
+export type RecState =
   | 'off'
   | 'on'
   | 'done';
 
-export type RecAction =
-  | 'startRec'
-  | 'stopRec'
-  | 'resetRec';
-
-function handleToggle(action: RecAction) {
-  if (action === 'startRec') {
-    
-  }
-}
-
 export const App: React.FC = () => {
-  const [recStatus, setRecStatus] = React.useState('off');
-  // const [recState, dispatch] = React.useReducer(recReducer, { recStatus: 'off' });
+  const [recStatus, setRecStatus] = React.useState<RecState>('off');
+  
+  const handleToggle = (action: RecAction) => {
+    chrome.runtime.sendMessage(action);
+    if (action === 'startRec') setRecStatus('on');
+    if (action === 'stopRec') setRecStatus('done');
+    if (action === 'resetRec') setRecStatus('off');
+  };
+
   React.useEffect(() => {
     chrome.storage.local.get('recStatus', (status: String) => {
       if (status === 'on') setRecStatus('on');

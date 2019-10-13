@@ -1,4 +1,4 @@
-import { controlActionTypes, RecordedSession, ParsedEvent } from '../types/types';
+import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
 
 let port: chrome.runtime.Port;
 
@@ -30,21 +30,19 @@ function resetRecording(): void {
   session.events = [];
 }
 
-function handleControlAction(action: controlActionTypes): void {
-  if (action && action.type) {
-    switch (action.type) {
-      case 'startRec':
-        startRecording();
-        break;
-      case 'stopRec':
-        stopRecording();
-        break;
-      case 'resetRec':
-        resetRecording();
-        break;
-      default:
-        throw new Error('Invalid action type');
-    }
+function handleControlAction(action: RecAction): void {
+  switch (action) {
+    case 'startRec':
+      startRecording();
+      break;
+    case 'stopRec':
+      stopRecording();
+      break;
+    case 'resetRec':
+      resetRecording();
+      break;
+    default:
+      throw new Error('Invalid action type');
   }
 }
 

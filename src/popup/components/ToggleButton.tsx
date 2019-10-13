@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RecAction } from './App';
+import { RecAction } from '../../types/types';
 
 export interface ToggleButtonProps {
   recStatus: String,
