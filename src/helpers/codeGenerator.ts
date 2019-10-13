@@ -1,3 +1,5 @@
+import { RecordedSession } from '../types/types';
+
 /**
  * Code Generator is the function that actually generates the Cypress code that will simulate 
  * the recorded user session.
@@ -21,5 +23,7 @@
     cy.get('.action-form').submit()
     .next().should('contain', 'Your form has been submitted!')
   */
-
-  
+// Placeholder function
+export function generateCode(session: RecordedSession): RecordedSession {
+  return session;
+}

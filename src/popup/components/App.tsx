@@ -5,6 +5,7 @@ import { ActiveRecordingBox } from './ActiveRecordingBox';
 import { CodeDisplay } from './CodeDisplay';
 import { LandingBox } from './LandingBox';
 import { RecAction, RecordedSession } from '../../types/types';
+import { generateCode } from '../../helpers/codeGenerator';
 import '../../assets/styles/styles.scss';
 
 export type RecState =
@@ -15,6 +16,11 @@ export type RecState =
 export const App: React.FC = () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [session, setSession] = React.useState<RecordedSession>({ events: [] });
+
+  // Will implement new result type when codeGenerator is written
+  const generateCode = (sessionToTransform: RecordedSession): RecordedSession => {
+    return generateCode(sessionToTransform);
+  };
 
   const handleToggle = (action: RecAction) => {
     if (action.type === 'startRec') {
