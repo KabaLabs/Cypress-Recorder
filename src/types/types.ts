@@ -14,6 +14,7 @@ export type EventAction = {
   payload?: RecordedEvent,
 }
 
-export type controlAction = {
-  type: String,
-};
+export type controlActionTypes =
+  | { type: 'startRec' }
+  | { type: 'stopRec' }
+  | { type: 'resetRec' };
