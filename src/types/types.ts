@@ -5,9 +5,9 @@ export type RecordedEvent = {
 
 export type EventData = RecordedEvent[];
 
-export type RecordedBlock = String;
+export type CodeBlock = String;
 
-export type BlockData = RecordedBlock[];
+export type BlockData = CodeBlock[];
 
 export type EventAction = {
   type: String,

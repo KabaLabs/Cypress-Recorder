@@ -1,14 +1,14 @@
 import * as React from 'react';
 import CodeBlock from './CodeBlock';
-import { RecordedSession } from '../../types/types';
+import { BlockData } from '../../types/types';
 
 export interface CodeDisplayProps {
-  session: RecordedSession,
+  codeBlocks: BlockData,
 };
 
-export const CodeDisplay = ({ session }: CodeDisplayProps) => {
-  const blocks = session.events.map((parsedEvent) => (
-    <CodeBlock block={parsedEvent} />
+export const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
+  const blocks = codeBlocks.map((block) => (
+    <CodeBlock block={block} />
   ));
 
   return (

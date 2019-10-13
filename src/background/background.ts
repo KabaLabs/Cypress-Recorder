@@ -1,3 +1,4 @@
+import { generateCode } from '../helpers/codeGenerator';
 import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
 
 let port: chrome.runtime.Port;
@@ -37,8 +38,9 @@ function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSe
       break;
     case 'stopRec':
       stopRecording();
-      sendResponse(session);
-      chrome.storage.local.set({ session });
+      const code = generateCode(session);
+      sendResponse(code);
+      chrome.storage.local.set({ codeBlocks: code });
       break;
     case 'resetRec':
       resetRecording();

@@ -1,4 +1,4 @@
-import { RecordedSession } from '../types/types';
+import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/types';
 
 /**
  * Code Generator is the function that actually generates the Cypress code that will simulate 
@@ -23,7 +23,11 @@ import { RecordedSession } from '../types/types';
     cy.get('.action-form').submit()
     .next().should('contain', 'Your form has been submitted!')
   */
-// Placeholder function
-export function generateCode(session: RecordedSession): RecordedSession {
-  return session;
+// Placeholder functions
+function generateBlock(event: ParsedEvent): CodeBlock {
+  return event.selector;
+}
+
+export function generateCode(session: RecordedSession): BlockData {
+  return session.events.map(event => generateBlock(event));
 }

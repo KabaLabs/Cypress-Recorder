@@ -4,8 +4,8 @@ import { Footer } from './Footer';
 import { ActiveRecordingBox } from './ActiveRecordingBox';
 import { CodeDisplay } from './CodeDisplay';
 import { LandingBox } from './LandingBox';
-import { RecAction, RecordedSession } from '../../types/types';
-import { generateCode } from '../../helpers/codeGenerator';
+import { RecAction, RecordedSession, BlockData } from '../../types/types';
+// import { generateCode } from '../../helpers/codeGenerator';
 import '../../assets/styles/styles.scss';
 
 export type RecState =
@@ -15,12 +15,8 @@ export type RecState =
 
 export const App: React.FC = () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  const [session, setSession] = React.useState<RecordedSession>({ events: [] });
-
-  // Will implement new result type when codeGenerator is written
-  const generateCode = (sessionToTransform: RecordedSession): RecordedSession => {
-    return generateCode(sessionToTransform);
-  };
+  // const [session, setSession] = React.useState<RecordedSession>({ events: [] });
+  const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
 
   const handleToggle = (action: RecAction) => {
     if (action.type === 'startRec') {
@@ -28,8 +24,8 @@ export const App: React.FC = () => {
       chrome.runtime.sendMessage(action);
     } else if (action.type === 'stopRec') {
       setRecStatus('done');
-      chrome.runtime.sendMessage(action, (response: RecordedSession) => {
-        setSession(response);
+      chrome.runtime.sendMessage(action, (response: BlockData) => {
+        setCodeBlocks(response);
       });
     } else if (action.type === 'resetRec') {
       setRecStatus('off');
@@ -37,12 +33,17 @@ export const App: React.FC = () => {
     }
   };
 
+  const copyToClipboard = (): boolean => {
+    navigator.clipboard.writeText(codeBlocks.join('\n'));
+    return true;
+  };
+
   React.useEffect(() => {
-    chrome.storage.local.get(['status', 'session'], (result) => {
+    chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
       if (!result.status) chrome.storage.local.set({ status: recStatus });
       else if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'done') setRecStatus('done');
-      if (result.session) setSession(result.session);
+      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
     });
   }, []);
 
@@ -51,16 +52,16 @@ export const App: React.FC = () => {
   }, [recStatus]);
 
   React.useEffect(() => {
-    chrome.storage.local.set({ session: session });
-  }, [session]);
+    chrome.storage.local.set({ codeBlocks: codeBlocks });
+  }, [codeBlocks]);
 
   return (
     <div id="App">
       <Header />
       {recStatus === 'off' && <LandingBox />}
       {recStatus === 'on' && <ActiveRecordingBox />}
-      {recStatus === 'done' && <CodeDisplay session={session}/>}
-      <Footer recStatus={recStatus} handleToggle={handleToggle}/>
+      {recStatus === 'done' && <CodeDisplay codeBlocks={codeBlocks}/>}
+      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard}/>
     </div>
   );
 };
