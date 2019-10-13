@@ -1,19 +1,18 @@
 import * as React from 'react';
-import { RecDispatch } from './App';
+import { RecAction } from './App';
 
 export interface ToggleButtonProps {
   recStatus: String,
+  handleToggle: Function,
 };
 
-export const ToggleButton = ({ recStatus }: ToggleButtonProps) => {
-  const dispatch = React.useContext(RecDispatch);
-
+export const ToggleButton = ({ recStatus, handleToggle }: ToggleButtonProps) => {
   const handleClick = (): void => {
-    let type: String;
-    if (recStatus === 'off') type = 'startRec';
-    else if (recStatus === 'on') type = 'stopRec';
-    else if (recStatus === 'done') type = 'resetRec';
-    dispatch({ type });
+    let action: RecAction;
+    if (recStatus === 'off') action = 'startRec';
+    else if (recStatus === 'on') action = 'stopRec';
+    else if (recStatus === 'done') action = 'resetRec';
+    handleToggle(action);
   };
 
   return (
