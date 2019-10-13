@@ -1,14 +1,12 @@
 import * as React from 'react';
-import { ParsedEvent } from '../../types/types';
+import { ParsedEvent, CodeBlock } from '../../types/types';
 
 export interface CodeBlockProps {
-  block: ParsedEvent
+  block: CodeBlock
 };
 
 export default ({ block }: CodeBlockProps) => (
   <div>
-    <p>Selector: {block.selector}</p>
-    <p>Action: {block.action}</p>
-    <p>Id: {block.id}</p>
+    <p>Selector: {block}</p>
   </div>
 );

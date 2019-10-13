@@ -1,3 +1,8 @@
 export default {
-  CLICK: 'click'
+  CLICK: 'click',
+  CHANGE: 'change',
+  DBCLICK: 'dbclick',
+  KEYDOWN: 'keydown',
+  RESET: 'reset',
+  SUBMIT: 'SUBMIT',
 };
