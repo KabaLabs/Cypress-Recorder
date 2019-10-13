@@ -18,4 +18,14 @@ export type controlActionTypes =
   | { type: 'startRec' }
   | { type: 'stopRec' }
   | { type: 'resetRec' };
-  
+
+export type ParsedEvent = {
+  selector: String,
+  action: String,
+  id: String,
+};
+
+export type RecordedSession = {
+  sender?: chrome.runtime.MessageSender,
+  events: any[],
+};

@@ -1,32 +1,46 @@
-import { controlActionTypes } from '../types/types';
+import { controlActionTypes, ParsedEvent } from '../types/types';
 import eventTypes from '../constants/events';
-import { EventStore } from '../helpers/DataStore';
+import finder from '@medv/finder';
+
+let port: chrome.runtime.Port;
 
 function initialize(): void {
   console.log('eventRecorder initialized');
-  const port: chrome.runtime.Port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
+  port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
+  port.onMessage.addListener(handleControlMessages);
+  addDOMListeners();
 }
 
 function handleControlMessages(action: controlActionTypes): void {
   if (action && action.type) {
     switch (action.type) {
       case 'startRec':
-        addListeners();
+        addDOMListeners();
         break;
       case 'stopRec':
-        removeListeners();
+        removeDOMListeners();
         break;
       case 'resetRec':
         break;
+      default:
+        throw new Error(`Unexpected control message type ${action}`);
     }
   }
 }
 
 function handleEvent(event: Event): void {
-
+  console.dir(event);
+  const selector = finder(event.target as Element);
+  console.log(selector);
+  const parsedEvent: ParsedEvent = {
+    selector,
+    action: event.type,
+    id: (event.target as Element).id,
+  };
+  port.postMessage(parsedEvent);
 }
 
-function addListeners(): void {
+function addDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
     document.addEventListener(eventType, handleEvent, {
       capture: true,
@@ -35,8 +49,10 @@ function addListeners(): void {
   });
 }
 
-function removeListeners(): void {
-
+function removeDOMListeners(): void {
+  Object.values(eventTypes).forEach(eventType => {
+    document.removeEventListener(eventType, handleEvent, { capture: true });
+  });
 }
 
 initialize();

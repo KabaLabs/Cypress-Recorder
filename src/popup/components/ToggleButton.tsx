@@ -10,9 +10,9 @@ export const ToggleButton = ({ recStatus }: ToggleButtonProps) => {
 
   const handleClick = (): void => {
     let type: String;
-    chrome.runtime.sendMessage({ type: 'startRec' });
     if (recStatus === 'off') type = 'startRec';
-    else if (recStatus === 'on') type = 'resetRec';
+    else if (recStatus === 'on') type = 'stopRec';
+    else if (recStatus === 'done') type = 'resetRec';
     dispatch({ type });
   };
 
@@ -21,7 +21,9 @@ export const ToggleButton = ({ recStatus }: ToggleButtonProps) => {
       <button onClick={handleClick}>
         {recStatus === 'off'
           ? 'Start Recording'
-          : 'Stop Recording'}
+          : recStatus === 'on'
+            ? 'Stop Recording'
+            : 'Reset Recording'}
       </button>
     </>
   );
