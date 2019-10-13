@@ -12,7 +12,7 @@ function initialize(): void {
 }
 
 function handleControlMessages(action: RecAction): void {
-  switch (action) {
+  switch (action.type) {
     case 'startRec':
       addDOMListeners();
       break;

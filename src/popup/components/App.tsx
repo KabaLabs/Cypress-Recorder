@@ -13,26 +13,29 @@ export type RecState =
 
 export const App: React.FC = () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  
+
   const handleToggle = (action: RecAction) => {
     chrome.runtime.sendMessage(action);
-    if (action === 'startRec') setRecStatus('on');
-    if (action === 'stopRec') setRecStatus('done');
-    if (action === 'resetRec') setRecStatus('off');
+    if (action.type === 'startRec') setRecStatus('on');
+    else if (action.type === 'stopRec') setRecStatus('done');
+    else if (action.type === 'resetRec') setRecStatus('off');
   };
 
   React.useEffect(() => {
-    chrome.storage.local.get('recStatus', (status: String) => {
-      if (status === 'on') setRecStatus('on');
-      if (status === 'done') {
+    chrome.storage.local.get('status', (result) => {
+      console.log(result.status);
+      if (!result.status) chrome.storage.local.set({ status: recStatus });
+      else if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'done') {
         setRecStatus('done');
         // additional call to get events from storage
       }
     });
-    return () => {
-      chrome.storage.local.set({ recStatus });
-    };
   }, []);
+
+  React.useEffect(() => {
+    chrome.storage.local.set({ status: recStatus });
+  }, [recStatus]);
 
   return (
     <div id="App">

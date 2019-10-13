@@ -31,7 +31,7 @@ function resetRecording(): void {
 }
 
 function handleControlAction(action: RecAction): void {
-  switch (action) {
+  switch (action.type) {
     case 'startRec':
       startRecording();
       break;

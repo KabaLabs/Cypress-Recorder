@@ -15,9 +15,9 @@ export type EventAction = {
 }
 
 export type RecAction =
-  | 'startRec'
-  | 'stopRec'
-  | 'resetRec';
+  | { type: 'startRec' }
+  | { type: 'stopRec' }
+  | { type: 'resetRec' };
 
 export type ParsedEvent = {
   selector: String,
