@@ -18,3 +18,4 @@ export type controlActionTypes =
   | { type: 'startRec' }
   | { type: 'stopRec' }
   | { type: 'resetRec' };
+  

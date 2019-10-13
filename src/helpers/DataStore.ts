@@ -1,9 +1,16 @@
 import { RecordedEvent, EventData, RecordedBlock, BlockData } from '../types/types';
 
 export class EventStore {
-  private data: EventData;
+  public data: EventData;
   constructor() {
     this.sync();
+  }
+  private sync(): void {
+    chrome.storage.local.get('events', (events: EventData): void => {
+      console.log('Storage synced');
+      if (events) this.data = events;
+      else this.data = [];
+    });
   }
   public update(event: RecordedEvent): void {
     this.data.push(event);
@@ -11,10 +18,10 @@ export class EventStore {
       console.log('Storage updated');
     });
   }
-  public sync(): void {
-    chrome.storage.local.get(['events'], (events: EventData): void => {
-      console.log('Storage synced');
-      this.data = events;
+  public reset(): void {
+    chrome.storage.local.remove('events', (): void => {
+      console.log('Storage reset');
+      this.data = [];
     });
   }
 }
