@@ -5,6 +5,7 @@ import { ActiveRecordingBox } from './ActiveRecordingBox';
 import { CodeDisplay } from './CodeDisplay';
 import { LandingBox } from './LandingBox';
 import { RecAction, RecordedSession } from '../../types/types';
+import '../../assets/styles/styles.scss';
 
 export type RecState =
   | 'off'
