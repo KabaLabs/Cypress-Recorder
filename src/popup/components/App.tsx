@@ -4,47 +4,57 @@ import { Footer } from './Footer';
 import { ActiveRecordingBox } from './ActiveRecordingBox';
 import { CodeDisplay } from './CodeDisplay';
 import { LandingBox } from './LandingBox';
-import { EventData } from '../../types/types';
+import { RecAction, RecordedSession } from '../../types/types';
 
 export type RecState =
-  | { recStatus: 'off' }
-  | { recStatus: 'on' }
-  | { recStatus: 'done', data: EventData };
-
-export type RecAction =
-  | { type: 'startRec' }
-  | { type: 'stopRec', payload: EventData }
-  | { type: 'resetRec' };
-
-function recReducer(state: RecState, action: RecAction): RecState {
-  switch (action.type) {
-    case 'startRec':
-      return { recStatus: 'on' };
-    case 'stopRec':
-      return { recStatus: 'done', data: action.payload };
-    case 'resetRec':
-      return { recStatus: 'off' };
-    default:
-      return state;
-  }
-}
-
-export const RecDispatch = React.createContext(null);
+  | 'off'
+  | 'on'
+  | 'done';
 
 export const App: React.FC = () => {
-  const [recState, dispatch] = React.useReducer(recReducer, { recStatus: 'off' });
-  // React.useEffect(() => {
-  //   call to chrome.storage.local
-  // }, []);
+  const [recStatus, setRecStatus] = React.useState<RecState>('off');
+  const [session, setSession] = React.useState<RecordedSession>({ events: [] });
+
+  const handleToggle = (action: RecAction) => {
+    if (action.type === 'startRec') {
+      setRecStatus('on');
+      chrome.runtime.sendMessage(action);
+    } else if (action.type === 'stopRec') {
+      setRecStatus('done');
+      chrome.runtime.sendMessage(action, (response: RecordedSession) => {
+        console.log(response);
+        setSession(response);
+      });
+    } else if (action.type === 'resetRec') {
+      setRecStatus('off');
+      chrome.runtime.sendMessage(action);
+    }
+  };
+
+  React.useEffect(() => {
+    chrome.storage.local.get(['status', 'session'], (result) => {
+      if (!result.status) chrome.storage.local.set({ status: recStatus });
+      else if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'done') setRecStatus('done');
+      if (result.session) setSession(result.session);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    chrome.storage.local.set({ status: recStatus });
+  }, [recStatus]);
+
+  React.useEffect(() => {
+    chrome.storage.local.set({ session: session });
+  }, [session]);
+
   return (
     <div id="App">
       <Header />
-      {recState.recStatus === 'off' && <LandingBox />}
-      {recState.recStatus === 'on' && <ActiveRecordingBox />}
-      {recState.recStatus === 'done' && <CodeDisplay />}
-      <RecDispatch.Provider value={dispatch}>
-        <Footer recStatus={recState.recStatus}/>
-      </RecDispatch.Provider>
+      {recStatus === 'off' && <LandingBox />}
+      {recStatus === 'on' && <ActiveRecordingBox />}
+      {recStatus === 'done' && <CodeDisplay session={session}/>}
+      <Footer recStatus={recStatus} handleToggle={handleToggle}/>
     </div>
   );
 };

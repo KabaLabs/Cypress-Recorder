@@ -1,46 +1,62 @@
-import { controlAction } from '../types/types';
+import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
+
+let port: chrome.runtime.Port;
+
+const session: RecordedSession = {
+  events: [],
+};
+
+function handleEvents(event: ParsedEvent): void {
+  console.dir(event);
+  session.events.push(event);
+}
+
+function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
+  port = portToEventRecorder;
+  session.sender = port.sender;
+  port.onMessage.addListener(handleEvents);
+}
+
 function startRecording(): void {
-  chrome.runtime.onConnect.addListener((port) => {
-    console.dir(port);
-    console.log(`connection between content script and background opened`);
-    port.onDisconnect.addListener(() => {
-      console.log('connection between content script and background closed');
-    });
-  });
-  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true }, (res) => {
-    const lastErr = chrome.runtime.lastError;
-    if (lastErr) console.log(lastErr);
-  });
+  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
 }
 
 function stopRecording(): void {
-  // chrome.runtime.
+  port.postMessage({ type: 'stopRec' });
 }
 
 function resetRecording(): void {
-
+  port.disconnect();
+  session.events = [];
 }
 
-function recordingRouter(action: controlAction): void {
-  if (action && action.type) {
-    switch (action.type) {
-      case 'startRec':
-        startRecording();
-        break;
-      case 'stopRec':
-        stopRecording();
-        break;
-      case 'resetRec':
-        resetRecording();
-        break;
-      default:
-        throw new Error('Invalid action type');
-    }
+function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void): void {
+  switch (action.type) {
+    case 'startRec':
+      startRecording();
+      break;
+    case 'stopRec':
+      stopRecording();
+      sendResponse(session);
+      chrome.storage.local.set({ session });
+      break;
+    case 'resetRec':
+      resetRecording();
+      break;
+    default:
+      throw new Error('Invalid action type');
   }
 }
 
+function cleanUp(): void {
+  chrome.storage.local.set({ status: 'off' });
+}
+
 function initialize(): void {
-  chrome.runtime.onMessage.addListener(recordingRouter);
+  chrome.runtime.onStartup.addListener(cleanUp);
+  chrome.runtime.onMessage.addListener(handleControlAction);
+  chrome.runtime.onConnect.addListener(handleNewConnection);
+  chrome.runtime.onSuspend.addListener(cleanUp);
 }
 
 initialize();

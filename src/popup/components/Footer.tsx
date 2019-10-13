@@ -3,11 +3,12 @@ import { ToggleButton } from './ToggleButton';
 
 export interface FooterProps {
   recStatus: String,
+  handleToggle: Function,
 };
 
-export const Footer = ({ recStatus }: FooterProps) => (
+export const Footer = ({ recStatus, handleToggle }: FooterProps) => (
   <div>
     Footer
-    <ToggleButton recStatus={recStatus}/>
+    <ToggleButton recStatus={recStatus} handleToggle={handleToggle}/>
   </div>
 );
