@@ -13,7 +13,7 @@ export const ClipboardButton = ({ copyToClipboard }: ClipboardButtonProps) => {
 
   return (
     <>
-      <button onClick={() => handleClick}>Copy to Clipboard</button>
+      <button onClick={handleClick}>Copy to Clipboard</button>
       {success && <p>Copied!</p>}
     </>
   );

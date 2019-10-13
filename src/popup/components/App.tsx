@@ -33,9 +33,14 @@ export const App: React.FC = () => {
     }
   };
 
-  const copyToClipboard = (): boolean => {
-    navigator.clipboard.writeText(codeBlocks.join('\n'));
-    return true;
+  const copyToClipboard = async (): Promise<boolean> => {
+    try {
+      await navigator.clipboard.writeText(codeBlocks.join('\n'));
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   };
 
   React.useEffect(() => {

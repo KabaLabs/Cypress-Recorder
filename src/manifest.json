@@ -5,6 +5,7 @@
     "manifest_version": 2,
     "permissions": [
       "activeTab",
+      "clipboardWrite",
       "storage",
       "tabs",
       "webNavigation",
