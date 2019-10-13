@@ -30,13 +30,15 @@ function resetRecording(): void {
   session.events = [];
 }
 
-function handleControlAction(action: RecAction): void {
+function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void): void {
   switch (action.type) {
     case 'startRec':
       startRecording();
       break;
     case 'stopRec':
       stopRecording();
+      sendResponse(session);
+      chrome.storage.local.set({ session });
       break;
     case 'resetRec':
       resetRecording();
@@ -46,9 +48,15 @@ function handleControlAction(action: RecAction): void {
   }
 }
 
+function cleanUp(): void {
+  chrome.storage.local.set({ status: 'off' });
+}
+
 function initialize(): void {
+  chrome.runtime.onStartup.addListener(cleanUp);
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);
+  chrome.runtime.onSuspend.addListener(cleanUp);
 }
 
 initialize();

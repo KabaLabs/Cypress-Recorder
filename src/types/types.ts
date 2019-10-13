@@ -27,5 +27,5 @@ export type ParsedEvent = {
 
 export type RecordedSession = {
   sender?: chrome.runtime.MessageSender,
-  events: any[],
+  events: ParsedEvent[],
 };
