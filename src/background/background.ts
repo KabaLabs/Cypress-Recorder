@@ -1,14 +1,13 @@
 import { controlAction } from '../types/types';
-
-
 function startRecording(): void {
   chrome.runtime.onConnect.addListener((port) => {
-    console.log(`connection between content script and background opened on port ${port}`);
+    console.dir(port);
+    console.log(`connection between content script and background opened`);
     port.onDisconnect.addListener(() => {
       console.log('connection between content script and background closed');
     });
   });
-  chrome.tabs.executeScript({ file: 'eventRecorder.js', allFrames: true }, (res) => {
+  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true }, (res) => {
     const lastErr = chrome.runtime.lastError;
     if (lastErr) console.log(lastErr);
   });
