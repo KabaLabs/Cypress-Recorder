@@ -23,7 +23,6 @@ export const App: React.FC = () => {
     } else if (action.type === 'stopRec') {
       setRecStatus('done');
       chrome.runtime.sendMessage(action, (response: RecordedSession) => {
-        console.log(response);
         setSession(response);
       });
     } else if (action.type === 'resetRec') {

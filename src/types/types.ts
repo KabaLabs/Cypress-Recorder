@@ -22,7 +22,10 @@ export type RecAction =
 export type ParsedEvent = {
   selector: String,
   action: String,
-  id: String,
+  tag: String,
+  value: String,
+  id?: String,
+  keyCode?: Number,
 };
 
 export type RecordedSession = {

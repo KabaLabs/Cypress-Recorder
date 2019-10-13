@@ -27,15 +27,20 @@ function handleControlMessages(action: RecAction): void {
 }
 
 function handleEvent(event: Event): void {
-  console.dir(event);
-  const selector = finder(event.target as Element);
-  console.log(selector);
-  const parsedEvent: ParsedEvent = {
-    selector,
-    action: event.type,
-    id: (event.target as Element).id,
-  };
+  const parsedEvent: ParsedEvent = parseEvent(event);
   port.postMessage(parsedEvent);
+}
+
+function parseEvent(event: Event): ParsedEvent {
+  const parsedEvent: ParsedEvent = {
+    selector: finder(event.target as Element),
+    action: event.type,
+    tag: (event.target as HTMLInputElement).tagName,
+    value: (event.target as HTMLInputElement).value,
+  };
+  if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;
+  if (event.type === 'keydown') parsedEvent.keyCode = (event as KeyboardEvent).keyCode;
+  return parsedEvent;
 }
 
 function addDOMListeners(): void {
