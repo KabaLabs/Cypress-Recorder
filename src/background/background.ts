@@ -20,7 +20,7 @@ const session: RecordedSession = {
  * 
  * @see handleNewConnection
  * 
- * @param event 
+ * @param {ParsedEvent} event 
  */
 function handleEvents(event: ParsedEvent): void {
   session.events.push(event);
@@ -37,7 +37,7 @@ function handleEvents(event: ParsedEvent): void {
  * @see handleEvents
  * @see initialize
  * 
- * @param portToEventRecorder 
+ * @param {chrome.runtime.Port} portToEventRecorder 
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   port = portToEventRecorder;
@@ -59,7 +59,7 @@ function startRecording(): void {
  * 
  * @see handleControlAction
  * 
- * @param sendResponse 
+ * @param {Function} sendResponse 
  */
 function stopRecording(sendResponse: (response: any) => void): void {
   port.postMessage({ type: 'stopRec' });
@@ -86,9 +86,9 @@ function resetRecording(): void {
  * @see stopRecording
  * @see resetRecording
  * 
- * @param action 
- * @param sender 
- * @param sendResponse 
+ * @param {RecAction} action 
+ * @param {chrome.runtime.MessageSender} sender 
+ * @param {Function} sendResponse 
  */
 function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void): void {
   switch (action.type) {

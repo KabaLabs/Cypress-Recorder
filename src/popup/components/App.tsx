@@ -25,7 +25,8 @@ export const App: React.FC = () => {
     } else if (action.type === 'stopRec') {
       setRecStatus('done');
       chrome.runtime.sendMessage(action, (response: BlockData) => {
-        setCodeBlocks(response);
+        if (!response.length) setRecStatus('off');
+        else setCodeBlocks(response);
       });
     } else if (action.type === 'resetRec') {
       setRecStatus('off');
@@ -55,10 +56,6 @@ export const App: React.FC = () => {
   React.useEffect(() => {
     chrome.storage.local.set({ status: recStatus });
   }, [recStatus]);
-
-  React.useEffect(() => {
-    chrome.storage.local.set({ codeBlocks: codeBlocks });
-  }, [codeBlocks]);
 
   return (
     <div id="App">
