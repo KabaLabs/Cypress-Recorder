@@ -25,7 +25,7 @@ export type ParsedEvent = {
   tag: String,
   value: String,
   id?: String,
-  keyCode?: any,
+  keyCode?: number,
 };
 
 export type RecordedSession = {
