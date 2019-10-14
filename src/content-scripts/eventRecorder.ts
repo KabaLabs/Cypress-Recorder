@@ -1,3 +1,9 @@
+/**
+ * Where the magic happens.
+ * 
+ * The functions in this file are responsible for recording the DOM events.
+ */
+
 import { RecAction, ParsedEvent } from '../types/types';
 import eventTypes from '../constants/events';
 import finder from '@medv/finder';
@@ -39,11 +45,28 @@ function handleControlMessages(action: RecAction): void {
   }
 }
 
+/**
+ * Handles DOM events.
+ * 
+ * @see parseEvent
+ * @see addDOMListeners
+ * 
+ * @param {Event} event 
+ */
 function handleEvent(event: Event): void {
   const parsedEvent: ParsedEvent = parseEvent(event);
   port.postMessage(parsedEvent);
 }
 
+/**
+ * Parses DOM events into an object with the necessary data.
+ * 
+ * @see handleEvent
+ * 
+ * @param {Event} event
+ * 
+ * @returns {ParsedEvent}
+ */
 function parseEvent(event: Event): ParsedEvent {
   const parsedEvent: ParsedEvent = {
     selector: finder(event.target as Element),
@@ -56,6 +79,11 @@ function parseEvent(event: Event): ParsedEvent {
   return parsedEvent;
 }
 
+/**
+ * Adds event listeners to the DOM.
+ * 
+ * @see handleControlMessages
+ */
 function addDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
     document.addEventListener(eventType, handleEvent, {
@@ -65,6 +93,11 @@ function addDOMListeners(): void {
   });
 }
 
+/**
+ * Removes event listeners from the DOM.
+ * 
+ * @see handleControlMessages
+ */
 function removeDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
     document.removeEventListener(eventType, handleEvent, { capture: true });
