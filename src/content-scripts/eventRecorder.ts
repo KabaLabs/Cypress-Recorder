@@ -4,6 +4,11 @@ import finder from '@medv/finder';
 
 let port: chrome.runtime.Port;
 
+/**
+ * Initializes event recording.
+ * 
+ * @see addDOMListeners
+ */
 function initialize(): void {
   console.log('eventRecorder initialized');
   port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
@@ -11,6 +16,14 @@ function initialize(): void {
   addDOMListeners();
 }
 
+/**
+ * Handles control messages from the background script.
+ * 
+ * @see addDOMListeners
+ * @see removeDOMListeners
+ * 
+ * @param {RecAction} action
+ */
 function handleControlMessages(action: RecAction): void {
   switch (action.type) {
     case 'startRec':

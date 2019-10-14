@@ -1,18 +1,6 @@
-export type RecordedEvent = {
-  type: String,
-  frameId: Number,
-}
-
-export type EventData = RecordedEvent[];
-
 export type CodeBlock = String;
 
 export type BlockData = CodeBlock[];
-
-export type EventAction = {
-  type: String,
-  payload?: RecordedEvent,
-}
 
 export type RecAction =
   | { type: 'startRec' }
