@@ -7,6 +7,6 @@ export interface CodeBlockProps {
 
 export default ({ block }: CodeBlockProps) => (
   <div>
-    <p>Selector: {block}</p>
+    <p>{block}</p>
   </div>
 );

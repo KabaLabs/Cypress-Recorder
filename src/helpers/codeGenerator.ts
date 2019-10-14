@@ -25,7 +25,19 @@ import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/typ
   */
 // Placeholder functions
 function generateBlock(event: ParsedEvent): CodeBlock {
-  return event.selector;
+  console.log('poo');
+  // takes events object and translates it to block(s) of code (as a string)
+  switch (event.action) {
+    case 'click':
+      return `cy.get('${event.selector}').click()`;
+    case 'keydown':
+      let char: String = event.value[event.value.length - 1];
+      console.log('char here', char);
+      return `cy.get('${event.selector}').type(${char})`; // literal keycode??
+    default:
+      console.error('didn\'t match any types');
+  }
+  // return event.selector; // is this codeblock instead? returning string
 }
 
 export function generateCode(session: RecordedSession): BlockData {
