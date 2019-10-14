@@ -1,0 +1,13 @@
+$font-stack: Helvetica, sans-serif;
+$primary-color: #333;
+$primary-background-color: #fff8dc;
+$max-height: 600px;
+$max-width: 800px;
+
+body {
+  height: $max-height * .9;
+  width: $max-width * .9;
+  font: 100% $font-stack;
+  color: $primary-color;
+  background-color: $primary-background-color;
+}
