@@ -128,6 +128,7 @@ function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSe
  */
 function cleanUp(): void {
   chrome.storage.local.set({ status: 'off' });
+  chrome.storage.local.set({ codeBlocks: [] });
 }
 
 /**
