@@ -19,13 +19,12 @@ const session: RecordedSession = {
  * Handles events sent from the event recorder.
  * 
  * @see handleNewConnection
- * 
  * @param {ParsedEvent} event 
  */
 function handleEvents(event: ParsedEvent): void {
+  console.dir(event);
   session.events.push(event);
 }
-
 
 /**
  * Handles any new connections from event recorders.
@@ -36,7 +35,6 @@ function handleEvents(event: ParsedEvent): void {
  * 
  * @see handleEvents
  * @see initialize
- * 
  * @param {chrome.runtime.Port} portToEventRecorder 
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
@@ -46,26 +44,44 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
 }
 
 /**
+ * Injects the event recorder into the active tab.
+ */
+function injectEventRecorder(): void {
+  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
+}
+
+/**
+ * Disconnects the event recorder.
+ */
+function ejectEventRecorder(): void {
+  port.disconnect();
+}
+
+/**
  * Starts the recording process by injecting the event recorder into the active tab.
  * 
  * @see handleControlAction
  */
 function startRecording(): void {
-  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
+  console.log('startRecording');
+  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+  chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
+  injectEventRecorder();
 }
 
 /**
- * Stops the recording process.
+ * Stops recording and sends back code to the view.
  * 
- * @see handleControlAction
- * 
- * @param {Function} sendResponse 
+ * @param {Function} sendResponse
  */
-function stopRecording(sendResponse: (response: any) => void): void {
-  port.postMessage({ type: 'stopRec' });
+function stopRecording(sendResponse: Function): void {
+  console.log('stopRecording');
   const code = generateCode(session);
   sendResponse(code);
   chrome.storage.local.set({ codeBlocks: code });
+  ejectEventRecorder();
+  chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
+  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
 }
 
 /**
@@ -74,7 +90,6 @@ function stopRecording(sendResponse: (response: any) => void): void {
  * @see handleControlAction
  */
 function resetRecording(): void {
-  port.disconnect();
   session.events = [];
 }
 

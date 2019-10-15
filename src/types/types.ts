@@ -13,7 +13,8 @@ export type ParsedEvent = {
   tag: String,
   value: String,
   id?: String,
-  key?: any,
+  key?: String,
+  href?: String,
 };
 
 export type RecordedSession = {

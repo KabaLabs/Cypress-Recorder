@@ -15,7 +15,6 @@ export type RecState =
 
 export const App: React.FC = () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  // const [session, setSession] = React.useState<RecordedSession>({ events: [] });
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
 
   const handleToggle = (action: RecAction) => {
