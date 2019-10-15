@@ -54,8 +54,8 @@ function addDOMListeners(): void {
  * Removes event listeners from the DOM.
  */
 function removeDOMListeners(): void {
-  Object.values(EventTypes).forEach(eventType => {
-    document.removeEventListener(eventType, handleEvent, { capture: true });
+  Object.values(EventType).forEach(event => {
+    document.removeEventListener(event, handleEvent, { capture: true });
   });
 }
 
