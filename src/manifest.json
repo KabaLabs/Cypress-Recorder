@@ -9,7 +9,8 @@
       "storage",
       "tabs",
       "webNavigation",
-      "http://*/*"
+      "http://*/*",
+      "https://*/*"
     ],
     "background": {
       "scripts": ["./background/background.js"],
