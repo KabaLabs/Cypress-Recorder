@@ -5,15 +5,31 @@ export type RecordedEvent = {
 
 export type EventData = RecordedEvent[];
 
-export type RecordedBlock = String;
+export type CodeBlock = String;
 
-export type BlockData = RecordedBlock[];
+export type BlockData = CodeBlock[];
 
 export type EventAction = {
   type: String,
   payload?: RecordedEvent,
 }
 
-export type controlAction = {
-  type: String,
+export type RecAction =
+  | { type: 'startRec' }
+  | { type: 'stopRec' }
+  | { type: 'resetRec' };
+
+export type ParsedEvent = {
+  selector: String,
+  action: String,
+  tag: String,
+  value: String,
+  id?: String,
+  keyCode?: Number,
+  href?: String,
+};
+
+export type RecordedSession = {
+  sender?: chrome.runtime.MessageSender,
+  events: ParsedEvent[],
 };

@@ -1,47 +1,77 @@
-import { controlAction } from '../types/types';
+import { generateCode } from '../helpers/codeGenerator';
+import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
 
+let port: chrome.runtime.Port;
+
+const session: RecordedSession = {
+  events: [],
+};
+
+function handleEvents(event: ParsedEvent): void {
+  console.dir(event);
+  session.events.push(event);
+}
+
+function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
+  port = portToEventRecorder;
+  session.sender = port.sender;
+  port.onMessage.addListener(handleEvents);
+}
+
+function injectEventRecorder(): void {
+  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
+}
+
+function ejectEventRecorder(): void {
+  port.disconnect();
+}
 
 function startRecording(): void {
-  chrome.runtime.onConnect.addListener((port) => {
-    console.log(`connection between content script and background opened on port ${port}`);
-    port.onDisconnect.addListener(() => {
-      console.log('connection between content script and background closed');
-    });
-  });
-  chrome.tabs.executeScript({ file: 'eventRecorder.js', allFrames: true }, (res) => {
-    const lastErr = chrome.runtime.lastError;
-    if (lastErr) console.log(lastErr);
-  });
+  console.log('startRecording');
+  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+  chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
+  injectEventRecorder();
 }
 
 function stopRecording(): void {
-  // chrome.runtime.
+  console.log('stopRecording');
+  chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
+  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  ejectEventRecorder();
 }
 
 function resetRecording(): void {
-
+  session.events = [];
 }
 
-function recordingRouter(action: controlAction): void {
-  if (action && action.type) {
-    switch (action.type) {
-      case 'startRec':
-        startRecording();
-        break;
-      case 'stopRec':
-        stopRecording();
-        break;
-      case 'resetRec':
-        resetRecording();
-        break;
-      default:
-        throw new Error('Invalid action type');
-    }
+function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void): void {
+  switch (action.type) {
+    case 'startRec':
+      startRecording();
+      break;
+    case 'stopRec':
+      stopRecording();
+      const code = generateCode(session);
+      sendResponse(code);
+      chrome.storage.local.set({ codeBlocks: code });
+      break;
+    case 'resetRec':
+      resetRecording();
+      break;
+    default:
+      throw new Error('Invalid action type');
   }
 }
 
+function cleanUp(): void {
+  chrome.storage.local.set({ status: 'off' });
+}
+
 function initialize(): void {
-  chrome.runtime.onMessage.addListener(recordingRouter);
+  chrome.runtime.onStartup.addListener(cleanUp);
+  chrome.runtime.onMessage.addListener(handleControlAction);
+  chrome.runtime.onConnect.addListener(handleNewConnection);
+  chrome.runtime.onSuspend.addListener(cleanUp);
 }
 
 initialize();
