@@ -1,36 +1,21 @@
-import { RecAction, ParsedEvent } from '../types/types';
-import eventTypes from '../constants/events';
+/**
+ * Where the magic happens.
+ *
+ * Responsible for recording the DOM events.
+ */
+
 import finder from '@medv/finder';
+import { ParsedEvent } from '../types';
+import eventTypes from '../constants/events';
 
 let port: chrome.runtime.Port;
 
-function initialize(): void {
-  console.log('eventRecorder initialized');
-  port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
-  port.onMessage.addListener(handleControlMessages);
-  addDOMListeners();
-}
-
-function handleControlMessages(action: RecAction): void {
-  switch (action.type) {
-    case 'startRec':
-      addDOMListeners();
-      break;
-    case 'stopRec':
-      removeDOMListeners();
-      break;
-    case 'resetRec':
-      break;
-    default:
-      throw new Error(`Unexpected control message type ${action}`);
-  }
-}
-
-function handleEvent(event: Event): void {
-  const parsedEvent: ParsedEvent = parseEvent(event);
-  port.postMessage(parsedEvent);
-}
-
+/**
+ * Parses DOM events into an object with the necessary data.
+ *
+ * @param {Event} event
+ * @returns {ParsedEvent}
+ */
 function parseEvent(event: Event): ParsedEvent {
   const parsedEvent: ParsedEvent = {
     selector: finder(event.target as Element),
@@ -38,11 +23,25 @@ function parseEvent(event: Event): ParsedEvent {
     tag: (event.target as HTMLInputElement).tagName,
     value: (event.target as HTMLInputElement).value,
   };
+  if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
   if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;
-  if (event.type === 'keydown') parsedEvent.keyCode = (event as KeyboardEvent).keyCode;
+  if (event.type === 'keydown') parsedEvent.key = (event as KeyboardEvent).key;
   return parsedEvent;
 }
 
+/**
+ * Handles DOM events.
+ *
+ * @param {Event} event
+ */
+function handleEvent(event: Event): void {
+  const parsedEvent: ParsedEvent = parseEvent(event);
+  port.postMessage(parsedEvent);
+}
+
+/**
+ * Adds event listeners to the DOM.
+ */
 function addDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
     document.addEventListener(eventType, handleEvent, {
@@ -52,10 +51,22 @@ function addDOMListeners(): void {
   });
 }
 
+/**
+ * Removes event listeners from the DOM.
+ */
 function removeDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
     document.removeEventListener(eventType, handleEvent, { capture: true });
   });
+}
+
+/**
+ * Initializes the event recorder.
+ */
+function initialize(): void {
+  port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
+  port.onDisconnect.addListener(removeDOMListeners);
+  addDOMListeners();
 }
 
 initialize();
