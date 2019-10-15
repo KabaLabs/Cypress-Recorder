@@ -31,6 +31,12 @@ function generateBlock(event: ParsedEvent): CodeBlock {
     case 'click':
       return `cy.get('${event.selector}').click()`;
     case 'keydown':
+      switch(event.key) {
+        case '13': // enter key
+          return `cy.get('${event.selector}').type({${event.key}})`;
+        case '9': // tab
+        return `cy.get('${event.selector}').type({${event.key}})`;
+      }
       return `cy.get('${event.selector}').type('${event.key}')`;
     default:
       console.error('didn\'t match any types');
