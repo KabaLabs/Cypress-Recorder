@@ -21,3 +21,12 @@ export interface RecordedSession {
   sender?: chrome.runtime.MessageSender,
   events: ParsedEvent[],
 }
+
+export enum EventTypes {
+  CLICK = 'click',
+  CHANGE = 'change',
+  DBCLICK = 'dbclick',
+  KEYDOWN = 'keydown',
+  RESET = 'reset',
+  SUBMIT = 'submit',
+}
