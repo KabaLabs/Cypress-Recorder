@@ -53,13 +53,13 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
     case 'ArrowLeft':
       return `cy.get('${event.selector}').type({leftarrow})`;
     default:
-      return `cy.get('${event.selector}').type('${event.key}')`;
+      return '';
   }
 }
 
 function handleChange(event: ParsedEvent): CodeBlock {
   console.log(`Change handled; value: ${event.value}`);
-  return `we changin in here ${event.value}`;
+  return `cy.get('${event.selector}').type('${event.value}')`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
