@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Header } from './Header';
-import { Footer } from './Footer';
-import { ActiveRecordingBox } from './ActiveRecordingBox';
-import { CodeDisplay } from './CodeDisplay';
-import { LandingBox } from './LandingBox';
-import { RecAction, RecordedSession, BlockData } from '../../types/types';
-// import { generateCode } from '../../helpers/codeGenerator';
+import Header from './Header';
+import Footer from './Footer';
+import ActiveRecordingBox from './ActiveRecordingBox';
+import CodeDisplay from './CodeDisplay';
+import LandingBox from './LandingBox';
+import { RecAction, BlockData } from '../../types';
 import '../../assets/styles/styles.scss';
 
 export type RecState =
@@ -13,19 +12,19 @@ export type RecState =
   | 'on'
   | 'done';
 
-export const App: React.FC = () => {
+export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  // const [session, setSession] = React.useState<RecordedSession>({ events: [] });
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
 
-  const handleToggle = (action: RecAction) => {
+  const handleToggle = (action: RecAction): void => {
     if (action.type === 'startRec') {
       setRecStatus('on');
       chrome.runtime.sendMessage(action);
     } else if (action.type === 'stopRec') {
       setRecStatus('done');
       chrome.runtime.sendMessage(action, (response: BlockData) => {
-        setCodeBlocks(response);
+        if (!response.length) setRecStatus('off');
+        else setCodeBlocks(response);
       });
     } else if (action.type === 'resetRec') {
       setRecStatus('off');
@@ -43,7 +42,7 @@ export const App: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
       if (!result.status) chrome.storage.local.set({ status: recStatus });
       else if (result.status === 'on') setRecStatus('on');
@@ -52,13 +51,9 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     chrome.storage.local.set({ status: recStatus });
   }, [recStatus]);
-
-  React.useEffect(() => {
-    chrome.storage.local.set({ codeBlocks: codeBlocks });
-  }, [codeBlocks]);
 
   return (
     <div id="App">

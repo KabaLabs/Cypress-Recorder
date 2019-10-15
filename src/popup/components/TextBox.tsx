@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export interface TextBoxProps { }
 
-export const TextBox: React.FC = (props: TextBoxProps) => (
+export default (props: TextBoxProps) => (
   <div>
     
   </div>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ParsedEvent, CodeBlock } from '../../types/types';
+import { CodeBlock } from '../../types';
 
 export interface CodeBlockProps {
   block: CodeBlock
@@ -7,6 +7,6 @@ export interface CodeBlockProps {
 
 export default ({ block }: CodeBlockProps) => (
   <div>
-    <p>Selector: {block}</p>
+    <p>{block}</p>
   </div>
 );

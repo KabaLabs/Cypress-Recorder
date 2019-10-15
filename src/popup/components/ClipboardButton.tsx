@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 export interface ClipboardButtonProps {
-  copyToClipboard: Function,
+  copyToClipboard: () => Promise<boolean>,
 }
 
-export const ClipboardButton = ({ copyToClipboard }: ClipboardButtonProps) => {
+export default ({ copyToClipboard }: ClipboardButtonProps) => {
   const [success, setSuccess] = React.useState<boolean>(false);
-  const handleClick = (): void => {
-    const res = copyToClipboard();
+  const handleClick = async (): Promise<void> => {
+    const res = await copyToClipboard();
     setSuccess(res);
   };
 

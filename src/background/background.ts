@@ -1,46 +1,111 @@
-import { generateCode } from '../helpers/codeGenerator';
-import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
+/**
+ * The background script which is always runnin'.
+ *
+ * Serves as the router and controller for the extension; the popup sends messages to the background
+ * and the background sets up the event recording and code generation and serves the resulting code
+ * back to the popup for display to the user.
+ */
 
-let port: chrome.runtime.Port;
+import generateCode from '../helpers/codeGenerator';
+import {
+  RecAction,
+  RecordedSession,
+  ParsedEvent,
+  BlockData,
+} from '../types';
 
 const session: RecordedSession = {
   events: [],
 };
 
+let port: chrome.runtime.Port;
+
+/**
+ * Handles events sent from the event recorder.
+ *
+ * @param {ParsedEvent} event
+ */
 function handleEvents(event: ParsedEvent): void {
-  console.dir(event);
   session.events.push(event);
 }
 
+/**
+ * Handles any new connections from event recorders.
+ *
+ * Event recorders will open new connections upon injection into their tab;
+ * upon establishing this connection, we need to listen to any new messages on this port;
+ * this is how the event recorder sends the background information.
+ *
+ * @param {chrome.runtime.Port} portToEventRecorder
+ */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   port = portToEventRecorder;
   session.sender = port.sender;
   port.onMessage.addListener(handleEvents);
 }
 
-function startRecording(): void {
+/**
+ * Injects the event recorder into the active tab.
+ */
+function injectEventRecorder(): void {
   chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
 }
 
-function stopRecording(): void {
-  port.postMessage({ type: 'stopRec' });
+/**
+ * Disconnects the event recorder.
+ */
+function ejectEventRecorder(): void {
+  port.disconnect();
 }
 
+/**
+ * Starts the recording process by injecting the event recorder into the active tab.
+ */
+function startRecording(): void {
+  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+  chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
+  injectEventRecorder();
+}
+
+/**
+ * Stops recording and sends back code to the view.
+ *
+ * @param {Function} sendResponse
+ */
+function stopRecording(sendResponse: (response: BlockData) => void): void {
+  const code = generateCode(session);
+  sendResponse(code);
+  chrome.storage.local.set({ codeBlocks: code });
+  ejectEventRecorder();
+  chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
+  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+}
+
+/**
+ * Resets the recording process.
+ */
 function resetRecording(): void {
-  port.disconnect();
   session.events = [];
 }
 
-function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void): void {
+/**
+ * Handles control messages sent from the view (popup) and conducting the appropriate actions.
+ *
+ * @param {RecAction} action
+ * @param {chrome.runtime.MessageSender} sender
+ * @param {Function} sendResponse
+ */
+function handleControlAction(
+  action: RecAction,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response: BlockData) => void,
+): void {
   switch (action.type) {
     case 'startRec':
       startRecording();
       break;
     case 'stopRec':
-      stopRecording();
-      const code = generateCode(session);
-      sendResponse(code);
-      chrome.storage.local.set({ codeBlocks: code });
+      stopRecording(sendResponse);
       break;
     case 'resetRec':
       resetRecording();
@@ -50,12 +115,18 @@ function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSe
   }
 }
 
+/**
+ * Performs necessary cleanup on startup and suspend.
+ */
 function cleanUp(): void {
   chrome.storage.local.set({ status: 'off' });
 }
 
+/**
+ * Initializes the extension.
+ */
 function initialize(): void {
-  chrome.runtime.onStartup.addListener(cleanUp);
+  cleanUp();
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onSuspend.addListener(cleanUp);

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { RecAction } from '../../types/types';
+import { RecAction } from '../../types';
 
 export interface ToggleButtonProps {
   recStatus: String,
-  handleToggle: Function,
+  handleToggle: (action: RecAction) => void,
 };
 
-export const ToggleButton = ({ recStatus, handleToggle }: ToggleButtonProps) => {
+export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
   const handleClick = (): void => {
     let action: RecAction;
     if (recStatus === 'off') action = { type: 'startRec' };
