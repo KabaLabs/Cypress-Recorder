@@ -14,7 +14,7 @@ export default (props: InfoProps) => (
             It works by analyzing user activity in your app (clicks, keypresses, routes, and more) and then turning those interactions
              into Cypress code used for testing purposes.</p>
 
-        <p>Here is a link to the project's <a href="https://github.com/KabaLabs/Cypress-Recorder">Github Repo</a>, Give it a star!!? </p>
+        <p>Here is a link to the project's <a href="https://github.com/KabaLabs/Cypress-Recorder">Github Repo</a>, Give it a star!! </p>
 
 
 
