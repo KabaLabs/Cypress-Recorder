@@ -6,7 +6,7 @@
  * back to the popup for display to the user.
  */
 
-import { generateCode } from '../helpers/codeGenerator';
+import generateCode from '../helpers/codeGenerator';
 import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
 
 let port: chrome.runtime.Port;
