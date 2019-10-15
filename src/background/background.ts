@@ -1,4 +1,4 @@
-import { generateCode } from '../helpers/codeGenerator';
+import generateCode from '../helpers/codeGenerator';
 import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
 
 let port: chrome.runtime.Port;

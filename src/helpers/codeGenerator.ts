@@ -25,6 +25,8 @@ import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/typ
   */
 // Placeholder functions
 function generateBlock(event: ParsedEvent): CodeBlock {
+  // place in correct area
+  console.log('event', event);
   // takes events object and translates it to block(s) of code (as a string)
   switch (event.action) {
     case 'click':
@@ -37,6 +39,8 @@ function generateBlock(event: ParsedEvent): CodeBlock {
   // return event.selector; // is this codeblock instead? returning string
 }
 
-export function generateCode(session: RecordedSession): BlockData {
-  return session.events.map(event => generateBlock(event));
+export default function generateCode(session: RecordedSession): BlockData {
+  console.log(session.sender);
+  return [`cy.visit('${session.sender.url}');` as CodeBlock]
+    .concat(session.events.map((event) => generateBlock(event)));
 }
