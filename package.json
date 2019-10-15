@@ -10,7 +10,7 @@
     "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist",
     "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json"
   },
-  "author": "",
+  "author": "Abbey Campbell, Brad Morgan, Ken Sakuma, Adam Stover",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.6.3",
