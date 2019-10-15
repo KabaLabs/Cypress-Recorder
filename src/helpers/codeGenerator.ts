@@ -21,7 +21,7 @@
     cy.get('.action-form').submit()
     .next().should('contain', 'Your form has been submitted!')
   */
-import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
+import { RecordedSession, ParsedEvent, BlockData, CodeBlock, EventType } from '../types';
 
 // write helper functions to handle each action type
 function handleClick(event: ParsedEvent): CodeBlock {
@@ -30,6 +30,9 @@ function handleClick(event: ParsedEvent): CodeBlock {
 
 function handleKeydown(event: ParsedEvent): CodeBlock {
   console.log("keydown handled");
+  if (event.key === '13') {
+    return `cy.get('${event.selector}').type({enter})`;
+  }
   return `cy.get('${event.selector}').type('${event.key}')`;
 }
 
@@ -58,17 +61,17 @@ function generateBlock(event: ParsedEvent): CodeBlock {
   console.log('event', event);
   // takes events object and translates it to block(s) of code (as a string)
   switch (event.action) {
-    case 'click':
+    case EventType.CLICK:
       return handleClick(event);
-    case 'keydown':
+    case EventType.KEYDOWN:
       return handleKeydown(event);
-    case 'change':
+    case EventType.CHANGE:
       return handleChange(event);
-    case 'dbclick':
+    case EventType.DBCLICK:
       return handleDoubleclick(event);
-    case 'reset':
+    case EventType.RESET:
       return handleReset(event);
-    case 'submit':
+    case EventType.SUBMIT:
       return handleSubmit(event);
     default:
       throw new Error(`Unhandled event: ${event.action}`);
@@ -78,5 +81,5 @@ function generateBlock(event: ParsedEvent): CodeBlock {
 
 export default function generateCode(session: RecordedSession): BlockData {
   return [`cy.visit('${session.sender.url}');` as CodeBlock]
-    .concat(session.events.map((event) => generateBlock(event)));
+    .concat(session.events.map(event => generateBlock(event)));
 }
