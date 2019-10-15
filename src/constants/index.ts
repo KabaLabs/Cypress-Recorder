@@ -1,4 +1,4 @@
-export enum EventTypes {
+export enum EventType {
   CLICK = 'click',
   CHANGE = 'change',
   DBCLICK = 'dbclick',
