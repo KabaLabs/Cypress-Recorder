@@ -1,4 +1,4 @@
-export type CodeBlock = String;
+export type CodeBlock = string;
 
 export type BlockData = CodeBlock[];
 
@@ -8,13 +8,13 @@ export type RecAction =
   | { type: 'resetRec' };
 
 export type ParsedEvent = {
-  selector: String,
-  action: String,
-  tag: String,
-  value: String,
-  id?: String,
-  key?: String,
-  href?: String,
+  selector: string,
+  action: string,
+  tag: string,
+  value: string,
+  id?: string,
+  key?: string,
+  href?: string,
 };
 
 export type RecordedSession = {

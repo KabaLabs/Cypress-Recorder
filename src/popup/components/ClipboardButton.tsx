@@ -4,7 +4,7 @@ export interface ClipboardButtonProps {
   copyToClipboard: Function,
 }
 
-export const ClipboardButton = ({ copyToClipboard }: ClipboardButtonProps) => {
+export default ({ copyToClipboard }: ClipboardButtonProps) => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const handleClick = (): void => {
     const res = copyToClipboard();

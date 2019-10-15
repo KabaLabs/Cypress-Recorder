@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Header } from './Header';
-import { Footer } from './Footer';
-import { ActiveRecordingBox } from './ActiveRecordingBox';
-import { CodeDisplay } from './CodeDisplay';
-import { LandingBox } from './LandingBox';
-import { RecAction, RecordedSession, BlockData } from '../../types/types';
-// import { generateCode } from '../../helpers/codeGenerator';
+import Header from './Header';
+import Footer from './Footer';
+import ActiveRecordingBox from './ActiveRecordingBox';
+import CodeDisplay from './CodeDisplay';
+import LandingBox from './LandingBox';
+import { RecAction, BlockData } from '../../types/types';
 import '../../assets/styles/styles.scss';
 
 export type RecState =
@@ -13,7 +12,7 @@ export type RecState =
   | 'on'
   | 'done';
 
-export const App: React.FC = () => {
+export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
 

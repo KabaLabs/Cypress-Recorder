@@ -6,7 +6,7 @@ export interface CodeDisplayProps {
   codeBlocks: BlockData,
 };
 
-export const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
+export default ({ codeBlocks }: CodeDisplayProps) => {
   const blocks = codeBlocks.map((block) => (
     <CodeBlock block={block} />
   ));
