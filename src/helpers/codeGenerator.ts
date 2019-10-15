@@ -23,29 +23,60 @@
   */
 import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
 
+// write helper functions to handle each action type
+function handleClick(event: ParsedEvent): CodeBlock {
+  return `cy.get('${event.selector}').click()`;
+}
+
+function handleKeydown(event: ParsedEvent): CodeBlock {
+  console.log("keydown handled");
+  return `cy.get('${event.selector}').type('${event.key}')`;
+}
+
+function handleChange(event: ParsedEvent): CodeBlock {
+  console.log(`Change handled; value: ${event.value}`);
+  return `we changin in here ${event.value}`;
+}
+
+function handleDoubleclick(event: ParsedEvent): CodeBlock {
+  console.log('handling doubleclick');
+  return 'doubleclick';
+}
+
+function handleReset(event: ParsedEvent): CodeBlock {
+  console.log(`handling reset, ${event.value}`);
+  return 'reset';
+}
+
+function handleSubmit(event: ParsedEvent): CodeBlock {
+  console.log(`handling submit, ${event.value}`);
+  return 'submit';
+}
+
 function generateBlock(event: ParsedEvent): CodeBlock {
   // place in correct area
   console.log('event', event);
   // takes events object and translates it to block(s) of code (as a string)
   switch (event.action) {
     case 'click':
-      return `cy.get('${event.selector}').click()`;
+      return handleClick(event);
     case 'keydown':
-      switch(event.key) {
-        case '13': // enter key
-          return `cy.get('${event.selector}').type({${event.key}})`;
-        case '9': // tab
-        return `cy.get('${event.selector}').type({${event.key}})`;
-      }
-      return `cy.get('${event.selector}').type('${event.key}')`;
+      return handleKeydown(event);
+    case 'change':
+      return handleChange(event);
+    case 'dbclick':
+      return handleDoubleclick(event);
+    case 'reset':
+      return handleReset(event);
+    case 'submit':
+      return handleSubmit(event);
     default:
-      console.error('didn\'t match any types');
+      throw new Error(`Unhandled event: ${event.action}`);
   }
   // return event.selector; // is this codeblock instead? returning string
 }
 
 export default function generateCode(session: RecordedSession): BlockData {
-  console.log(session.sender);
   return [`cy.visit('${session.sender.url}');` as CodeBlock]
     .concat(session.events.map((event) => generateBlock(event)));
 }
