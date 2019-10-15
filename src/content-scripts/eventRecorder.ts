@@ -5,7 +5,9 @@
  */
 
 import finder from '@medv/finder';
-import { ParsedEvent, EventType } from '../types';
+import { ParsedEvent } from '../types';
+import { EventType } from '../constants';
+
 
 let port: chrome.runtime.Port;
 
