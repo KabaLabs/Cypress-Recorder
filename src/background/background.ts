@@ -7,7 +7,7 @@
  */
 
 import generateCode from '../helpers/codeGenerator';
-import { RecAction, RecordedSession, ParsedEvent } from '../types/types';
+import { RecAction, RecordedSession, ParsedEvent, BlockData } from '../types/types';
 
 let port: chrome.runtime.Port;
 
@@ -74,7 +74,7 @@ function startRecording(): void {
  * 
  * @param {Function} sendResponse
  */
-function stopRecording(sendResponse: Function): void {
+function stopRecording(sendResponse: (response: BlockData) => void): void {
   console.log('stopRecording');
   const code = generateCode(session);
   sendResponse(code);
@@ -105,7 +105,7 @@ function resetRecording(): void {
  * @param {chrome.runtime.MessageSender} sender 
  * @param {Function} sendResponse 
  */
-function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void): void {
+function handleControlAction(action: RecAction, sender: chrome.runtime.MessageSender, sendResponse: (response: BlockData) => void): void {
   switch (action.type) {
     case 'startRec':
       startRecording();
