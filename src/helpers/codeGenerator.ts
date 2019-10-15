@@ -1,5 +1,3 @@
-import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/types';
-
 /**
  * Code Generator is the function that actually generates the Cypress code that will simulate 
  * the recorded user session.
@@ -23,7 +21,8 @@ import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/typ
     cy.get('.action-form').submit()
     .next().should('contain', 'Your form has been submitted!')
   */
-// Placeholder functions
+import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/types';
+
 function generateBlock(event: ParsedEvent): CodeBlock {
   // place in correct area
   console.log('event', event);
