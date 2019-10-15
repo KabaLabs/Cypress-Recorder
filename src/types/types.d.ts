@@ -7,7 +7,7 @@ export type RecAction =
   | { type: 'stopRec' }
   | { type: 'resetRec' };
 
-export type ParsedEvent = {
+export interface ParsedEvent {
   selector: string,
   action: string,
   tag: string,
@@ -15,9 +15,9 @@ export type ParsedEvent = {
   id?: string,
   key?: string,
   href?: string,
-};
+}
 
-export type RecordedSession = {
+export interface RecordedSession {
   sender?: chrome.runtime.MessageSender,
   events: ParsedEvent[],
-};
+}
