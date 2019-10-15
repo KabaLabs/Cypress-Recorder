@@ -9,7 +9,7 @@ export type RecAction =
 
 export interface ParsedEvent {
   selector: string,
-  action: EventType,
+  action: string,
   tag: string,
   value: string,
   id?: string,
