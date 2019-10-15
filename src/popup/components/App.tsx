@@ -4,7 +4,7 @@ import Footer from './Footer';
 import ActiveRecordingBox from './ActiveRecordingBox';
 import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
-import { RecAction, BlockData } from '../../types/types';
+import { RecAction, BlockData } from '../../types';
 import '../../assets/styles/styles.scss';
 
 export type RecState =
@@ -16,7 +16,7 @@ export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
 
-  const handleToggle = (action: RecAction) => {
+  const handleToggle = (action: RecAction): void => {
     if (action.type === 'startRec') {
       setRecStatus('on');
       chrome.runtime.sendMessage(action);
@@ -42,7 +42,7 @@ export default () => {
     }
   };
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
       if (!result.status) chrome.storage.local.set({ status: recStatus });
       else if (result.status === 'on') setRecStatus('on');
@@ -51,7 +51,7 @@ export default () => {
     });
   }, []);
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     chrome.storage.local.set({ status: recStatus });
   }, [recStatus]);
 

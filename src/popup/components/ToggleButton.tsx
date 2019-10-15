@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { RecAction } from '../../types/types';
+import { RecAction } from '../../types';
 
 export interface ToggleButtonProps {
   recStatus: String,
-  handleToggle: Function,
+  handleToggle: (action: RecAction) => void,
 };
 
 export default ({ recStatus, handleToggle }: ToggleButtonProps) => {

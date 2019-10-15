@@ -1,42 +1,19 @@
 /**
  * Where the magic happens.
- * 
- * The functions in this file are responsible for recording the DOM events.
+ *
+ * Responsible for recording the DOM events.
  */
 
-import { ParsedEvent } from '../types/types';
-import eventTypes from '../constants/events';
 import finder from '@medv/finder';
+import { ParsedEvent } from '../types';
+import eventTypes from '../constants/events';
 
 let port: chrome.runtime.Port;
 
-function initialize(): void {
-  console.log('eventRecorder initialized');
-  port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
-  port.onDisconnect.addListener(removeDOMListeners);
-  addDOMListeners();
-}
-
-/**
- * Handles DOM events.
- * 
- * @see parseEvent
- * 
- * @param {Event} event
- */
-function handleEvent(event: Event): void {
-  console.log(event);
-  const parsedEvent: ParsedEvent = parseEvent(event);
-  port.postMessage(parsedEvent);
-}
-
 /**
  * Parses DOM events into an object with the necessary data.
- * 
- * @see handleEvent
- * 
+ *
  * @param {Event} event
- * 
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
@@ -53,9 +30,17 @@ function parseEvent(event: Event): ParsedEvent {
 }
 
 /**
+ * Handles DOM events.
+ *
+ * @param {Event} event
+ */
+function handleEvent(event: Event): void {
+  const parsedEvent: ParsedEvent = parseEvent(event);
+  port.postMessage(parsedEvent);
+}
+
+/**
  * Adds event listeners to the DOM.
- * 
- * @see handleControlMessages
  */
 function addDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
@@ -68,13 +53,20 @@ function addDOMListeners(): void {
 
 /**
  * Removes event listeners from the DOM.
- * 
- * @see handleControlMessages
  */
 function removeDOMListeners(): void {
   Object.values(eventTypes).forEach(eventType => {
     document.removeEventListener(eventType, handleEvent, { capture: true });
   });
+}
+
+/**
+ * Initializes the event recorder.
+ */
+function initialize(): void {
+  port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
+  port.onDisconnect.addListener(removeDOMListeners);
+  addDOMListeners();
 }
 
 initialize();

@@ -21,7 +21,7 @@
     cy.get('.action-form').submit()
     .next().should('contain', 'Your form has been submitted!')
   */
-import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types/types';
+import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
 
 function generateBlock(event: ParsedEvent): CodeBlock {
   // place in correct area
