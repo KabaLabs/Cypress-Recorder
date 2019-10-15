@@ -30,7 +30,7 @@ function generateBlock(event: ParsedEvent): CodeBlock {
     case 'click':
       return `cy.get('${event.selector}').click()`;
     case 'keydown':
-      return `cy.get('${event.selector}').type(${String.fromCharCode(event.keyCode)})`; // literal keycode??
+      return `cy.get('${event.selector}').type('${event.key}')`;
     default:
       console.error('didn\'t match any types');
   }

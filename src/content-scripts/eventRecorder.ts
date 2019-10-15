@@ -39,7 +39,7 @@ function parseEvent(event: Event): ParsedEvent {
     value: (event.target as HTMLInputElement).value,
   };
   if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;
-  if (event.type === 'keydown') parsedEvent.keyCode = (event as KeyboardEvent).keyCode;
+  if (event.type === 'keydown') parsedEvent.key = (event as KeyboardEvent).key;
   return parsedEvent;
 }
 
