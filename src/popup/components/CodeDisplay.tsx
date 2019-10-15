@@ -1,12 +1,12 @@
 import * as React from 'react';
 import CodeBlock from './CodeBlock';
-import { BlockData } from '../../types/types';
+import { BlockData } from '../../types';
 
 export interface CodeDisplayProps {
   codeBlocks: BlockData,
 };
 
-export const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
+export default ({ codeBlocks }: CodeDisplayProps) => {
   const blocks = codeBlocks.map((block) => (
     <CodeBlock block={block} />
   ));

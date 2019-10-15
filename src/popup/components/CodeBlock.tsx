@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CodeBlock } from '../../types/types';
+import { CodeBlock } from '../../types';
 
 export interface CodeBlockProps {
   block: CodeBlock
