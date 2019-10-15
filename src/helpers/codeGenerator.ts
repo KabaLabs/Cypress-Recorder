@@ -21,7 +21,8 @@
     cy.get('.action-form').submit()
     .next().should('contain', 'Your form has been submitted!')
   */
-import { RecordedSession, ParsedEvent, BlockData, CodeBlock, EventType } from '../types';
+import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
+import { EventType } from '../constants';
 
 // write helper functions to handle each action type
 function handleClick(event: ParsedEvent): CodeBlock {
@@ -29,11 +30,31 @@ function handleClick(event: ParsedEvent): CodeBlock {
 }
 
 function handleKeydown(event: ParsedEvent): CodeBlock {
-  console.log("keydown handled");
-  if (event.key === '13') {
-    return `cy.get('${event.selector}').type({enter})`;
+  console.log('keydown handled');
+  switch (event.key) {
+    case 'Enter':
+      return `cy.get('${event.selector}').type({enter})`;
+    case 'Backspace':
+      return `cy.get('${event.selector}').type({backspace})`;
+    case 'Shift':
+      return `cy.get('${event.selector}').type({shift})`;
+    case 'Escape':
+      return `cy.get('${event.selector}').type({esc})`;
+    case 'Alt':
+      return `cy.get('${event.selector}').type({alt})`;
+    case 'Control':
+      return `cy.get('${event.selector}').type({ctrl})`;
+    case 'ArrowUp':
+      return `cy.get('${event.selector}').type({uparrow})`;
+    case 'ArrowRight':
+      return `cy.get('${event.selector}').type({rightarrow})`;
+    case 'ArrowDown':
+      return `cy.get('${event.selector}').type({downarrow})`;
+    case 'ArrowLeft':
+      return `cy.get('${event.selector}').type({leftarrow})`;
+    default:
+      return `cy.get('${event.selector}').type('${event.key}')`;
   }
-  return `cy.get('${event.selector}').type('${event.key}')`;
 }
 
 function handleChange(event: ParsedEvent): CodeBlock {
