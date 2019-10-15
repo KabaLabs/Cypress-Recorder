@@ -9,7 +9,7 @@ export type RecAction =
 
 export interface ParsedEvent {
   selector: string,
-  action: string,
+  action: EventType,
   tag: string,
   value: string,
   id?: string,
@@ -22,7 +22,7 @@ export interface RecordedSession {
   events: ParsedEvent[],
 }
 
-export enum EventTypes {
+export enum EventType {
   CLICK = 'click',
   CHANGE = 'change',
   DBCLICK = 'dbclick',

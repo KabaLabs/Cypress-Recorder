@@ -5,7 +5,7 @@
  */
 
 import finder from '@medv/finder';
-import { ParsedEvent, EventTypes } from '../types';
+import { ParsedEvent, EventType } from '../types';
 
 let port: chrome.runtime.Port;
 
@@ -42,8 +42,8 @@ function handleEvent(event: Event): void {
  * Adds event listeners to the DOM.
  */
 function addDOMListeners(): void {
-  Object.values(EventTypes).forEach(eventType => {
-    document.addEventListener(eventType, handleEvent, {
+  Object.values(EventType).forEach(event => {
+    document.addEventListener(event, handleEvent, {
       capture: true,
       passive: true,
     });
