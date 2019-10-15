@@ -1,10 +1,14 @@
 import * as React from 'react';
 
-export interface InfoButtonProps { }
+export interface InfoButtonProps {
+  toggleInfoDisplay: () => void,
+}
 
-export default (props: InfoButtonProps) => {
+export default ({ toggleInfoDisplay }: InfoButtonProps) => {
+
+
   const handleClick = (): void => {
-    
+    toggleInfoDisplay();
   };
 
   return (

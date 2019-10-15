@@ -1,11 +1,13 @@
 import * as React from 'react';
 import InfoButton from './InfoButton';
 
-export interface HeaderProps { }
+export interface HeaderProps {
+  toggleInfoDisplay: () => void,
+}
 
-export default (props: HeaderProps) => (
+export default ({ toggleInfoDisplay }: HeaderProps) => (
   <div>
     Header
-    <InfoButton />
+    <InfoButton toggleInfoDisplay={toggleInfoDisplay} />
   </div>
 );
