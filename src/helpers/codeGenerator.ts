@@ -14,7 +14,7 @@ import { EventType } from '../constants';
  */
 
 function handleClick(event: ParsedEvent): CodeBlock {
-  return `cy.get('${event.selector}').click()`;
+  return `cy.get('${event.selector}').click();`;
 }
 
 function handleKeydown(event: ParsedEvent): CodeBlock {
@@ -35,11 +35,11 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
     case 'ArrowUp':
       return `cy.get('${event.selector}').type({uparrow});`;
     case 'ArrowRight':
-      return `cy.get('${event.selector}').type({rightarrow};)`;
+      return `cy.get('${event.selector}').type({rightarrow});`;
     case 'ArrowDown':
-      return `cy.get('${event.selector}').type({downarrow};)`;
+      return `cy.get('${event.selector}').type({downarrow});`;
     case 'ArrowLeft':
-      return `cy.get('${event.selector}').type({leftarrow};)`;
+      return `cy.get('${event.selector}').type({leftarrow});`;
     default:
       return '';
   }
@@ -47,7 +47,7 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
 
 function handleChange(event: ParsedEvent): CodeBlock {
   console.log(`Change handled; value: ${event.value}`);
-  return `cy.get('${event.selector}').type('${event.value};')`;
+  return `cy.get('${event.selector}').type('${event.value}');`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
