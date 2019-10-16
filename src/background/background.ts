@@ -106,7 +106,7 @@ function cleanUp(): void {
 /**
  * Handles control messages sent from the view (popup) and conducting the appropriate actions.
  *
- * @param {RecAction} action
+ * @param {ControlAction} action
  * @param {chrome.runtime.MessageSender} sender
  * @param {Function} sendResponse
  */
