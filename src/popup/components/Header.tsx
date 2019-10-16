@@ -7,7 +7,7 @@ export interface HeaderProps {
 }
 
 export default ({ shouldInfoDisplay, toggleInfoDisplay }: HeaderProps) => (
-  <div>
+  <div id="header">
     Header
     <InfoButton shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
   </div>
