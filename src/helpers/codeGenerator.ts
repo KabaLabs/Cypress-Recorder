@@ -9,7 +9,7 @@ import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
 import { EventType } from '../constants';
 
 /**
- * Helper fucntions that handle each action type.
+ * Helper functions that handle each action type.
  * @param event 
  */
 
@@ -20,18 +20,10 @@ function handleClick(event: ParsedEvent): CodeBlock {
 function handleKeydown(event: ParsedEvent): CodeBlock | null {
   console.log('keydown handled');
   switch (event.key) {
-    case 'Enter':
-      return null;
     case 'Backspace':
       return `cy.get('${event.selector}').type({backspace});`;
-    case 'Shift':
-      return `cy.get('${event.selector}').type({shift});`;
     case 'Escape':
       return `cy.get('${event.selector}').type({esc});`;
-    case 'Alt':
-      return `cy.get('${event.selector}').type({alt});`;
-    case 'Control':
-      return `cy.get('${event.selector}').type({ctrl});`;
     case 'ArrowUp':
       return `cy.get('${event.selector}').type({uparrow});`;
     case 'ArrowRight':
@@ -40,6 +32,14 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
       return `cy.get('${event.selector}').type({downarrow});`;
     case 'ArrowLeft':
       return `cy.get('${event.selector}').type({leftarrow});`;
+    case 'Enter':
+      return null;
+    case 'Shift':
+      return null;
+    case 'Alt':
+      return null;
+    case 'Control':
+      return null;
     default:
       return null;
   }
@@ -52,12 +52,7 @@ function handleChange(event: ParsedEvent): CodeBlock {
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
   console.log(`handling doubleclick, ${event.selector}`);
-  return 'doubleclick';
-}
-
-function handleReset(event: ParsedEvent): CodeBlock {
-  console.log(`handling reset, ${event.selector}`);
-  return 'reset';
+  return `cy.get('${event.selector}').dblclick();`;
 }
 
 function handleSubmit(event: ParsedEvent): CodeBlock {
@@ -69,7 +64,6 @@ function handleSubmit(event: ParsedEvent): CodeBlock {
  * Generates a line of Cypress code that replicates an action by a user.
  * @param event 
  */
-
 function generateBlock(event: ParsedEvent): CodeBlock {
   console.log('event', event);
   switch (event.action) {
@@ -81,8 +75,6 @@ function generateBlock(event: ParsedEvent): CodeBlock {
       return handleChange(event);
     case EventType.DBCLICK:
       return handleDoubleclick(event);
-    case EventType.RESET:
-      return handleReset(event);
     case EventType.SUBMIT:
       return handleSubmit(event);
     default:
@@ -90,11 +82,27 @@ function generateBlock(event: ParsedEvent): CodeBlock {
   }
 }
 
+// function generateTopWrapper(url: string): BlockData {
+//   return [
+//     `describe('End-to-end testing', function() {`,
+//     `\tbeforeEach(function () {`,
+//     `\t\tcy.visit('${url}');`,
+//     `\t});`,
+//     `\tit('Works as expected', function() {`,
+//   ];
+// }
+
+// function generateBottomWrapper(): BlockData {
+//   return [
+//     '\t});',
+//     '});',
+//   ];
+// }
+
 /**
  * Exports array of all Cypress commands.
  * @param session 
  */
-
 export default function generateCode(session: RecordedSession): BlockData {
   return [`cy.visit('${session.sender.url}');` as CodeBlock]
     .concat(session.events.map(event => generateBlock(event))
