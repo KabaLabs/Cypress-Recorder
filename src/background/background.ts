@@ -8,11 +8,11 @@
 
 import generateCode from '../helpers/codeGenerator';
 import {
-  RecAction,
   RecordedSession,
   ParsedEvent,
   BlockData,
 } from '../types';
+import { ControlAction } from '../constants';
 
 const session: RecordedSession = {
   events: [],
@@ -69,9 +69,11 @@ function ejectEventRecorder(): void {
  */
 function startRecording(): void {
   console.log('startRecording');
-  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
-  chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
-  injectEventRecorder();
+  chrome.storage.local.set({ status: 'on' }, () => {
+    chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+    chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
+    injectEventRecorder();
+  });
 }
 
 /**
@@ -81,12 +83,12 @@ function startRecording(): void {
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
   console.log('stopRecording');
+  const code = generateCode(session);
+  sendResponse(code);
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
   ejectEventRecorder();
-  const code = generateCode(session);
-  sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code }, () => {
+  chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
     session.events = [];
     session.sender = null;
   });
@@ -104,33 +106,30 @@ function cleanUp(): void {
 /**
  * Handles control messages sent from the view (popup) and conducting the appropriate actions.
  *
- * @param {RecAction} action
+ * @param {ControlAction} action
  * @param {chrome.runtime.MessageSender} sender
  * @param {Function} sendResponse
  */
 function handleControlAction(
-  action: RecAction,
+  action: ControlAction,
   sender: chrome.runtime.MessageSender,
   sendResponse: (response: BlockData) => void,
 ): void {
-  console.log('handleControlAction', action.type);
-  switch (action.type) {
-    case 'startRec':
+  console.log('handleControlAction', action);
+  switch (action) {
+    case ControlAction.START:
       startRecording();
-      chrome.storage.local.set({ status: 'on' });
       break;
-    case 'stopRec':
+    case ControlAction.STOP:
       stopRecording(sendResponse);
-      chrome.storage.local.set({ status: 'off' });
       break;
-    case 'resetRec':
+    case ControlAction.RESET:
       cleanUp();
       break;
     default:
-      throw new Error('Invalid action type');
+      throw new Error(`Invalid action: ${action}`);
   }
 }
-
 
 function start() {
   console.log('startup');
