@@ -23,6 +23,7 @@ export default () => {
       });
     } else if (action.type === 'resetRec') {
       setRecStatus('off');
+      chrome.runtime.sendMessage(action);
     }
   };
 
