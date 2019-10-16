@@ -8,7 +8,7 @@ export interface HeaderProps {
 
 export default ({ shouldInfoDisplay, toggleInfoDisplay }: HeaderProps) => (
   <div id="header">
-    Cypress Recorder
+    <h1 id="title">Cypress Recorder</h1>
     <InfoButton shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
   </div>
 );
