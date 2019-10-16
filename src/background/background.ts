@@ -82,6 +82,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
   chrome.storage.local.set({ codeBlocks: code });
   session.events = [];
   session.sender = null;
+  port = null;
 }
 
 /**
