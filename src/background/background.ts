@@ -9,6 +9,7 @@
 import generateCode from '../helpers/codeGenerator';
 import {
   RecAction,
+  RecState,
   RecordedSession,
   ParsedEvent,
   BlockData,
@@ -20,6 +21,7 @@ const session: RecordedSession = {
 };
 
 let port: chrome.runtime.Port | null = null;
+let recStatus: RecState = 'off';
 
 /**
  * Handles events sent from the event recorder.
@@ -27,6 +29,7 @@ let port: chrome.runtime.Port | null = null;
  * @param {ParsedEvent} event
  */
 function handleEvents(event: ParsedEvent): void {
+  console.log('handleEvents');
   session.events.push(event);
 }
 
@@ -40,6 +43,7 @@ function handleEvents(event: ParsedEvent): void {
  * @param {chrome.runtime.Port} portToEventRecorder
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
+  console.log('handleNewConnection');
   port = portToEventRecorder;
   if (!session.sender) session.sender = port.sender;
   port.onMessage.addListener(handleEvents);
@@ -49,6 +53,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
  * Injects the event recorder into the active tab.
  */
 function injectEventRecorder(): void {
+  console.log('injectEventRecorder');
   chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
 }
 
@@ -56,6 +61,7 @@ function injectEventRecorder(): void {
  * Disconnects the event recorder.
  */
 function ejectEventRecorder(): void {
+  console.log('ejectEventRecorder');
   if (port) port.disconnect();
 }
 
@@ -63,6 +69,7 @@ function ejectEventRecorder(): void {
  * Starts the recording process by injecting the event recorder into the active tab.
  */
 function startRecording(): void {
+  console.log('startRecording');
   chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
   injectEventRecorder();
@@ -74,6 +81,7 @@ function startRecording(): void {
  * @param {Function} sendResponse
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
+  console.log('stopRecording');
   ejectEventRecorder();
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
@@ -89,6 +97,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
  * Performs necessary cleanup on startup and suspend.
  */
 function cleanUp(): void {
+  console.log('cleanUp');
   ejectEventRecorder();
   chrome.storage.local.set({ codeBlocks: [] });
   chrome.storage.local.set({ status: 'off' });
@@ -106,15 +115,25 @@ function handleControlAction(
   sender: chrome.runtime.MessageSender,
   sendResponse: (response: BlockData) => void,
 ): void {
+  console.log('handleControlAction', action.type);
   switch (action.type) {
     case 'startRec':
-      startRecording();
+      if (recStatus === 'off') {
+        startRecording();
+        recStatus = 'on';
+      }
       break;
     case 'stopRec':
-      stopRecording(sendResponse);
+      if (recStatus === 'on') {
+        stopRecording(sendResponse);
+        recStatus = 'done';
+      }
       break;
     case 'resetRec':
-      cleanUp();
+      if (recStatus === 'done') {
+        cleanUp();
+        recStatus = 'off';
+      }
       break;
     default:
       throw new Error('Invalid action type');
@@ -125,6 +144,7 @@ function handleControlAction(
  * Initializes the extension.
  */
 function initialize(): void {
+  console.log('initialize');
   cleanUp();
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);

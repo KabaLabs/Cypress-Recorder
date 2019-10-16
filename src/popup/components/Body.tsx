@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { BlockData } from '../../types';
+import { BlockData, RecState } from '../../types';
 
 import ActiveRecordingBox from './ActiveRecordingBox';
 import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
 
 export interface BodyProps {
-  recStatus: string,
+  recStatus: RecState,
   codeBlocks: BlockData,
 }
 
