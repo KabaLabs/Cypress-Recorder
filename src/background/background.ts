@@ -113,7 +113,7 @@ function cleanUp(): void {
 function handleControlAction(
   action: ControlAction,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (response: BlockData | any) => void,
+  sendResponse: (response: BlockData) => void,
 ): void {
   console.log('handleControlAction', action);
   switch (action) {
