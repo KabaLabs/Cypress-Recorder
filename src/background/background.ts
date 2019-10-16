@@ -16,9 +16,10 @@ import {
 
 const session: RecordedSession = {
   events: [],
+  sender: null,
 };
 
-let port: chrome.runtime.Port;
+let port: chrome.runtime.Port | null = null;
 
 /**
  * Handles events sent from the event recorder.
@@ -40,7 +41,7 @@ function handleEvents(event: ParsedEvent): void {
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   port = portToEventRecorder;
-  session.sender = port.sender;
+  if (!session.sender) session.sender = port.sender;
   port.onMessage.addListener(handleEvents);
 }
 
@@ -55,7 +56,7 @@ function injectEventRecorder(): void {
  * Disconnects the event recorder.
  */
 function ejectEventRecorder(): void {
-  port.disconnect();
+  if (port) port.disconnect();
 }
 
 /**
@@ -73,19 +74,24 @@ function startRecording(): void {
  * @param {Function} sendResponse
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
-  const code = generateCode(session);
-  sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code });
   ejectEventRecorder();
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  const code = generateCode(session);
+  sendResponse(code);
+  chrome.storage.local.set({ codeBlocks: code });
+  session.events = [];
+  session.sender = null;
+  port = null;
 }
 
 /**
- * Resets the recording process.
+ * Performs necessary cleanup on startup and suspend.
  */
-function resetRecording(): void {
-  session.events = [];
+function cleanUp(): void {
+  ejectEventRecorder();
+  chrome.storage.local.set({ codeBlocks: [] });
+  chrome.storage.local.set({ status: 'off' });
 }
 
 /**
@@ -108,19 +114,11 @@ function handleControlAction(
       stopRecording(sendResponse);
       break;
     case 'resetRec':
-      resetRecording();
+      cleanUp();
       break;
     default:
       throw new Error('Invalid action type');
   }
-}
-
-/**
- * Performs necessary cleanup on startup and suspend.
- */
-function cleanUp(): void {
-  chrome.storage.local.set({ status: 'off' });
-  chrome.storage.local.set({ codeBlocks: [] });
 }
 
 /**
