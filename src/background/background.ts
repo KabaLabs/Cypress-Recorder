@@ -16,6 +16,7 @@ import {
 
 const session: RecordedSession = {
   events: [],
+  sender: null,
 };
 
 let port: chrome.runtime.Port;
@@ -40,7 +41,7 @@ function handleEvents(event: ParsedEvent): void {
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   port = portToEventRecorder;
-  session.sender = port.sender;
+  if (!session.sender) session.sender = port.sender;
   port.onMessage.addListener(handleEvents);
 }
 
@@ -73,12 +74,13 @@ function startRecording(): void {
  * @param {Function} sendResponse
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
-  const code = generateCode(session);
-  sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code });
   ejectEventRecorder();
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  const code = generateCode(session);
+  sendResponse(code);
+  chrome.storage.local.set({ codeBlocks: code });
+  resetRecording();
 }
 
 /**
@@ -86,6 +88,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
  */
 function resetRecording(): void {
   session.events = [];
+  session.sender = null;
 }
 
 /**
