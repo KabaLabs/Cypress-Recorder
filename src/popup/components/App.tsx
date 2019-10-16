@@ -52,7 +52,7 @@ export default () => {
   React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
       if (!result || !result.status) chrome.storage.local.set({ status: recStatus });
-      if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'done') setRecStatus('done');
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
     });

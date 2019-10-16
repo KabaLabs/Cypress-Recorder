@@ -52,7 +52,7 @@ function handleChange(event: ParsedEvent): CodeBlock {
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
   console.log(`handling doubleclick, ${event.selector}`);
-  return `cy.get('${event.selector}').dbclick();`;
+  return `cy.get('${event.selector}').dblclick();`;
 }
 
 function handleSubmit(event: ParsedEvent): CodeBlock {
