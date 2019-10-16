@@ -21,6 +21,7 @@ body {
   display: flex;
   flex-direction: column;
   align-content: space-between;
+  min-height: 100vh;
 }
 
 #header {
@@ -46,5 +47,18 @@ body {
 }
 
 .button {
-
+  background-color: rgb(248, 249, 250);
+    border: 1px solid rgb(49, 158, 107);
+    margin: 5px;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(49, 158, 107);
+    line-height: 8px;
+}
+.info-button:hover {
+    background-color: rgb(49, 158, 107);
+    color: white;
+    transition: all .15s ease 0s
 }
