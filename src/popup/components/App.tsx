@@ -51,10 +51,6 @@ export default () => {
     });
   }, []);
 
-  React.useEffect((): void => {
-    chrome.storage.local.set({ status: recStatus });
-  }, [recStatus]);
-
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />

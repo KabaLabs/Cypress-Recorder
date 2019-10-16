@@ -9,7 +9,6 @@
 import generateCode from '../helpers/codeGenerator';
 import {
   RecAction,
-  RecState,
   RecordedSession,
   ParsedEvent,
   BlockData,
@@ -21,7 +20,6 @@ const session: RecordedSession = {
 };
 
 let port: chrome.runtime.Port | null = null;
-let recStatus: RecState = 'off';
 
 /**
  * Handles events sent from the event recorder.
@@ -45,9 +43,9 @@ function handleEvents(event: ParsedEvent): void {
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   console.log('handleNewConnection');
   port = portToEventRecorder;
+  port.onMessage.addListener(handleEvents);
   console.log(port.sender);
   if (!session.sender) session.sender = port.sender;
-  port.onMessage.addListener(handleEvents);
 }
 
 /**
@@ -83,15 +81,15 @@ function startRecording(): void {
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
   console.log('stopRecording');
-  ejectEventRecorder();
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  ejectEventRecorder();
   const code = generateCode(session);
   sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code });
-  session.events = [];
-  session.sender = null;
-  port = null;
+  chrome.storage.local.set({ codeBlocks: code }, () => {
+    session.events = [];
+    session.sender = null;
+  });
 }
 
 /**
@@ -100,7 +98,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
 function cleanUp(): void {
   console.log('cleanUp');
   ejectEventRecorder();
-  chrome.storage.local.clear();
+  chrome.storage.local.set({ status: 'off', codeBlocks: [] });
 }
 
 /**
@@ -118,26 +116,30 @@ function handleControlAction(
   console.log('handleControlAction', action.type);
   switch (action.type) {
     case 'startRec':
-      if (recStatus === 'off') {
-        startRecording();
-        recStatus = 'on';
-      }
+      startRecording();
+      chrome.storage.local.set({ status: 'on' });
       break;
     case 'stopRec':
-      if (recStatus === 'on') {
-        stopRecording(sendResponse);
-        recStatus = 'done';
-      }
+      stopRecording(sendResponse);
+      chrome.storage.local.set({ status: 'off' });
       break;
     case 'resetRec':
-      if (recStatus === 'done') {
-        cleanUp();
-        recStatus = 'off';
-      }
+      cleanUp();
       break;
     default:
       throw new Error('Invalid action type');
   }
+}
+
+
+function start() {
+  console.log('startup');
+  cleanUp();
+}
+
+function suspend() {
+  console.log('suspend');
+  cleanUp();
 }
 
 /**
@@ -148,7 +150,8 @@ function initialize(): void {
   cleanUp();
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);
-  chrome.runtime.onSuspend.addListener(cleanUp);
+  chrome.runtime.onStartup.addListener(start);
+  chrome.runtime.onSuspend.addListener(suspend);
 }
 
 initialize();

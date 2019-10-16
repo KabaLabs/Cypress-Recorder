@@ -17,11 +17,11 @@ function handleClick(event: ParsedEvent): CodeBlock {
   return `cy.get('${event.selector}').click();`;
 }
 
-function handleKeydown(event: ParsedEvent): CodeBlock {
+function handleKeydown(event: ParsedEvent): CodeBlock | null {
   console.log('keydown handled');
   switch (event.key) {
     case 'Enter':
-      return '';
+      return null;
     case 'Backspace':
       return `cy.get('${event.selector}').type({backspace});`;
     case 'Shift':
@@ -41,7 +41,7 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
     case 'ArrowLeft':
       return `cy.get('${event.selector}').type({leftarrow});`;
     default:
-      return '';
+      return null;
   }
 }
 
@@ -51,12 +51,12 @@ function handleChange(event: ParsedEvent): CodeBlock {
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
-  console.log('handling doubleclick');
+  console.log(`handling doubleclick, ${event.selector}`);
   return 'doubleclick';
 }
 
 function handleReset(event: ParsedEvent): CodeBlock {
-  console.log(`handling reset, ${event.value}`);
+  console.log(`handling reset, ${event.selector}`);
   return 'reset';
 }
 
@@ -97,5 +97,6 @@ function generateBlock(event: ParsedEvent): CodeBlock {
 
 export default function generateCode(session: RecordedSession): BlockData {
   return [`cy.visit('${session.sender.url}');` as CodeBlock]
-    .concat(session.events.map(event => generateBlock(event)));
+    .concat(session.events.map(event => generateBlock(event))
+    .filter(block => block !== null));
 }
