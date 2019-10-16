@@ -11,7 +11,6 @@ export interface FooterProps {
 
 export default ({ recStatus, handleToggle, copyToClipboard }: FooterProps) => (
   <div id="footer">
-    Footer
     {recStatus === 'done' && <ClipboardButton copyToClipboard={copyToClipboard}/>}
     <ToggleButton recStatus={recStatus} handleToggle={handleToggle}/>
   </div>
