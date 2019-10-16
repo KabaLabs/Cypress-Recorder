@@ -20,6 +20,7 @@ const session: RecordedSession = {
 };
 
 let port: chrome.runtime.Port | null = null;
+console.log("port", port)
 
 /**
  * Handles events sent from the event recorder.
@@ -29,6 +30,7 @@ let port: chrome.runtime.Port | null = null;
 function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
   session.events.push(event);
+  console.log("session events",session.events)
 }
 
 /**
@@ -40,11 +42,14 @@ function handleEvents(event: ParsedEvent): void {
  *
  * @param {chrome.runtime.Port} portToEventRecorder
  */
-function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
+function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {  
   console.log('handleNewConnection');
   port = portToEventRecorder;
   port.onMessage.addListener(handleEvents);
-  console.log(port.sender);
+  console.log('port', port);
+  console.log('port sender', port.sender);
+  console.log('session', session);
+  console.log('session sender', session.sender);
   if (!session.sender) session.sender = port.sender;
 }
 
