@@ -69,9 +69,11 @@ function ejectEventRecorder(): void {
  */
 function startRecording(): void {
   console.log('startRecording');
-  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
-  chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
-  injectEventRecorder();
+  chrome.storage.local.set({ status: 'on' }, () => {
+    chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+    chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
+    injectEventRecorder();
+  });
 }
 
 /**
@@ -81,12 +83,12 @@ function startRecording(): void {
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
   console.log('stopRecording');
+  const code = generateCode(session);
+  sendResponse(code);
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
   ejectEventRecorder();
-  const code = generateCode(session);
-  sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code }, () => {
+  chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
     session.events = [];
     session.sender = null;
   });
@@ -117,11 +119,9 @@ function handleControlAction(
   switch (action) {
     case ControlAction.START:
       startRecording();
-      chrome.storage.local.set({ status: 'on' });
       break;
     case ControlAction.STOP:
       stopRecording(sendResponse);
-      chrome.storage.local.set({ status: 'off' });
       break;
     case ControlAction.RESET:
       cleanUp();
