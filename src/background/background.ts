@@ -19,7 +19,7 @@ const session: RecordedSession = {
   sender: null,
 };
 
-let port: chrome.runtime.Port;
+let port: chrome.runtime.Port | null = null;
 
 /**
  * Handles events sent from the event recorder.
@@ -56,7 +56,7 @@ function injectEventRecorder(): void {
  * Disconnects the event recorder.
  */
 function ejectEventRecorder(): void {
-  port.disconnect();
+  if (port) port.disconnect();
 }
 
 /**
@@ -89,6 +89,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
 function resetRecording(): void {
   session.events = [];
   session.sender = null;
+  chrome.storage.local.set({ codeBlocks: [] });
 }
 
 /**
@@ -122,8 +123,10 @@ function handleControlAction(
  * Performs necessary cleanup on startup and suspend.
  */
 function cleanUp(): void {
+  console.log('cleanup');
+  ejectEventRecorder();
+  resetRecording();
   chrome.storage.local.set({ status: 'off' });
-  chrome.storage.local.set({ codeBlocks: [] });
 }
 
 /**
