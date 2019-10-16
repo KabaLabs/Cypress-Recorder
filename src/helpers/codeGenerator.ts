@@ -9,7 +9,7 @@ import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
 import { EventType } from '../constants';
 
 /**
- * Helper fucntions that handle each action type.
+ * Helper functions that handle each action type.
  * @param event 
  */
 
@@ -64,7 +64,6 @@ function handleSubmit(event: ParsedEvent): CodeBlock {
  * Generates a line of Cypress code that replicates an action by a user.
  * @param event 
  */
-
 function generateBlock(event: ParsedEvent): CodeBlock {
   console.log('event', event);
   switch (event.action) {
@@ -83,22 +82,22 @@ function generateBlock(event: ParsedEvent): CodeBlock {
   }
 }
 
-function generateTopWrapper(url: string): BlockData {
-  return [
-    `describe('End-to-end testing', function() {`,
-    `\tbeforeEach(function () {`,
-    `\t\tcy.visit('${url}');`,
-    `\t});`,
-    `\tit('Works as expected', function() {`,
-  ];
-}
+// function generateTopWrapper(url: string): BlockData {
+//   return [
+//     `describe('End-to-end testing', function() {`,
+//     `\tbeforeEach(function () {`,
+//     `\t\tcy.visit('${url}');`,
+//     `\t});`,
+//     `\tit('Works as expected', function() {`,
+//   ];
+// }
 
-function generateBottomWrapper(): BlockData {
-  return [
-    '\t});',
-    '});',
-  ];
-}
+// function generateBottomWrapper(): BlockData {
+//   return [
+//     '\t});',
+//     '});',
+//   ];
+// }
 
 /**
  * Exports array of all Cypress commands.
