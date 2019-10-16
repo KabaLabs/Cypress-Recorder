@@ -21,7 +21,7 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
   console.log('keydown handled');
   switch (event.key) {
     case 'Enter':
-      return `cy.get('${event.selector}').type({enter});`;
+      return '';
     case 'Backspace':
       return `cy.get('${event.selector}').type({backspace});`;
     case 'Shift':
@@ -62,7 +62,7 @@ function handleReset(event: ParsedEvent): CodeBlock {
 
 function handleSubmit(event: ParsedEvent): CodeBlock {
   console.log(`handling submit, ${event.value}`);
-  return 'submit';
+  return `cy.get('${event.selector}').submit();`;
 }
 
 /**
