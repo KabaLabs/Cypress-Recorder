@@ -3,7 +3,8 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecAction, RecState, BlockData } from '../../types';
+import { RecState, BlockData } from '../../types';
+import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
 export default () => {
@@ -11,19 +12,25 @@ export default () => {
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(true);
 
-  const handleToggle = (action: RecAction): void => {
-    if (action.type === 'startRec') {
-      setRecStatus('on');
-      chrome.runtime.sendMessage(action);
-    } else if (action.type === 'stopRec') {
-      setRecStatus('done');
-      chrome.runtime.sendMessage(action, (response: BlockData) => {
-        if (!response.length) setRecStatus('off');
-        else setCodeBlocks(response);
-      });
-    } else if (action.type === 'resetRec') {
-      setRecStatus('off');
-      chrome.runtime.sendMessage(action);
+  const handleToggle = (action: ControlAction): void => {
+    switch (action) {
+      case ControlAction.START:
+        setRecStatus('on');
+        chrome.runtime.sendMessage(action);
+        break;
+      case ControlAction.STOP:
+        setRecStatus('done');
+        chrome.runtime.sendMessage(action, (response: BlockData) => {
+          if (!response.length) setRecStatus('off');
+          else setCodeBlocks(response);
+        });
+        break;
+      case ControlAction.RESET:
+        setRecStatus('off');
+        chrome.runtime.sendMessage(action);
+        break;
+      default:
+        throw new Error(`Unhandled action: ${action}`);
     }
   };
 

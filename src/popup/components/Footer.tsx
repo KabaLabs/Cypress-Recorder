@@ -1,11 +1,11 @@
 import * as React from 'react';
 import ToggleButton from './ToggleButton';
 import ClipboardButton from './ClipboardButton';
-import { RecAction } from '../../types';
+import { ControlAction } from '../../constants';
 
 export interface FooterProps {
   recStatus: string,
-  handleToggle: (action: RecAction) => void,
+  handleToggle: (action: ControlAction) => void,
   copyToClipboard: () => Promise<boolean>,
 };
 

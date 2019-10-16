@@ -8,11 +8,11 @@
 
 import generateCode from '../helpers/codeGenerator';
 import {
-  RecAction,
   RecordedSession,
   ParsedEvent,
   BlockData,
 } from '../types';
+import { ControlAction } from '../constants';
 
 const session: RecordedSession = {
   events: [],
@@ -109,28 +109,27 @@ function cleanUp(): void {
  * @param {Function} sendResponse
  */
 function handleControlAction(
-  action: RecAction,
+  action: ControlAction,
   sender: chrome.runtime.MessageSender,
   sendResponse: (response: BlockData) => void,
 ): void {
-  console.log('handleControlAction', action.type);
-  switch (action.type) {
-    case 'startRec':
+  console.log('handleControlAction', action);
+  switch (action) {
+    case ControlAction.START:
       startRecording();
       chrome.storage.local.set({ status: 'on' });
       break;
-    case 'stopRec':
+    case ControlAction.STOP:
       stopRecording(sendResponse);
       chrome.storage.local.set({ status: 'off' });
       break;
-    case 'resetRec':
+    case ControlAction.RESET:
       cleanUp();
       break;
     default:
       throw new Error('Invalid action type');
   }
 }
-
 
 function start() {
   console.log('startup');

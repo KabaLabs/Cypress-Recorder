@@ -6,3 +6,10 @@ export enum EventType {
   RESET = 'reset',
   SUBMIT = 'submit',
 }
+
+export enum ControlAction {
+  START = 'startRec',
+  STOP = 'stopRec',
+  RESET = 'resetRec',
+  SYNC = 'sync',
+}
