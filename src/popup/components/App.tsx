@@ -69,7 +69,7 @@ export default () => {
           : <Info />
           )
       }
-      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard}/>
+      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
     </div>
   );
 };
