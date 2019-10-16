@@ -36,8 +36,7 @@ function parseEvent(event: Event): ParsedEvent {
  * @param {Event} event
  */
 function handleEvent(event: Event): void {
-  const parsedEvent: ParsedEvent = parseEvent(event);
-  port.postMessage(parsedEvent);
+  port.postMessage(parseEvent(event));
 }
 
 /**
