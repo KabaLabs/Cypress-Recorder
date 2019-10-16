@@ -3,8 +3,8 @@ import * as React from 'react';
 export interface InfoProps { }
 
 export default (props: InfoProps) => (
-    <div>
 
+    <div>
         <h1>Hello</h1>
         <p>Thanks for checking out this Extension.</p>
         <p>This tool makes testing very simple.  Just load your app, Click record on the main page and use your app as any user would.  Once you're done
@@ -15,8 +15,6 @@ export default (props: InfoProps) => (
              into Cypress code used for testing purposes.</p>
 
         <p>Here is a link to the project's <a href="https://github.com/KabaLabs/Cypress-Recorder">Github Repo</a>, Give it a star!! </p>
-
-
 
     </div>
 )

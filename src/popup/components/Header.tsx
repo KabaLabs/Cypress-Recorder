@@ -3,11 +3,12 @@ import InfoButton from './InfoButton';
 
 export interface HeaderProps {
   toggleInfoDisplay: () => void,
+  shouldInfoDisplay: boolean,
 }
 
-export default ({ toggleInfoDisplay }: HeaderProps) => (
+export default ({ shouldInfoDisplay, toggleInfoDisplay }: HeaderProps) => (
   <div>
     Header
-    <InfoButton toggleInfoDisplay={toggleInfoDisplay} />
+    <InfoButton shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
   </div>
 );

@@ -2,9 +2,10 @@ import * as React from 'react';
 
 export interface InfoButtonProps {
   toggleInfoDisplay: () => void,
+  shouldInfoDisplay: boolean,
 }
 
-export default ({ toggleInfoDisplay }: InfoButtonProps) => {
+export default ({ shouldInfoDisplay, toggleInfoDisplay }: InfoButtonProps) => {
 
 
   const handleClick = (): void => {
@@ -13,7 +14,9 @@ export default ({ toggleInfoDisplay }: InfoButtonProps) => {
 
   return (
     <>
-      <button onClick={handleClick}>Info</button>
+      <button onClick={handleClick}>
+      {shouldInfoDisplay ? 'Info' : 'Recording Menu'} 
+      </button>
     </>
   );
 };

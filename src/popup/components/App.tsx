@@ -62,7 +62,7 @@ export default () => {
 
   return (
     <div id="App">
-      <Header toggleInfoDisplay={toggleInfoDisplay} />
+      <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
           ? <Body codeBlocks={codeBlocks} recStatus={recStatus} />
