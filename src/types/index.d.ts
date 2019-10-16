@@ -2,11 +2,6 @@ export type CodeBlock = string;
 
 export type BlockData = CodeBlock[];
 
-export type RecAction =
-  | { type: 'startRec' }
-  | { type: 'stopRec' }
-  | { type: 'resetRec' };
-
 export type RecState =
   | 'off'
   | 'on'
