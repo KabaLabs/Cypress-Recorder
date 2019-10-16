@@ -111,7 +111,7 @@ function cleanUp(): void {
 function handleControlAction(
   action: ControlAction,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (response: BlockData) => void,
+  sendResponse: (response: BlockData | any) => void,
 ): void {
   console.log('handleControlAction', action);
   switch (action) {
@@ -127,7 +127,7 @@ function handleControlAction(
       cleanUp();
       break;
     default:
-      throw new Error('Invalid action type');
+      throw new Error(`Invalid action: ${action}`);
   }
 }
 
