@@ -7,6 +7,11 @@ export type RecAction =
   | { type: 'stopRec' }
   | { type: 'resetRec' };
 
+export type RecState =
+  | 'off'
+  | 'on'
+  | 'done';
+
 export interface ParsedEvent {
   selector: string,
   action: string,

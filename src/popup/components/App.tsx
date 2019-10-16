@@ -3,13 +3,8 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecAction, BlockData } from '../../types';
+import { RecAction, RecState, BlockData } from '../../types';
 import '../../assets/styles/styles.scss';
-
-export type RecState =
-  | 'off'
-  | 'on'
-  | 'done';
 
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
@@ -28,8 +23,8 @@ export default () => {
       });
     } else if (action.type === 'resetRec') {
       setRecStatus('off');
-    }
       chrome.runtime.sendMessage(action);
+    }
   };
 
   const toggleInfoDisplay = (): void => {
@@ -55,10 +50,6 @@ export default () => {
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
     });
   }, []);
-
-  React.useEffect((): void => {
-    chrome.storage.local.set({ status: recStatus });
-  }, [recStatus]);
 
   return (
     <div id="App">
