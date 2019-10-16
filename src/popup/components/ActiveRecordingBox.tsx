@@ -4,8 +4,8 @@ export interface ActiveRecordingBoxProps {
 
 };
 
-export const ActiveRecordingBox: React.FC = (props: ActiveRecordingBoxProps) => (
+export default (props: ActiveRecordingBoxProps) => (
   <div>
-    ActiveRecordingBox
+    Click 'Stop Recording' to see the results of your session!
   </div>
 );

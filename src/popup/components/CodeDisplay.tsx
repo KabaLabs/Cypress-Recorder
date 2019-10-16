@@ -1,9 +1,19 @@
 import * as React from 'react';
+import CodeBlock from './CodeBlock';
+import { BlockData } from '../../types';
 
-export interface CodeDisplayProps { }
+export interface CodeDisplayProps {
+  codeBlocks: BlockData,
+};
 
-export const CodeDisplay: React.FC = (props: CodeDisplayProps) => (
-  <div>
-    CodeDisplay
-  </div>
-);
+export default ({ codeBlocks }: CodeDisplayProps) => {
+  const blocks = codeBlocks.map((block) => (
+    <CodeBlock block={block} />
+  ));
+
+  return (
+    <div>
+      {blocks.length ? blocks : 'awaiting session results'}
+    </div>
+  )
+};

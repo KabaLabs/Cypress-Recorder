@@ -1,19 +1,18 @@
 import * as React from 'react';
-import { RecDispatch } from './App';
+import { RecAction } from '../../types';
 
 export interface ToggleButtonProps {
   recStatus: String,
+  handleToggle: (action: RecAction) => void,
 };
 
-export const ToggleButton = ({ recStatus }: ToggleButtonProps) => {
-  const dispatch = React.useContext(RecDispatch);
-
+export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
   const handleClick = (): void => {
-    let type: String;
-    chrome.runtime.sendMessage({ type: 'startRec' });
-    if (recStatus === 'off') type = 'startRec';
-    else if (recStatus === 'on') type = 'resetRec';
-    dispatch({ type });
+    let action: RecAction;
+    if (recStatus === 'off') action = { type: 'startRec' };
+    else if (recStatus === 'on') action = { type: 'stopRec' };
+    else if (recStatus === 'done') action = { type: 'resetRec' };
+    handleToggle(action);
   };
 
   return (
@@ -21,7 +20,9 @@ export const ToggleButton = ({ recStatus }: ToggleButtonProps) => {
       <button onClick={handleClick}>
         {recStatus === 'off'
           ? 'Start Recording'
-          : 'Stop Recording'}
+          : recStatus === 'on'
+            ? 'Stop Recording'
+            : 'Reset Recording'}
       </button>
     </>
   );
