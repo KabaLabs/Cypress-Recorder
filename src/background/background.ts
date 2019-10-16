@@ -45,6 +45,7 @@ function handleEvents(event: ParsedEvent): void {
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   console.log('handleNewConnection');
   port = portToEventRecorder;
+  console.log(port.sender);
   if (!session.sender) session.sender = port.sender;
   port.onMessage.addListener(handleEvents);
 }
@@ -54,7 +55,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
  */
 function injectEventRecorder(): void {
   console.log('injectEventRecorder');
-  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js', allFrames: true });
+  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
 }
 
 /**
@@ -99,8 +100,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
 function cleanUp(): void {
   console.log('cleanUp');
   ejectEventRecorder();
-  chrome.storage.local.set({ codeBlocks: [] });
-  chrome.storage.local.set({ status: 'off' });
+  chrome.storage.local.clear();
 }
 
 /**
