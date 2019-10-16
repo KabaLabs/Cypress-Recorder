@@ -6,6 +6,6 @@ export interface ActiveRecordingBoxProps {
 
 export default (props: ActiveRecordingBoxProps) => (
   <div id="active-box">
-    Click 'Stop Recording' to see the results of your session!
+    <p className="text">Click 'Stop Recording' to see the results of your session!</p>
   </div>
 );
