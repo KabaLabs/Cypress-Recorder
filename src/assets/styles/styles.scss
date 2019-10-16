@@ -31,12 +31,19 @@ body {
   align-items: center;
 }
 
+#body {
+  background-color: cornflowerblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
 #footer {
   background-color: aquamarine;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-grow: 1;
 }
 
 #landing {
@@ -57,7 +64,8 @@ body {
     color: rgb(49, 158, 107);
     line-height: 8px;
 }
-.info-button:hover {
+
+.button:hover {
     background-color: rgb(49, 158, 107);
     color: white;
     transition: all .15s ease 0s
