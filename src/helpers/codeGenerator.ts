@@ -14,14 +14,14 @@ import { EventType } from '../constants';
  */
 
 function handleClick(event: ParsedEvent): CodeBlock {
-  return `cy.get('${event.selector}').click()`;
+  return `cy.get('${event.selector}').click();`;
 }
 
 function handleKeydown(event: ParsedEvent): CodeBlock {
   console.log('keydown handled');
   switch (event.key) {
     case 'Enter':
-      return `cy.get('${event.selector}').type({enter});`;
+      return '';
     case 'Backspace':
       return `cy.get('${event.selector}').type({backspace});`;
     case 'Shift':
@@ -35,11 +35,11 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
     case 'ArrowUp':
       return `cy.get('${event.selector}').type({uparrow});`;
     case 'ArrowRight':
-      return `cy.get('${event.selector}').type({rightarrow};)`;
+      return `cy.get('${event.selector}').type({rightarrow});`;
     case 'ArrowDown':
-      return `cy.get('${event.selector}').type({downarrow};)`;
+      return `cy.get('${event.selector}').type({downarrow});`;
     case 'ArrowLeft':
-      return `cy.get('${event.selector}').type({leftarrow};)`;
+      return `cy.get('${event.selector}').type({leftarrow});`;
     default:
       return '';
   }
@@ -47,7 +47,7 @@ function handleKeydown(event: ParsedEvent): CodeBlock {
 
 function handleChange(event: ParsedEvent): CodeBlock {
   console.log(`Change handled; value: ${event.value}`);
-  return `cy.get('${event.selector}').type('${event.value};')`;
+  return `cy.get('${event.selector}').type('${event.value}');`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
@@ -62,7 +62,7 @@ function handleReset(event: ParsedEvent): CodeBlock {
 
 function handleSubmit(event: ParsedEvent): CodeBlock {
   console.log(`handling submit, ${event.value}`);
-  return 'submit';
+  return `cy.get('${event.selector}').submit();`;
 }
 
 /**

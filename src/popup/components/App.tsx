@@ -1,9 +1,8 @@
 import * as React from 'react';
 import Header from './Header';
+import Info from './Info';
 import Footer from './Footer';
-import ActiveRecordingBox from './ActiveRecordingBox';
-import CodeDisplay from './CodeDisplay';
-import LandingBox from './LandingBox';
+import Body from './Body';
 import { RecAction, BlockData } from '../../types';
 import '../../assets/styles/styles.scss';
 
@@ -15,6 +14,7 @@ export type RecState =
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
+  const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(true);
 
   const handleToggle = (action: RecAction): void => {
     if (action.type === 'startRec') {
@@ -28,8 +28,13 @@ export default () => {
       });
     } else if (action.type === 'resetRec') {
       setRecStatus('off');
-      chrome.runtime.sendMessage(action);
     }
+      chrome.runtime.sendMessage(action);
+  };
+
+  const toggleInfoDisplay = (): void => {
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+    else setShouldInfoDisplay(true);
   };
 
   const copyToClipboard = async (): Promise<boolean> => {
@@ -57,11 +62,14 @@ export default () => {
 
   return (
     <div id="App">
-      <Header />
-      {recStatus === 'off' && <LandingBox />}
-      {recStatus === 'on' && <ActiveRecordingBox />}
-      {recStatus === 'done' && <CodeDisplay codeBlocks={codeBlocks}/>}
-      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard}/>
+      <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
+      {
+        (shouldInfoDisplay
+          ? <Body codeBlocks={codeBlocks} recStatus={recStatus} />
+          : <Info />
+          )
+      }
+      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
     </div>
   );
 };
