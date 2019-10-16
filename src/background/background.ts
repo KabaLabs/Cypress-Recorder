@@ -80,16 +80,17 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
   const code = generateCode(session);
   sendResponse(code);
   chrome.storage.local.set({ codeBlocks: code });
-  resetRecording();
+  session.events = [];
+  session.sender = null;
 }
 
 /**
- * Resets the recording process.
+ * Performs necessary cleanup on startup and suspend.
  */
-function resetRecording(): void {
-  session.events = [];
-  session.sender = null;
+function cleanUp(): void {
+  ejectEventRecorder();
   chrome.storage.local.set({ codeBlocks: [] });
+  chrome.storage.local.set({ status: 'off' });
 }
 
 /**
@@ -112,21 +113,11 @@ function handleControlAction(
       stopRecording(sendResponse);
       break;
     case 'resetRec':
-      resetRecording();
+      cleanUp();
       break;
     default:
       throw new Error('Invalid action type');
   }
-}
-
-/**
- * Performs necessary cleanup on startup and suspend.
- */
-function cleanUp(): void {
-  console.log('cleanup');
-  ejectEventRecorder();
-  resetRecording();
-  chrome.storage.local.set({ status: 'off' });
 }
 
 /**
