@@ -11,7 +11,7 @@ type Props = {
 
 
 const CypressCone = ({
-  size = 75,
+  size = 120,
   primary = '#6AAE8F',
   secondary = '#319e6b',
   stroke = primary,
