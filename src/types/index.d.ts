@@ -15,6 +15,7 @@ export interface ParsedEvent {
   id?: string,
   key?: string,
   href?: string,
+  inputType?: string,
 }
 
 export interface RecordedSession {
