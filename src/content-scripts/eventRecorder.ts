@@ -6,7 +6,8 @@
 
 import finder from '@medv/finder';
 import { ParsedEvent } from '../types';
-import eventTypes from '../constants/events';
+import { EventType } from '../constants';
+
 
 let port: chrome.runtime.Port;
 
@@ -17,8 +18,13 @@ let port: chrome.runtime.Port;
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
+  let selector: string;
+  if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
+  else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
+  else if ((event.target as Element).hasAttribute('data-testid')) selector = `[data-testid=${(event.target as Element).getAttribute('data-testid')}]`;
+  else selector = finder(event.target as Element);
   const parsedEvent: ParsedEvent = {
-    selector: finder(event.target as Element),
+    selector,
     action: event.type,
     tag: (event.target as HTMLInputElement).tagName,
     value: (event.target as HTMLInputElement).value,
@@ -35,16 +41,15 @@ function parseEvent(event: Event): ParsedEvent {
  * @param {Event} event
  */
 function handleEvent(event: Event): void {
-  const parsedEvent: ParsedEvent = parseEvent(event);
-  port.postMessage(parsedEvent);
+  port.postMessage(parseEvent(event));
 }
 
 /**
  * Adds event listeners to the DOM.
  */
 function addDOMListeners(): void {
-  Object.values(eventTypes).forEach(eventType => {
-    document.addEventListener(eventType, handleEvent, {
+  Object.values(EventType).forEach(event => {
+    document.addEventListener(event, handleEvent, {
       capture: true,
       passive: true,
     });
@@ -55,8 +60,8 @@ function addDOMListeners(): void {
  * Removes event listeners from the DOM.
  */
 function removeDOMListeners(): void {
-  Object.values(eventTypes).forEach(eventType => {
-    document.removeEventListener(eventType, handleEvent, { capture: true });
+  Object.values(EventType).forEach(event => {
+    document.removeEventListener(event, handleEvent, { capture: true });
   });
 }
 
@@ -64,7 +69,7 @@ function removeDOMListeners(): void {
  * Initializes the event recorder.
  */
 function initialize(): void {
-  port = chrome.runtime.connect({ name: 'eventRecorderConnection' });
+  port = chrome.runtime.connect();
   port.onDisconnect.addListener(removeDOMListeners);
   addDOMListeners();
 }
