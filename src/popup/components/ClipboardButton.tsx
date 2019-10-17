@@ -13,8 +13,8 @@ export default ({ copyToClipboard }: ClipboardButtonProps) => {
 
   return (
     <>
-      <button onClick={handleClick}>Copy to Clipboard</button>
-      {success && <p>Copied!</p>}
+      <button className="button" onClick={handleClick}>Copy to Clipboard</button>
+      {success && <p className="white-text">Copied!</p>}
     </>
   );
 }
