@@ -43,7 +43,7 @@ function parseEvent(event: Event): ParsedEvent {
  * @param {Event} event
  */
 function handleEvent(event: Event): void {
-  port.postMessage(parseEvent(event));
+  if (event.isTrusted) port.postMessage(parseEvent(event));
 }
 
 /**
