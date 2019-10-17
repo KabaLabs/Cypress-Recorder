@@ -141,6 +141,12 @@ function suspend() {
   cleanUp();
 }
 
+function recordToggleKeyShortcut() {
+  document.addEventListener('click', (e) => {
+    console.log(e.target);
+  });
+}
+
 /**
  * Initializes the extension.
  */
@@ -151,6 +157,7 @@ function initialize(): void {
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onStartup.addListener(start);
   chrome.runtime.onSuspend.addListener(suspend);
+  recordToggleKeyShortcut();
 }
 
 initialize();

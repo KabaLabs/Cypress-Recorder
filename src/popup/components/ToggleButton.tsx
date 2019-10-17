@@ -7,6 +7,7 @@ export interface ToggleButtonProps {
 };
 
 export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
+  
   const handleClick = (): void => {
     let action: ControlAction;
     if (recStatus === 'off') action = ControlAction.START;
