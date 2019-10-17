@@ -8,7 +8,8 @@
     "build": "npx tsc --noEmit && npx parcel build ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "test": "jest --verbose",
     "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist && cp ./src/assets/cypresscone16.png dist",
-    "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json"
+    "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json",
+    "rebuild": "npm run clean && npm run build"
   },
   "author": "",
   "license": "ISC",
