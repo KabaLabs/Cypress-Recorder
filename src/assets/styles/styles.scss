@@ -33,19 +33,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  //border: 1px solid rgb(49, 158, 107);
-}
-
-#title {
-  color: rgb(248, 249, 250);
-  font-size: 18px;
-  margin-left: 10px;
-}
-
-.text {
-  color: black;
-  font-size: 14px;
-  margin-left: 10px;
 }
 
 #body {
@@ -55,6 +42,12 @@ body {
   justify-content: center;
   flex-grow: 1;
   padding: 20px;
+}
+
+#title {
+  color: rgb(248, 249, 250);
+  font-size: 18px;
+  margin-left: 10px;
 }
 
 #infobox {
@@ -71,8 +64,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  //border: 1px solid rgb(49, 158, 107);
 }
+
+/**
+ * Conditionally rendered body content.
+ */
 
 #landing-box {
   display: flex;
@@ -95,6 +91,10 @@ body {
   padding: 20;
 }
 
+/**
+ * Classes.
+ */
+
 .button {
   background-color: rgb(49, 158, 107);
     border: 1px solid rgb(248, 249, 250);
@@ -111,4 +111,10 @@ body {
     background-color: rgb(248, 249, 250);
     color: rgb(49, 158, 107);
     transition: all .15s ease 0s
+}
+
+.text {
+  color: black;
+  font-size: 14px;
+  margin-left: 10px;
 }
