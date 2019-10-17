@@ -7,11 +7,10 @@ export default (props: InfoProps) => (
     <div id ="infobox">
         <h1>Hello.</h1> <br>
         </br>
-        <p>Thanks for checking out this Extension.</p> <br>
+        <p>Thanks for checking out this extension.</p> <br>
         </br>
-        <p>This tool makes testing very simple. Just load your app, Click record on the main page and use your app as any user would.  Once you're done
-            Stop recording and Get the generated test code. <strong>This version doesn't work with any Google Domains but that could change with possible iterations.</strong>
-        </p> <br>
+        <p>This tool makes testing very simple. Just load your app, click record on the main page and use your app as any user would. Once you're done,
+            stop recording and copy the generated test code to your clipboard to use in your Cypress tests.</p> <br>
         </br>
         <p>This extension was developed by the folks at KabaLabs after realizing the need and community interest in the tool.  
             It works by analyzing user activity in your app (clicks, keypresses, routes, and more) and then turning those interactions

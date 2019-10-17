@@ -7,6 +7,7 @@ $max-width: 800px;
 * {
   margin: 0;
   padding: 0;
+  font-family: 'Roboto', sans-serif;
   }
 
 *:focus {
@@ -46,8 +47,9 @@ body {
 
 #title {
   color: rgb(248, 249, 250);
-  font-size: 18px;
+  font-size: 22px;
   margin-left: 10px;
+  font-weight: 200;
 }
 
 #infobox {
@@ -87,6 +89,7 @@ body {
 #code-display {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   flex-grow: 1;
   padding: 20;
 }
@@ -113,8 +116,18 @@ body {
     transition: all .15s ease 0s
 }
 
+// .code-block {
+//   color: pink;
+// }
+
 .text {
   color: black;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.white-text { // necessary??
+  color: white;
   font-size: 14px;
   margin-left: 10px;
 }
