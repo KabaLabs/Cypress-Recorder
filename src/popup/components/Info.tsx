@@ -5,18 +5,21 @@ export interface InfoProps { }
 export default (props: InfoProps) => (
 
     <div id ="infobox">
-        <h1>Hello.</h1>
-        <p>Thanks for checking out this Extension.</p>
-        <p>This tool makes testing very simple.  Just load your app, Click record on the main page and use your app as any user would.  Once you're done
-            Stop recording and Get the generated test code.  Heads Up! This version doesn't work with any Google Domains but that could change with possible iterations.
-        </p>
+        <h1>Hello.</h1> <br>
+        </br>
+        <p>Thanks for checking out this Extension.</p> <br>
+        </br>
+        <p>This tool makes testing very simple. Just load your app, Click record on the main page and use your app as any user would.  Once you're done
+            Stop recording and Get the generated test code. <strong>This version doesn't work with any Google Domains but that could change with possible iterations.</strong>
+        </p> <br>
+        </br>
         <p>This extension was developed by the folks at KabaLabs after realizing the need and community interest in the tool.  
             It works by analyzing user activity in your app (clicks, keypresses, routes, and more) and then turning those interactions
-             into Cypress code used for testing purposes.</p>
-
-        <p>Here is a link to the project's 
+             into Cypress code used for testing purposes.</p><br>
+             </br>
+        <p>Here is a link to the project's
           <span onClick={() => window.open("https://github.com/KabaLabs/Cypress-Recorder")}>
-            <a href="https://github.com/KabaLabs/Cypress-Recorder">Github Repo</a>, 
+            <a href="https://github.com/KabaLabs/Cypress-Recorder"> Github Repo</a>. 
             </span>
             Give it a star!! </p>
 
