@@ -74,6 +74,7 @@ body {
 
 #landing-box, #active-box {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
@@ -113,6 +114,7 @@ body {
   color: black;
   font-size: 14px;
   margin-left: 10px;
+  padding-top: 10px;
 }
 
 .white-text {
