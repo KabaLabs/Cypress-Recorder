@@ -21,17 +21,17 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
   console.log('keydown handled');
   switch (event.key) {
     case 'Backspace':
-      return `cy.get('${event.selector}').type({backspace});`;
+      return `cy.get('${event.selector}').type('{backspace}');`;
     case 'Escape':
-      return `cy.get('${event.selector}').type({esc});`;
+      return `cy.get('${event.selector}').type('{esc}');`;
     case 'ArrowUp':
-      return `cy.get('${event.selector}').type({uparrow});`;
+      return `cy.get('${event.selector}').type('{uparrow}');`;
     case 'ArrowRight':
-      return `cy.get('${event.selector}').type({rightarrow});`;
+      return `cy.get('${event.selector}').type('{rightarrow}');`;
     case 'ArrowDown':
-      return `cy.get('${event.selector}').type({downarrow});`;
+      return `cy.get('${event.selector}').type('{downarrow}');`;
     case 'ArrowLeft':
-      return `cy.get('${event.selector}').type({leftarrow});`;
+      return `cy.get('${event.selector}').type('{leftarrow}');`;
     case 'Enter':
       return null;
     case 'Shift':
