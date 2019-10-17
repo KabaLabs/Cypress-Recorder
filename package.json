@@ -7,7 +7,7 @@
     "start": "npx tsc --noEmit && npx parcel ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "build": "npx tsc --noEmit && npx parcel build ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "test": "jest --verbose",
-    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist",
+    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist && cp ./src/assets/cypresscone16.png dist",
     "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json"
   },
   "author": "",
@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@medv/finder": "^1.1.2",
+    "cypress": "^3.4.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2"
   }

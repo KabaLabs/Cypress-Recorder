@@ -12,6 +12,9 @@
       "http://*/*",
       "https://*/*"
     ],
+    "icons": { 
+      "16": "./cypresscone16.png"
+    },
     "background": {
       "scripts": ["./background/background.js"],
       "persistent": false
