@@ -61,7 +61,10 @@ function injectEventRecorder(): void {
  */
 function ejectEventRecorder(): void {
   console.log('ejectEventRecorder');
-  if (port) port.disconnect();
+  if (port) {
+    port.onMessage.removeListener(handleEvents);
+    port.disconnect();
+  }
 }
 
 /**
@@ -83,11 +86,11 @@ function startRecording(): void {
  */
 function stopRecording(sendResponse: (response: BlockData) => void): void {
   console.log('stopRecording');
+  ejectEventRecorder();
+  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   const code = generateCode(session);
   sendResponse(code);
-  chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
-  ejectEventRecorder();
   chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
     session.events = [];
     session.sender = null;
