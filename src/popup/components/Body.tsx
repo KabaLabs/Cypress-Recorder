@@ -12,7 +12,7 @@ export interface BodyProps {
 
 export default ({ recStatus, codeBlocks }: BodyProps) => {
   return (
-    <div>
+    <div id="body">
       {recStatus === 'off' && <LandingBox />}
       {recStatus === 'on' && <ActiveRecordingBox />}
       {recStatus === 'done' && <CodeDisplay codeBlocks={codeBlocks} />}
