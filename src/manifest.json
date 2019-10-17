@@ -1,6 +1,6 @@
 {
     "name": "Cypress Recorder",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "description": "A dev tool that records user interaction with a web application and generates cypress code to allow the developer to replicate that particular session.",
     "manifest_version": 2,
     "permissions": [
@@ -12,9 +12,6 @@
       "http://*/*",
       "https://*/*"
     ],
-    "icons": { 
-      "16": "./cypresscone16.png"
-    },
     "background": {
       "scripts": ["./background/background.js"],
       "persistent": false
