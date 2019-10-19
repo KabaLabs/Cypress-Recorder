@@ -95,7 +95,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
 }
 
 /**
- * Performs necessary cleanup on startup and suspend.
+ * Performs necessary cleanup between sessions.
  */
 function cleanUp(): void {
   console.log('cleanUp');
@@ -131,13 +131,13 @@ function handleControlAction(
   }
 }
 
-function start() {
-  console.log('startup');
+function suspend() {
+  console.log('suspend');
   cleanUp();
 }
 
-function suspend() {
-  console.log('suspend');
+function install() {
+  console.log('install');
   cleanUp();
 }
 
@@ -149,8 +149,8 @@ function initialize(): void {
   cleanUp();
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);
-  chrome.runtime.onStartup.addListener(start);
   chrome.runtime.onSuspend.addListener(suspend);
+  chrome.runtime.onInstalled.addListener(install);
 }
 
 initialize();
