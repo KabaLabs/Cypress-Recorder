@@ -12,7 +12,7 @@ export default ({ codeBlocks }: CodeDisplayProps) => {
   ));
 
   return (
-    <div>
+    <div id="code-display">
       {blocks.length ? blocks : 'awaiting session results'}
     </div>
   )

@@ -18,7 +18,7 @@ export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
 
   return (
     <>
-      <button onClick={handleClick}>
+      <button className="button" onClick={handleClick}>
         {recStatus === 'off'
           ? 'Start Recording'
           : recStatus === 'on'
