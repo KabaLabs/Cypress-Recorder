@@ -18,7 +18,6 @@ function handleClick(event: ParsedEvent): CodeBlock {
 }
 
 function handleKeydown(event: ParsedEvent): CodeBlock | null {
-  console.log('keydown handled');
   switch (event.key) {
     case 'Backspace':
       return `cy.get('${event.selector}').type('{backspace}');`;
@@ -46,18 +45,15 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
 }
 
 function handleChange(event: ParsedEvent): CodeBlock {
-  console.log(`Change handled; value: ${event.value}`);
   if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;//`cy.get('${event.selector}').check();`;
   return `cy.get('${event.selector}').type('${event.value.replace(/'/g, `\\'`)}');`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
-  console.log(`handling doubleclick, ${event.selector}`);
   return `cy.get('${event.selector}').dblclick();`;
 }
 
 function handleSubmit(event: ParsedEvent): CodeBlock {
-  console.log(`handling submit, ${event.value}`);
   return `cy.get('${event.selector}').submit();`;
 }
 
@@ -66,7 +62,6 @@ function handleSubmit(event: ParsedEvent): CodeBlock {
  * @param event 
  */
 function generateBlock(event: ParsedEvent): CodeBlock {
-  console.log('event', event);
   switch (event.action) {
     case EventType.CLICK:
       return handleClick(event);

@@ -51,17 +51,18 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
 /**
  * Injects the event recorder into the active tab.
  */
-function injectEventRecorder(): void {
-  console.log('injectEventRecorder');
-  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
+function injectEventRecorder(details?: chrome.webNavigation.WebNavigationFramedCallbackDetails): void {
+  console.log('injectEventRecorder', details);
+  if (!details || details.frameId === 0) chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
 }
 
 /**
  * Disconnects the event recorder.
  */
-function ejectEventRecorder(): void {
-  console.log('ejectEventRecorder');
-  if (port) {
+function ejectEventRecorder(details?: chrome.webNavigation.WebNavigationParentedCallbackDetails): void {
+  console.log('ejectEventRecorder', details);
+  if (port && (!details || details.frameId === 0)) {
+    console.log(port);
     port.onMessage.removeListener(handleEvents);
     port.disconnect();
   }
