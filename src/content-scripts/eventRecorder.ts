@@ -27,7 +27,7 @@ function parseEvent(event: Event): ParsedEvent {
   const parsedEvent: ParsedEvent = {
     selector,
     action: event.type,
-    tag: (event.target as HTMLInputElement).tagName,
+    tag: (event.target as Element).tagName,
     value: (event.target as HTMLInputElement).value,
   };
   if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
@@ -43,7 +43,7 @@ function parseEvent(event: Event): ParsedEvent {
  * @param {Event} event
  */
 function handleEvent(event: Event): void {
-  if (event.isTrusted) port.postMessage(parseEvent(event));
+  if (event.isTrusted === true) port.postMessage(parseEvent(event));
 }
 
 /**
