@@ -18,5 +18,14 @@
     },
     "browser_action": {
       "default_popup": "./popup/index.html"
+    },
+    "commands": {
+      "create_new_session": {
+       "suggested_key": {
+         "default": "Ctrl+Shift+Space",
+         "mac": "Ctrl+Shift+Space"
+       },
+       "description": "Create New Session"
+      }
     }
   }
