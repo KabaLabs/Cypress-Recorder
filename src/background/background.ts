@@ -19,7 +19,7 @@ const session: RecordedSession = {
   sender: null,
 };
 
-let port: chrome.runtime.Port | null = null;
+let activePort: chrome.runtime.Port | null = null;
 
 /**
  * Handles events sent from the event recorder.
@@ -41,10 +41,17 @@ function handleEvents(event: ParsedEvent): void {
  * @param {chrome.runtime.Port} portToEventRecorder
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
-  console.log('handleNewConnection', port);
-  port = portToEventRecorder;
-  port.onMessage.addListener(handleEvents);
-  if (!session.sender) session.sender = port.sender;
+  console.log('handleNewConnection', portToEventRecorder);
+  activePort = portToEventRecorder;
+  activePort.onMessage.addListener(handleEvents);
+  if (!session.sender) {
+    chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+    chrome.webNavigation.onCompleted.addListener(
+      injectEventRecorder,
+      { url: [{ hostEquals: activePort.name }]}
+    );
+    session.sender = activePort.sender;
+  }
 }
 
 /**
@@ -60,7 +67,7 @@ function injectEventRecorder(details?: chrome.webNavigation.WebNavigationFramedC
  */
 function ejectEventRecorder(details?: chrome.webNavigation.WebNavigationParentedCallbackDetails): void {
   console.log('ejectEventRecorder', details);
-  if (port && (!details || details.frameId === 0)) port.disconnect();
+  if (activePort && (!details || details.frameId === 0)) activePort.disconnect();
 }
 
 /**
@@ -69,8 +76,6 @@ function ejectEventRecorder(details?: chrome.webNavigation.WebNavigationParented
 function startRecording(): void {
   console.log('startRecording');
   chrome.storage.local.set({ status: 'on' }, () => {
-    chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
-    chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
     injectEventRecorder();
   });
 }
@@ -90,7 +95,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
   chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
     session.events = [];
     session.sender = null;
-    port = null;
+    activePort = null;
   });
 }
 

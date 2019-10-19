@@ -69,7 +69,7 @@ function removeDOMListeners(): void {
  * Initializes the event recorder.
  */
 function initialize(): void {
-  port = chrome.runtime.connect();
+  port = chrome.runtime.connect({ name: window.location.hostname });
   port.onDisconnect.addListener(removeDOMListeners);
   addDOMListeners();
 }
