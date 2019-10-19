@@ -61,7 +61,10 @@ function injectEventRecorder(): void {
  */
 function ejectEventRecorder(): void {
   console.log('ejectEventRecorder');
-  if (port) port.disconnect();
+  if (port) {
+    port.onMessage.removeListener(handleEvents)
+    port.disconnect();
+  }
 }
 
 /**
@@ -72,6 +75,7 @@ function startRecording(): void {
   chrome.storage.local.set({ status: 'on' }, () => {
     chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
     chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
+    injectEventRecorder();
   });
 }
 
@@ -140,28 +144,6 @@ function suspend() {
   cleanUp();
 }
 
-/*
-  set up quick key commands
-*/
-
-function setUpKeys(): void {
-  console.log("setting up quick keys")
-  let recording = 0;
-  document.onkeyup = function (e) {
-    if (!recording && (e.shiftKey && e.code === 'Space')) {
-      recording = 1;
-      alert('youre recording');
-    } else if (recording === 1 && (e.shiftKey && e.code === 'Space')) {
-      recording = 2;
-      alert('stopped recording');
-    }
-    if (recording === 2 && (e.ctrlKey && e.code === 'Space')) {
-      recording = 0;
-      alert('resetting recording results');
-    };
-  };
-}
-
 /**
  * Initializes the extension.
  */
@@ -172,8 +154,10 @@ function initialize(): void {
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onStartup.addListener(start);
   chrome.runtime.onSuspend.addListener(suspend);
-  injectEventRecorder();
-  setUpKeys();
+  chrome.commands.onCommand.addListener(function(c){
+    startRecording();
+    console.log('command', c);
+  })
 }
 
 initialize();
