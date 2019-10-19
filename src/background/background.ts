@@ -46,9 +46,9 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   activePort.onMessage.addListener(handleEvents);
   if (!session.sender) {
     chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
-    chrome.webNavigation.onCompleted.addListener(
+    chrome.webNavigation.onDOMContentLoaded.addListener(
       injectEventRecorder,
-      { url: [{ hostEquals: activePort.name }]}
+      { url: [{ hostEquals: activePort.name }] },
     );
     session.sender = activePort.sender;
   }
@@ -88,7 +88,7 @@ function startRecording(): void {
 function stopRecording(sendResponse: (response: BlockData) => void): void {
   console.log('stopRecording');
   ejectEventRecorder();
-  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
   const code = generateCode(session);
   sendResponse(code);
