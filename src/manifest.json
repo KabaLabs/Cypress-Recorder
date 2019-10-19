@@ -14,9 +14,9 @@
     ],
     "icons": { 
       "16": "./cypresscone16.png",
-      "32": "./cypresscone16.png",
-      "48": "./cypresscone16.png",
-      "128": "./cypresscone16.png"
+      "32": "./cypresscone32.png",
+      "48": "./cypresscone48.png",
+      "128": "./cypresscone128.png"
     },
     "author": "Abbey Campbell, Adam Stover, Brad Morgan, Ken Sakuma",
     "background": {
