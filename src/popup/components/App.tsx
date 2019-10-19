@@ -16,10 +16,12 @@ export default () => {
     switch (action) {
       case ControlAction.START:
         setRecStatus('on');
+        if (shouldInfoDisplay) setShouldInfoDisplay(false);
         chrome.runtime.sendMessage(action);
         break;
       case ControlAction.STOP:
         setRecStatus('done');
+        if (shouldInfoDisplay) setShouldInfoDisplay(false);
         chrome.runtime.sendMessage(action, (response: BlockData) => {
           if (!response.length) setRecStatus('off');
           else setCodeBlocks(response);
@@ -27,6 +29,7 @@ export default () => {
         break;
       case ControlAction.RESET:
         setRecStatus('off');
+        if (shouldInfoDisplay) setShouldInfoDisplay(false);
         chrome.runtime.sendMessage(action);
         break;
       default:
