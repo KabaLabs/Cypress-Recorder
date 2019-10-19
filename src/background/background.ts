@@ -41,10 +41,9 @@ function handleEvents(event: ParsedEvent): void {
  * @param {chrome.runtime.Port} portToEventRecorder
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
-  console.log('handleNewConnection');
+  console.log('handleNewConnection', port);
   port = portToEventRecorder;
   port.onMessage.addListener(handleEvents);
-  console.log(port.sender);
   if (!session.sender) session.sender = port.sender;
 }
 
@@ -61,11 +60,7 @@ function injectEventRecorder(details?: chrome.webNavigation.WebNavigationFramedC
  */
 function ejectEventRecorder(details?: chrome.webNavigation.WebNavigationParentedCallbackDetails): void {
   console.log('ejectEventRecorder', details);
-  if (port && (!details || details.frameId === 0)) {
-    console.log(port);
-    port.onMessage.removeListener(handleEvents);
-    port.disconnect();
-  }
+  if (port && (!details || details.frameId === 0)) port.disconnect();
 }
 
 /**
@@ -95,6 +90,7 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
   chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
     session.events = [];
     session.sender = null;
+    port = null;
   });
 }
 
