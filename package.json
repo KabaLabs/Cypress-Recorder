@@ -11,7 +11,7 @@
     "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json",
     "rebuild": "npm run clean && npm run build"
   },
-  "author": "",
+  "author": "Abbey Campbell, Adam Stover, Brad Morgan, Ken Sakuma",
   "license": "ISC",
   "devDependencies": {
     "@types/chrome": "0.0.89",
