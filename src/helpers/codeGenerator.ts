@@ -61,7 +61,7 @@ function handleSubmit(event: ParsedEvent): CodeBlock {
  * Generates a line of Cypress code that replicates an action by a user.
  * @param event 
  */
-function generateBlock(event: ParsedEvent): CodeBlock {
+export function generateBlock(event: ParsedEvent): CodeBlock {
   switch (event.action) {
     case EventType.CLICK:
       return handleClick(event);
@@ -99,8 +99,11 @@ function generateBlock(event: ParsedEvent): CodeBlock {
  * Exports array of all Cypress commands.
  * @param session 
  */
-export default function generateCode(session: RecordedSession): BlockData {
-  return [`cy.visit('${session.sender.url}');` as CodeBlock]
-    .concat(session.events.map(event => generateBlock(event))
-    .filter(block => block !== null));
+// export default function generateCode(session: RecordedSession): BlockData {
+//   return [`cy.visit('${session.sender.url}');` as CodeBlock]
+//     .concat(session.events.map(event => generateBlock(event))
+//     .filter(block => block !== null));
+// }
+export function generateVisit(url: string): CodeBlock {
+  return `cy.visit('${url}');`;
 }

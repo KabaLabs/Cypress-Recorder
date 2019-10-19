@@ -6,7 +6,7 @@
  * back to the popup for display to the user.
  */
 
-import generateCode from '../helpers/codeGenerator';
+import { generateBlock, generateVisit } from '../helpers/codeGenerator';
 import {
   RecordedSession,
   ParsedEvent,
@@ -15,7 +15,7 @@ import {
 import { ControlAction } from '../constants';
 
 const session: RecordedSession = {
-  events: [],
+  processedCode: [],
   sender: null,
 };
 
@@ -28,7 +28,18 @@ let activePort: chrome.runtime.Port | null = null;
  */
 function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
-  session.events.push(event);
+  const block = generateBlock(event);
+  if (block !== null) session.processedCode.push(block);
+}
+
+function handleFirstConnection(): void {
+  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+  chrome.webNavigation.onDOMContentLoaded.addListener(
+    injectEventRecorder,
+    { url: [{ hostEquals: activePort.name }] },
+  );
+  session.sender = activePort.sender;
+  session.processedCode.push(generateVisit(session.sender.url));
 }
 
 /**
@@ -44,14 +55,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   console.log('handleNewConnection', portToEventRecorder);
   activePort = portToEventRecorder;
   activePort.onMessage.addListener(handleEvents);
-  if (!session.sender) {
-    chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
-    chrome.webNavigation.onDOMContentLoaded.addListener(
-      injectEventRecorder,
-      { url: [{ hostEquals: activePort.name }] },
-    );
-    session.sender = activePort.sender;
-  }
+  if (!session.sender) handleFirstConnection();
 }
 
 /**
@@ -90,10 +94,9 @@ function stopRecording(sendResponse: (response: BlockData) => void): void {
   ejectEventRecorder();
   chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-  const code = generateCode(session);
-  sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
-    session.events = [];
+  sendResponse(session.processedCode);
+  chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
+    session.processedCode = [];
     session.sender = null;
     activePort = null;
   });
