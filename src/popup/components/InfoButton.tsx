@@ -15,7 +15,7 @@ export default ({ shouldInfoDisplay, toggleInfoDisplay }: InfoButtonProps) => {
   return (
     <>
       <button className="button" onClick={handleClick}>
-      {shouldInfoDisplay ? 'Info' : 'Recording Menu'} 
+      {shouldInfoDisplay ? 'Recording Menu' : 'Info'} 
       </button>
     </>
   );
