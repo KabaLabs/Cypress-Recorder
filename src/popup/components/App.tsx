@@ -10,7 +10,7 @@ import '../../assets/styles/styles.scss';
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
-  const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(true);
+  const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
 
   const handleToggle = (action: ControlAction): void => {
     switch (action) {
@@ -66,8 +66,8 @@ export default () => {
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
-          ? <Body codeBlocks={codeBlocks} recStatus={recStatus} />
-          : <Info />
+          ? <Info />
+          : <Body codeBlocks={codeBlocks} recStatus={recStatus} />
           )
       }
       <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
