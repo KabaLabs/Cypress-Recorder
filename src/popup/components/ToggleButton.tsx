@@ -2,11 +2,12 @@ import * as React from 'react';
 import { ControlAction } from '../../constants';
 
 export interface ToggleButtonProps {
-  recStatus: String,
+  isValidTab: boolean,
+  recStatus: string,
   handleToggle: (action: ControlAction) => void,
-};
+}
 
-export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
+export default ({ recStatus, handleToggle, isValidTab }: ToggleButtonProps) => {
   const handleClick = (): void => {
     let action: ControlAction;
     if (recStatus === 'off') action = ControlAction.START;
@@ -17,12 +18,11 @@ export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
 
   return (
     <>
-      <button className="button" onClick={handleClick}>
-        {recStatus === 'off'
-          ? 'Start Recording'
-          : recStatus === 'on'
-            ? 'Stop Recording'
-            : 'Reset Recording'}
+      <button type="button" className="button" onClick={handleClick} disabled={!isValidTab}>
+        {!isValidTab && 'Invalid Tab'}
+        {recStatus === 'off' && isValidTab && 'Start Recording'}
+        {recStatus === 'on' && isValidTab && 'Stop Recording'}
+        {recStatus === 'done' && isValidTab && 'Reset Recording'}
       </button>
     </>
   );

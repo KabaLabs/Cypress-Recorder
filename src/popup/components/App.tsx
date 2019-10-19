@@ -11,6 +11,7 @@ export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(true);
+  const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
 
   const handleToggle = (action: ControlAction): void => {
     switch (action) {
@@ -50,11 +51,17 @@ export default () => {
   };
 
   React.useEffect((): void => {
-    chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
+    chrome.storage.local.get(['status', 'codeBlocks'], result => {
       if (!result || !result.status) chrome.storage.local.set({ status: recStatus });
       else if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'done') setRecStatus('done');
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
+    });
+    chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
+      // check currentURL to see if it is valid for recording
+      if (activeTab[0].url.startsWith('chrome://')) {
+        setIsValidTab(false);
+      }
     });
   }, []);
 
@@ -67,7 +74,12 @@ export default () => {
           : <Info />
           )
       }
-      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
+      <Footer
+        isValidTab={isValidTab}
+        recStatus={recStatus}
+        handleToggle={handleToggle}
+        copyToClipboard={copyToClipboard}
+      />
     </div>
   );
 };
