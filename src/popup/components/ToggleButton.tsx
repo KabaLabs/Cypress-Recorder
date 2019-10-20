@@ -4,7 +4,7 @@ import { ControlAction } from '../../constants';
 export interface ToggleButtonProps {
   recStatus: String,
   handleToggle: (action: ControlAction) => void,
-};
+}
 
 export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
   const handleClick = (): void => {
