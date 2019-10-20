@@ -70,9 +70,9 @@ export default () => {
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
-          ? <Body codeBlocks={codeBlocks} recStatus={recStatus} />
+          ? <Body isValidTab={isValidTab} codeBlocks={codeBlocks} recStatus={recStatus} />
           : <Info />
-          )
+        )
       }
       <Footer
         isValidTab={isValidTab}

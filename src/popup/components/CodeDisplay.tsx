@@ -7,7 +7,7 @@ export interface CodeDisplayProps {
 };
 
 export default ({ codeBlocks }: CodeDisplayProps) => {
-  const blocks = codeBlocks.map((block) => (
+  const blocks = codeBlocks.map(block => (
     <CodeBlock block={block} />
   ));
 

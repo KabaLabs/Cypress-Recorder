@@ -10,7 +10,12 @@ export interface FooterProps {
   copyToClipboard: () => Promise<boolean>,
 }
 
-export default ({ isValidTab, recStatus, handleToggle, copyToClipboard }: FooterProps) => (
+export default ({
+  isValidTab,
+  recStatus,
+  handleToggle,
+  copyToClipboard,
+} : FooterProps) => (
   <div id="footer">
     {recStatus === 'done' && <ClipboardButton copyToClipboard={copyToClipboard} />}
     <ToggleButton recStatus={recStatus} handleToggle={handleToggle} isValidTab={isValidTab} />
