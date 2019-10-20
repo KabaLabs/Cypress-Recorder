@@ -154,10 +154,10 @@ function initialize(): void {
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onStartup.addListener(start);
   chrome.runtime.onSuspend.addListener(suspend);
-  chrome.commands.onCommand.addListener(function(c){
+  chrome.commands.onCommand.addListener(function(c) {
     startRecording();
     console.log('command', c);
-  })
+  });
 }
 
 initialize();

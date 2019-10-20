@@ -56,6 +56,7 @@ export default () => {
       else if (result.status === 'done') setRecStatus('done');
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
     });
+   
   }, []);
 
   return (

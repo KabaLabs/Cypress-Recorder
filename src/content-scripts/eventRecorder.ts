@@ -69,28 +69,6 @@ function removeDOMListeners(): void {
   });
 }
 
-/* 
-  set up quick key commands
-*/
-
-function setUpKeys() {
-  console.log("setting up quick keys")
-  let recording = 0;
-  document.onkeyup = function(e) {
-    if (!recording && (e.shiftKey && e.code === 'Space')) {
-      recording = 1;
-      alert('youre recording');
-    } else if (recording === 1 && (e.shiftKey && e.code === 'Space')) {
-      recording = 2;
-      alert('stopped recording');
-    }
-    if (recording === 2 && (e.ctrlKey && e.code === 'Space')) {
-      recording = 0;
-      alert('resetting recording results');
-    }; 
-  };
-}
-
 /**
  * Initializes the event recorder.
  */
@@ -99,7 +77,6 @@ function initialize(): void {
   port = chrome.runtime.connect();
   port.onDisconnect.addListener(removeDOMListeners);
   addDOMListeners();
-  setUpKeys();
 }
 
 initialize();
