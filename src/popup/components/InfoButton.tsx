@@ -6,16 +6,14 @@ export interface InfoButtonProps {
 }
 
 export default ({ shouldInfoDisplay, toggleInfoDisplay }: InfoButtonProps) => {
-
-
   const handleClick = (): void => {
     toggleInfoDisplay();
   };
 
   return (
     <>
-      <button className="button" onClick={handleClick}>
-      {shouldInfoDisplay ? 'Info' : 'Recording Menu'} 
+      <button type="button" className="button" onClick={handleClick}>
+        {shouldInfoDisplay ? 'Recording Menu' : 'Info'}
       </button>
     </>
   );
