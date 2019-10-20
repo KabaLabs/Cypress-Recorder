@@ -29,7 +29,12 @@ let activePort: chrome.runtime.Port | null = null;
 function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
   const block = generateBlock(event);
-  if (block !== null) session.processedCode.push(block);
+  if (block !== null) {
+    session.processedCode.push(block);
+    chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+      chrome.runtime.sendMessage(block);
+    });
+  }
 }
 
 function handleFirstConnection(): void {
@@ -39,7 +44,11 @@ function handleFirstConnection(): void {
     { url: [{ hostEquals: activePort.name }] },
   );
   session.sender = activePort.sender;
-  session.processedCode.push(generateVisit(session.sender.url));
+  const firstLineOfCode = generateVisit(session.sender.url);
+  session.processedCode.push(firstLineOfCode);
+  chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+    chrome.runtime.sendMessage(firstLineOfCode);
+  });
 }
 
 /**

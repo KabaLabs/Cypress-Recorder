@@ -3,7 +3,7 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, BlockData } from '../../types';
+import { RecState, BlockData, CodeBlock } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
@@ -52,6 +52,10 @@ export default () => {
     }
   };
 
+  const pushBlock = (block: CodeBlock): void => {
+    setCodeBlocks([...codeBlocks, block]);
+  }
+
   React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
       if (!result || !result.status) chrome.storage.local.set({ status: recStatus });
@@ -59,6 +63,7 @@ export default () => {
       else if (result.status === 'done') setRecStatus('done');
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
     });
+    chrome.runtime.onMessage.addListener(pushBlock);
   }, []);
 
   return (
