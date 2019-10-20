@@ -9,16 +9,16 @@ export default () => {
     <div id="infobox">
       <h1>Hello.</h1>
       <br />
-      <p>Thanks for checking out this extension.</p>
+      <p>Thanks for checking out this developer tool.</p>
       <br />
       <p>
-        This tool makes testing very simple. Just load your app, click record on the main page and
-        use your app as any user would. Once you&apos;re done, stop recording and copy the generated
-        test code to your clipboard to use in your Cypress tests.
+        We want to make automated testing very simple. Just load your app, click record on the main
+        page and use your app as any user would. Once you&apos;re done, stop recording and copy the
+        generated test code to your clipboard to use in your Cypress tests.
       </p>
       <br />
       <p>
-        This extension was developed by the folks at KabaLabs after realizing the need and community
+        This tool was developed by the folks at KabaLabs after realizing the need and community
         interest in the tool. It works by analyzing user activity in your app (clicks, keypresses,
         routes, and more) and then turning those interactions into Cypress code used for testing
         purposes.

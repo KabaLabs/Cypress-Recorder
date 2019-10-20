@@ -46,7 +46,7 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
 
 function handleChange(event: ParsedEvent): CodeBlock {
   if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
-  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, '\'')}');`;
+  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {

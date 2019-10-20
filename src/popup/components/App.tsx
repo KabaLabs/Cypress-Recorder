@@ -11,26 +11,38 @@ export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
+  const [lastBlock, setLastBlock] = React.useState<string>('');
+
+  const startRecording = () => {
+    chrome.runtime.sendMessage(ControlAction.START);
+    setRecStatus('on');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
+
+  const stopRecording = () => {
+    chrome.runtime.sendMessage(ControlAction.STOP);
+    setRecStatus('done');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
+
+  const resetRecording = () => {
+    chrome.runtime.sendMessage(ControlAction.RESET);
+    setRecStatus('off');
+    setCodeBlocks([]);
+    setLastBlock('');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
 
   const handleToggle = (action: ControlAction): void => {
     switch (action) {
       case ControlAction.START:
-        setRecStatus('on');
-        if (shouldInfoDisplay) setShouldInfoDisplay(false);
-        chrome.runtime.sendMessage(action);
+        startRecording();
         break;
       case ControlAction.STOP:
-        setRecStatus('done');
-        if (shouldInfoDisplay) setShouldInfoDisplay(false);
-        chrome.runtime.sendMessage(action, (response: BlockData) => {
-          if (!response.length) setRecStatus('off');
-          else setCodeBlocks(response);
-        });
+        stopRecording();
         break;
       case ControlAction.RESET:
-        setRecStatus('off');
-        if (shouldInfoDisplay) setShouldInfoDisplay(false);
-        chrome.runtime.sendMessage(action);
+        resetRecording();
         break;
       default:
         throw new Error(`Unhandled action: ${action}`);
@@ -51,18 +63,21 @@ export default () => {
   };
 
   const pushBlock = (block: CodeBlock): void => {
-    setCodeBlocks([...codeBlocks, block]);
+    setLastBlock(block);
   };
 
   React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], result => {
-      if (!result || !result.status) chrome.storage.local.set({ status: recStatus });
-      else if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'done') setRecStatus('done');
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
+      if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'done') setRecStatus('done');
     });
     chrome.runtime.onMessage.addListener(pushBlock);
   }, []);
+
+  React.useEffect((): void => {
+    setCodeBlocks([...codeBlocks, lastBlock]);
+  }, [lastBlock]);
 
   return (
     <div id="App">

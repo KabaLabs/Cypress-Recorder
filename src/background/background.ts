@@ -10,13 +10,12 @@ import { generateBlock, generateVisit } from '../helpers/codeGenerator';
 import {
   RecordedSession,
   ParsedEvent,
-  BlockData,
 } from '../types';
 import { ControlAction } from '../constants';
 
 const session: RecordedSession = {
   processedCode: [],
-  sender: null,
+  host: null,
 };
 
 let activePort: chrome.runtime.Port | null = null;
@@ -63,8 +62,8 @@ function handleFirstConnection(): void {
     injectEventRecorder,
     { url: [{ hostEquals: activePort.name }] },
   );
-  session.sender = activePort.sender;
-  const firstLineOfCode = generateVisit(session.sender.url);
+  session.host = activePort.sender.url;
+  const firstLineOfCode = generateVisit(session.host);
   session.processedCode.push(firstLineOfCode);
   chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
     chrome.runtime.sendMessage(firstLineOfCode);
@@ -84,7 +83,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   console.log('handleNewConnection', portToEventRecorder);
   activePort = portToEventRecorder;
   activePort.onMessage.addListener(handleEvents);
-  if (!session.sender) handleFirstConnection();
+  if (!session.host) handleFirstConnection();
 }
 
 /**
@@ -102,17 +101,16 @@ function startRecording(): void {
  *
  * @param {Function} sendResponse
  */
-function stopRecording(sendResponse: (response: BlockData) => void): void {
+function stopRecording(): void {
   console.log('stopRecording');
   ejectEventRecorder();
   chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-  sendResponse(session.processedCode);
   chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
     session.processedCode = [];
-    session.sender = null;
-    activePort = null;
   });
+  session.host = null;
+  activePort = null;
 }
 
 /**
@@ -131,18 +129,14 @@ function cleanUp(): void {
  * @param {chrome.runtime.MessageSender} sender
  * @param {Function} sendResponse
  */
-function handleControlAction(
-  action: ControlAction,
-  sender: chrome.runtime.MessageSender,
-  sendResponse: (response: BlockData) => void,
-): void {
+function handleControlAction(action: ControlAction): void {
   console.log('handleControlAction', action);
   switch (action) {
     case ControlAction.START:
       startRecording();
       break;
     case ControlAction.STOP:
-      stopRecording(sendResponse);
+      stopRecording();
       break;
     case ControlAction.RESET:
       cleanUp();

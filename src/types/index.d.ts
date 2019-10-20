@@ -19,6 +19,6 @@ export interface ParsedEvent {
 }
 
 export interface RecordedSession {
-  sender: chrome.runtime.MessageSender | null,
+  host: string | null,
   processedCode: BlockData,
 }
