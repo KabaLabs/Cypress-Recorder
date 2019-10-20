@@ -42,22 +42,20 @@ export default () => {
     else setShouldInfoDisplay(true);
   };
 
-  const copyToClipboard = async (): Promise<boolean> => {
+  const copyToClipboard = async (): Promise<void> => {
     try {
       await navigator.clipboard.writeText(codeBlocks.join('\n'));
-      return true;
     } catch (error) {
-      console.error(error);
-      return false;
+      throw new Error(error);
     }
   };
 
   const pushBlock = (block: CodeBlock): void => {
     setCodeBlocks([...codeBlocks, block]);
-  }
+  };
 
   React.useEffect((): void => {
-    chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
+    chrome.storage.local.get(['status', 'codeBlocks'], result => {
       if (!result || !result.status) chrome.storage.local.set({ status: recStatus });
       else if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'done') setRecStatus('done');

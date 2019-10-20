@@ -9,11 +9,9 @@ export interface BodyProps {
   codeBlocks: BlockData,
 }
 
-export default ({ recStatus, codeBlocks }: BodyProps) => {
-  return (
-    <div id="body">
-      {recStatus === 'off' && <LandingBox />}
-      {recStatus !== 'off' && <CodeDisplay codeBlocks={codeBlocks} />}
-    </div>
-  );
-};
+export default ({ recStatus, codeBlocks }: BodyProps) => (
+  <div id="body">
+    {recStatus === 'off' && <LandingBox />}
+    {recStatus !== 'off' && <CodeDisplay codeBlocks={codeBlocks} />}
+  </div>
+);

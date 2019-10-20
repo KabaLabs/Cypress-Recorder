@@ -22,6 +22,26 @@ const session: RecordedSession = {
 let activePort: chrome.runtime.Port | null = null;
 
 /**
+ * Injects the event recorder into the active tab.
+ */
+function injectEventRecorder(
+  details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
+): void {
+  console.log('injectEventRecorder', details);
+  if (!details || details.frameId === 0) chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
+}
+
+/**
+ * Disconnects the event recorder.
+ */
+function ejectEventRecorder(
+  details?: chrome.webNavigation.WebNavigationParentedCallbackDetails,
+): void {
+  console.log('ejectEventRecorder', details);
+  if (activePort && (!details || details.frameId === 0)) activePort.disconnect();
+}
+
+/**
  * Handles events sent from the event recorder.
  *
  * @param {ParsedEvent} event
@@ -65,22 +85,6 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   activePort = portToEventRecorder;
   activePort.onMessage.addListener(handleEvents);
   if (!session.sender) handleFirstConnection();
-}
-
-/**
- * Injects the event recorder into the active tab.
- */
-function injectEventRecorder(details?: chrome.webNavigation.WebNavigationFramedCallbackDetails): void {
-  console.log('injectEventRecorder', details);
-  if (!details || details.frameId === 0) chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
-}
-
-/**
- * Disconnects the event recorder.
- */
-function ejectEventRecorder(details?: chrome.webNavigation.WebNavigationParentedCallbackDetails): void {
-  console.log('ejectEventRecorder', details);
-  if (activePort && (!details || details.frameId === 0)) activePort.disconnect();
 }
 
 /**

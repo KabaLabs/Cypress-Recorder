@@ -6,12 +6,12 @@ import { ControlAction } from '../../constants';
 export interface FooterProps {
   recStatus: string,
   handleToggle: (action: ControlAction) => void,
-  copyToClipboard: () => Promise<boolean>,
-};
+  copyToClipboard: () => Promise<void>,
+}
 
 export default ({ recStatus, handleToggle, copyToClipboard }: FooterProps) => (
   <div id="footer">
-    {recStatus === 'done' && <ClipboardButton copyToClipboard={copyToClipboard}/>}
-    <ToggleButton recStatus={recStatus} handleToggle={handleToggle}/>
+    {recStatus === 'done' && <ClipboardButton copyToClipboard={copyToClipboard} />}
+    <ToggleButton recStatus={recStatus} handleToggle={handleToggle} />
   </div>
 );

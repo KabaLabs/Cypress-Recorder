@@ -5,12 +5,12 @@
  * store the current url, as well each subsequest user interaction with the browser.
  */
 
-import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
+import { ParsedEvent, CodeBlock } from '../types';
 import { EventType } from '../constants';
 
 /**
  * Helper functions that handle each action type.
- * @param event 
+ * @param {ParsedEvent} event
  */
 
 function handleClick(event: ParsedEvent): CodeBlock {
@@ -45,8 +45,8 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
 }
 
 function handleChange(event: ParsedEvent): CodeBlock {
-  if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;//`cy.get('${event.selector}').check();`;
-  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, `\\'`)}');`;
+  if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
+  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, '\'')}');`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
@@ -59,7 +59,7 @@ function handleSubmit(event: ParsedEvent): CodeBlock {
 
 /**
  * Generates a line of Cypress code that replicates an action by a user.
- * @param event 
+ * @param {ParsedEvent} event
  */
 export function generateBlock(event: ParsedEvent): CodeBlock {
   switch (event.action) {
@@ -95,10 +95,6 @@ export function generateBlock(event: ParsedEvent): CodeBlock {
 //   ];
 // }
 
-/**
- * Exports array of all Cypress commands.
- * @param session 
- */
 // export default function generateCode(session: RecordedSession): BlockData {
 //   return [`cy.visit('${session.sender.url}');` as CodeBlock]
 //     .concat(session.events.map(event => generateBlock(event))
