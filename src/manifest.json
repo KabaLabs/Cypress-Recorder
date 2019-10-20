@@ -1,17 +1,26 @@
 {
     "name": "Cypress Recorder",
-    "version": "0.0.1",
-    "description": "A dev tool that records user interaction with a web application and generates cypress code to allow the developer to replicate that particular session.",
+    "version": "0.1.0",
+    "description": "Records a user session and generates cypress code for automation and testing purposes.",
     "manifest_version": 2,
     "permissions": [
       "activeTab",
       "clipboardWrite",
       "storage",
       "tabs",
-      "webNavigation",
+      "webNavigation"
+    ],
+    "optional_permissions": [
       "http://*/*",
       "https://*/*"
     ],
+    "icons": { 
+      "16": "./cypresscone16.png",
+      "32": "./cypresscone32.png",
+      "48": "./cypresscone48.png",
+      "128": "./cypresscone128.png"
+    },
+    "author": "Abbey Campbell, Adam Stover, Brad Morgan, Ken Sakuma",
     "background": {
       "scripts": ["./background/background.js"],
       "persistent": false

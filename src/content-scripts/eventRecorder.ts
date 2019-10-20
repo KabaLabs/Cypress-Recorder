@@ -8,7 +8,6 @@ import finder from '@medv/finder';
 import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
-
 let port: chrome.runtime.Port;
 
 /**
@@ -18,7 +17,6 @@ let port: chrome.runtime.Port;
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
-  console.log(event);
   let selector: string;
   if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
   else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
@@ -27,7 +25,7 @@ function parseEvent(event: Event): ParsedEvent {
   const parsedEvent: ParsedEvent = {
     selector,
     action: event.type,
-    tag: (event.target as HTMLInputElement).tagName,
+    tag: (event.target as Element).tagName,
     value: (event.target as HTMLInputElement).value,
   };
   if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
@@ -43,7 +41,7 @@ function parseEvent(event: Event): ParsedEvent {
  * @param {Event} event
  */
 function handleEvent(event: Event): void {
-  port.postMessage(parseEvent(event));
+  if (event.isTrusted === true) port.postMessage(parseEvent(event));
 }
 
 /**
@@ -71,7 +69,7 @@ function removeDOMListeners(): void {
  * Initializes the event recorder.
  */
 function initialize(): void {
-  port = chrome.runtime.connect();
+  port = chrome.runtime.connect({ name: window.location.hostname });
   port.onDisconnect.addListener(removeDOMListeners);
   addDOMListeners();
 }
