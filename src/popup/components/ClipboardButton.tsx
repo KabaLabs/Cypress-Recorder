@@ -7,8 +7,12 @@ export interface ClipboardButtonProps {
 export default ({ copyToClipboard }: ClipboardButtonProps) => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const handleClick = async (): Promise<void> => {
-    await copyToClipboard();
-    setSuccess(true);
+    try {
+      await copyToClipboard();
+      setSuccess(true);
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
   return (
