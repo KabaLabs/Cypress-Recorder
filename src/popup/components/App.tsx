@@ -71,7 +71,7 @@ export default () => {
         (shouldInfoDisplay
           ? <Info />
           : <Body codeBlocks={codeBlocks} recStatus={recStatus} />
-          )
+        )
       }
       <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
     </div>
