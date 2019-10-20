@@ -6,20 +6,39 @@
  * back to the popup for display to the user.
  */
 
-import generateCode from '../helpers/codeGenerator';
+import { generateBlock, generateVisit } from '../helpers/codeGenerator';
 import {
   RecordedSession,
   ParsedEvent,
-  BlockData,
 } from '../types';
 import { ControlAction } from '../constants';
 
 const session: RecordedSession = {
-  events: [],
-  sender: null,
+  processedCode: [],
+  host: null,
 };
 
-let port: chrome.runtime.Port | null = null;
+let activePort: chrome.runtime.Port | null = null;
+
+/**
+ * Injects the event recorder into the active tab.
+ */
+function injectEventRecorder(
+  details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
+): void {
+  console.log('injectEventRecorder', details);
+  if (!details || details.frameId === 0) chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
+}
+
+/**
+ * Disconnects the event recorder.
+ */
+function ejectEventRecorder(
+  details?: chrome.webNavigation.WebNavigationParentedCallbackDetails,
+): void {
+  console.log('ejectEventRecorder', details);
+  if (activePort && (!details || details.frameId === 0)) activePort.disconnect();
+}
 
 /**
  * Handles events sent from the event recorder.
@@ -28,7 +47,27 @@ let port: chrome.runtime.Port | null = null;
  */
 function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
-  session.events.push(event);
+  const block = generateBlock(event);
+  if (block !== null) {
+    session.processedCode.push(block);
+    chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+      chrome.runtime.sendMessage(block);
+    });
+  }
+}
+
+function handleFirstConnection(): void {
+  chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+  chrome.webNavigation.onDOMContentLoaded.addListener(
+    injectEventRecorder,
+    { url: [{ hostEquals: activePort.name }] },
+  );
+  session.host = activePort.sender.url;
+  const firstLineOfCode = generateVisit(session.host);
+  session.processedCode.push(firstLineOfCode);
+  chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+    chrome.runtime.sendMessage(firstLineOfCode);
+  });
 }
 
 /**
@@ -41,30 +80,10 @@ function handleEvents(event: ParsedEvent): void {
  * @param {chrome.runtime.Port} portToEventRecorder
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
-  console.log('handleNewConnection');
-  port = portToEventRecorder;
-  port.onMessage.addListener(handleEvents);
-  console.log(port.sender);
-  if (!session.sender) session.sender = port.sender;
-}
-
-/**
- * Injects the event recorder into the active tab.
- */
-function injectEventRecorder(): void {
-  console.log('injectEventRecorder');
-  chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
-}
-
-/**
- * Disconnects the event recorder.
- */
-function ejectEventRecorder(): void {
-  console.log('ejectEventRecorder');
-  if (port) {
-    port.onMessage.removeListener(handleEvents);
-    port.disconnect();
-  }
+  console.log('handleNewConnection', portToEventRecorder);
+  activePort = portToEventRecorder;
+  activePort.onMessage.addListener(handleEvents);
+  if (!session.host) handleFirstConnection();
 }
 
 /**
@@ -73,8 +92,6 @@ function ejectEventRecorder(): void {
 function startRecording(): void {
   console.log('startRecording');
   chrome.storage.local.set({ status: 'on' }, () => {
-    chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
-    chrome.webNavigation.onCompleted.addListener(injectEventRecorder);
     injectEventRecorder();
   });
 }
@@ -84,21 +101,20 @@ function startRecording(): void {
  *
  * @param {Function} sendResponse
  */
-function stopRecording(sendResponse: (response: BlockData) => void): void {
+function stopRecording(): void {
   console.log('stopRecording');
   ejectEventRecorder();
-  chrome.webNavigation.onCompleted.removeListener(injectEventRecorder);
+  chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
   chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-  const code = generateCode(session);
-  sendResponse(code);
-  chrome.storage.local.set({ codeBlocks: code, status: 'done' }, () => {
-    session.events = [];
-    session.sender = null;
+  chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
+    session.processedCode = [];
   });
+  session.host = null;
+  activePort = null;
 }
 
 /**
- * Performs necessary cleanup on startup and suspend.
+ * Performs necessary cleanup between sessions.
  */
 function cleanUp(): void {
   console.log('cleanUp');
@@ -113,18 +129,14 @@ function cleanUp(): void {
  * @param {chrome.runtime.MessageSender} sender
  * @param {Function} sendResponse
  */
-function handleControlAction(
-  action: ControlAction,
-  sender: chrome.runtime.MessageSender,
-  sendResponse: (response: BlockData) => void,
-): void {
+function handleControlAction(action: ControlAction): void {
   console.log('handleControlAction', action);
   switch (action) {
     case ControlAction.START:
       startRecording();
       break;
     case ControlAction.STOP:
-      stopRecording(sendResponse);
+      stopRecording();
       break;
     case ControlAction.RESET:
       cleanUp();
@@ -134,15 +146,15 @@ function handleControlAction(
   }
 }
 
-function start() {
-  console.log('startup');
-  cleanUp();
-}
-
 function suspend() {
   console.log('suspend');
   cleanUp();
 }
+
+function install() {
+  console.log('install');
+  cleanUp();
+} 
 
 /**
  * Initializes the extension.
@@ -152,12 +164,11 @@ function initialize(): void {
   cleanUp();
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);
-  chrome.runtime.onStartup.addListener(start);
-  chrome.runtime.onSuspend.addListener(suspend);
-  chrome.commands.onCommand.addListener(function(c) {
-    startRecording();
-    console.log('command', c);
+  chrome.commands.onCommand.addListener(function(cmd) {
+    console.log("NEW Key CMD", cmd);
   });
+  chrome.runtime.onSuspend.addListener(suspend);
+  chrome.runtime.onInstalled.addListener(install);
 }
 
 initialize();

@@ -8,8 +8,6 @@ import finder from '@medv/finder';
 import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
-console.log("Hello from the content-script")
-
 let port: chrome.runtime.Port;
 
 
@@ -20,7 +18,6 @@ let port: chrome.runtime.Port;
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
-  console.log(event);
   let selector: string;
   if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
   else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
@@ -73,8 +70,7 @@ function removeDOMListeners(): void {
  * Initializes the event recorder.
  */
 function initialize(): void {
-  console.log("initializing all our things")
-  port = chrome.runtime.connect();
+  port = chrome.runtime.connect({ name: window.location.hostname });
   port.onDisconnect.addListener(removeDOMListeners);
   addDOMListeners();
 }
