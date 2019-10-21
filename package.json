@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
+    "jest-enzyme": "^7.1.1",
     "parcel-bundler": "^1.12.4",
     "react-test-renderer": "^16.10.2",
     "sass": "^1.23.0",
