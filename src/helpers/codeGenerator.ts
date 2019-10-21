@@ -5,12 +5,12 @@
  * store the current url, as well each subsequest user interaction with the browser.
  */
 
-import { RecordedSession, ParsedEvent, BlockData, CodeBlock } from '../types';
+import { ParsedEvent, CodeBlock } from '../types';
 import { EventType } from '../constants';
 
 /**
  * Helper functions that handle each action type.
- * @param event 
+ * @param {ParsedEvent} event
  */
 
 function handleClick(event: ParsedEvent): CodeBlock {
@@ -18,7 +18,6 @@ function handleClick(event: ParsedEvent): CodeBlock {
 }
 
 function handleKeydown(event: ParsedEvent): CodeBlock | null {
-  console.log('keydown handled');
   switch (event.key) {
     case 'Backspace':
       return `cy.get('${event.selector}').type('{backspace}');`;
@@ -46,27 +45,23 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
 }
 
 function handleChange(event: ParsedEvent): CodeBlock {
-  console.log(`Change handled; value: ${event.value}`);
-  if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;//`cy.get('${event.selector}').check();`;
-  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, `\\'`)}');`;
+  if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
+  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
 }
 
 function handleDoubleclick(event: ParsedEvent): CodeBlock {
-  console.log(`handling doubleclick, ${event.selector}`);
   return `cy.get('${event.selector}').dblclick();`;
 }
 
 function handleSubmit(event: ParsedEvent): CodeBlock {
-  console.log(`handling submit, ${event.value}`);
   return `cy.get('${event.selector}').submit();`;
 }
 
 /**
  * Generates a line of Cypress code that replicates an action by a user.
- * @param event 
+ * @param {ParsedEvent} event
  */
-function generateBlock(event: ParsedEvent): CodeBlock {
-  console.log('event', event);
+export function generateBlock(event: ParsedEvent): CodeBlock {
   switch (event.action) {
     case EventType.CLICK:
       return handleClick(event);
@@ -100,12 +95,11 @@ function generateBlock(event: ParsedEvent): CodeBlock {
 //   ];
 // }
 
-/**
- * Exports array of all Cypress commands.
- * @param session 
- */
-export default function generateCode(session: RecordedSession): BlockData {
-  return [`cy.visit('${session.sender.url}');` as CodeBlock]
-    .concat(session.events.map(event => generateBlock(event))
-    .filter(block => block !== null));
+// export default function generateCode(session: RecordedSession): BlockData {
+//   return [`cy.visit('${session.sender.url}');` as CodeBlock]
+//     .concat(session.events.map(event => generateBlock(event))
+//     .filter(block => block !== null));
+// }
+export function generateVisit(url: string): CodeBlock {
+  return `cy.visit('${url}');`;
 }
