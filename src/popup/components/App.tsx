@@ -92,7 +92,7 @@ export default () => {
       {
         (shouldInfoDisplay
           ? <Info />
-          : <Body codeBlocks={codeBlocks} recStatus={recStatus} />
+          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
         )
       }
       <Footer
