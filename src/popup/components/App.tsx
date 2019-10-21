@@ -11,6 +11,7 @@ export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
+  const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
   const [lastBlock, setLastBlock] = React.useState<string>('');
 
   const startRecording = () => {
@@ -72,6 +73,12 @@ export default () => {
       if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'done') setRecStatus('done');
     });
+    chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
+      // check currentURL to see if it is valid for recording
+      if (activeTab[0].url.startsWith('chrome://')) {
+        setIsValidTab(false);
+      }
+    });
     chrome.runtime.onMessage.addListener(pushBlock);
   }, []);
 
@@ -85,10 +92,15 @@ export default () => {
       {
         (shouldInfoDisplay
           ? <Info />
-          : <Body codeBlocks={codeBlocks} recStatus={recStatus} />
+          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
         )
       }
-      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
+      <Footer
+        isValidTab={isValidTab}
+        recStatus={recStatus}
+        handleToggle={handleToggle}
+        copyToClipboard={copyToClipboard}
+      />
     </div>
   );
 };
