@@ -129,6 +129,11 @@ function cleanUp(): void {
  * @param {chrome.runtime.MessageSender} sender
  * @param {Function} sendResponse
  */
+
+ /**
+  * @param {CommandKey} command
+  * @param action 
+  */
 function handleControlAction(action: ControlAction): void {
   console.log('handleControlAction', action);
   switch (action) {
@@ -146,6 +151,21 @@ function handleControlAction(action: ControlAction): void {
   }
 }
 
+/*
+  quick key initiator function
+*/
+
+function handleQuickKeys(command: string): void {
+  let action: ControlAction;
+  console.log("this is the command", command);
+  if (command === 'start-recording') action = ControlAction.START;
+  else if (command === 'stop-recording') action = ControlAction.STOP;
+  else if (command === 'reset-recording') action = ControlAction.RESET;
+  console.log("this is the action", action);
+
+  handleControlAction(action);
+}
+
 function suspend() {
   console.log('suspend');
   cleanUp();
@@ -156,6 +176,7 @@ function install() {
   cleanUp();
 } 
 
+
 /**
  * Initializes the extension.
  */
@@ -164,9 +185,10 @@ function initialize(): void {
   cleanUp();
   chrome.runtime.onMessage.addListener(handleControlAction);
   chrome.runtime.onConnect.addListener(handleNewConnection);
-  chrome.commands.onCommand.addListener(function(cmd) {
-    console.log("NEW Key CMD", cmd);
-  });
+  chrome.commands.onCommand.addListener(handleQuickKeys);
+  // chrome.commands.onCommand.addListener(function(c: CommandAction) {
+  //   console.log("the command", c)
+  // });
   chrome.runtime.onSuspend.addListener(suspend);
   chrome.runtime.onInstalled.addListener(install);
 }
