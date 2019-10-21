@@ -31,6 +31,9 @@ body {
 }
 
 #header {
+  position: fixed;
+  width: 100%;
+  top: 0px;
   background-color: rgb(49, 158, 107);
   display: flex;
   justify-content: space-between;
@@ -63,6 +66,9 @@ body {
 }
 
 #footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
   background-color: rgb(49, 158, 107);
   display: flex;
   justify-content: space-between;
