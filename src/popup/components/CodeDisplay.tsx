@@ -5,7 +5,7 @@ export interface CodeDisplayProps {
   codeBlocks: BlockData,
 }
 
-export default ({ codeBlocks }: CodeDisplayProps) => {
+const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
   const blocks = codeBlocks.map(block => (
     <p>{block}</p>
   ));
@@ -16,3 +16,16 @@ export default ({ codeBlocks }: CodeDisplayProps) => {
     </div>
   );
 };
+
+const areEqual = (
+  { codeBlocks: prevBlocks }: CodeDisplayProps,
+  { codeBlocks: nextBlocks }: CodeDisplayProps,
+): boolean => {
+  if (prevBlocks.length !== nextBlocks.length) return false;
+  for (let i = 0; i !== prevBlocks.length; i += 1) {
+    if (prevBlocks[i] !== nextBlocks[i]) return false;
+  }
+  return true;
+}
+
+export default React.memo(CodeDisplay, areEqual);
