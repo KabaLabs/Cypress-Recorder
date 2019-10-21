@@ -18,6 +18,3 @@ jobs:
       - run:
           name: Typescript Check
           command: npm run tsc
-      - run:
-          name: Unit Test
-          command: npm test
