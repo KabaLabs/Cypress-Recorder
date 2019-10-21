@@ -5,13 +5,14 @@ import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
 
 export interface BodyProps {
+  isValidTab: boolean,
   recStatus: RecState,
   codeBlocks: BlockData,
 }
 
-export default ({ recStatus, codeBlocks }: BodyProps) => (
+export default ({ recStatus, codeBlocks, isValidTab }: BodyProps) => (
   <div id="body">
-    {recStatus === 'off' && <LandingBox />}
+    {recStatus === 'off' && <LandingBox isValidTab={isValidTab} />}
     {recStatus !== 'off' && <CodeDisplay codeBlocks={codeBlocks} />}
   </div>
 );
