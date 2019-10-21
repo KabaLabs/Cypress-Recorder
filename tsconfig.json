@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "target": "esnext",
     "module": "commonjs",
     "jsx": "react",
     "rootDir": "./src",

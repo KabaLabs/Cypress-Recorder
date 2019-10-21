@@ -8,13 +8,11 @@ export interface ToggleButtonProps {
 
 export default ({ recStatus, handleToggle }: ToggleButtonProps) => {
   const handleClick = (): void => {
-    let action: ControlAction | null = null;
+    let action: ControlAction
     if (recStatus === 'off') action = ControlAction.START;
     else if (recStatus === 'on') action = ControlAction.STOP;
     else if (recStatus === 'done') action = ControlAction.RESET;
-    if (action) {
-      handleToggle(action);
-    }
+    handleToggle(action);
   };
 
   return (
