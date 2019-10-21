@@ -14,6 +14,32 @@ export default () => {
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
   const [lastBlock, setLastBlock] = React.useState<string>('');
 
+  React.useEffect((): void => {
+    setCodeBlocks([...codeBlocks, lastBlock]);
+  }, [lastBlock]);
+
+  const pushBlock = (block: CodeBlock): void => {
+    setLastBlock(block);
+  };
+
+  React.useEffect((): () => void => {
+    chrome.storage.local.get(['status', 'codeBlocks'], result => {
+      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
+      if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'done') setRecStatus('done');
+      chrome.runtime.onMessage.addListener(pushBlock);
+    });
+    chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
+      // check currentURL to see if it is valid for recording
+      if (activeTab[0].url.startsWith('chrome://')) {
+        setIsValidTab(false);
+      }
+    });
+    return () => {
+      chrome.runtime.onMessage.removeListener(pushBlock);
+    }
+  }, []);
+
   const startRecording = () => {
     chrome.runtime.sendMessage(ControlAction.START);
     setRecStatus('on');
@@ -62,29 +88,6 @@ export default () => {
       throw new Error(error);
     }
   };
-
-  const pushBlock = (block: CodeBlock): void => {
-    setLastBlock(block);
-  };
-
-  React.useEffect((): void => {
-    chrome.storage.local.get(['status', 'codeBlocks'], result => {
-      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
-      if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'done') setRecStatus('done');
-    });
-    chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
-      // check currentURL to see if it is valid for recording
-      if (activeTab[0].url.startsWith('chrome://')) {
-        setIsValidTab(false);
-      }
-    });
-    chrome.runtime.onMessage.addListener(pushBlock);
-  }, []);
-
-  React.useEffect((): void => {
-    setCodeBlocks([...codeBlocks, lastBlock]);
-  }, [lastBlock]);
 
   return (
     <div id="App">
