@@ -7,7 +7,7 @@
     "start": "npx tsc --noEmit && npx parcel ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "build": "npx tsc --noEmit && npx parcel build ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "test": "jest --verbose",
-    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist && cp ./src/assets/cypresscone16.png dist && cp ./src/assets/cypresscone32.png dist && cp ./src/assets/cypresscone48.png dist && cp ./src/assets/cypresscone128.png dist",
+    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist && cp ./src/assets/cypresscone16.png dist && cp ./src/assets/cypresscone32.png dist && cp ./src/assets/cypresscone48.png dist && cp ./src/assets/cypresscone128.png dist && cp ./src/assets/cypressconeICON.png dist && cp ./src/assets/cypressconeREC.png dist",
     "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json",
     "rebuild": "npm run clean && npm run build"
   },

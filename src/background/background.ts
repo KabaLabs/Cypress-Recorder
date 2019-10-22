@@ -94,6 +94,7 @@ function startRecording(): void {
   chrome.storage.local.set({ status: 'on' }, () => {
     injectEventRecorder();
   });
+  chrome.browserAction.setIcon({ path: 'cypressconeREC.png' })
 }
 
 /**
@@ -109,6 +110,7 @@ function stopRecording(): void {
   chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
     session.processedCode = [];
   });
+  chrome.browserAction.setIcon({ path: 'cypressconeICON.png' })
   session.host = null;
   activePort = null;
 }
