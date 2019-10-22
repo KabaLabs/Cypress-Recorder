@@ -47,7 +47,7 @@ export default () => {
     });
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
-    }
+    };
   }, []);
 
   const startRecording = () => {

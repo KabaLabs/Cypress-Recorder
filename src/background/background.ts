@@ -141,20 +141,6 @@ function stopRecording(): Promise<void> {
   });
 }
 
-function resetRecording(): Promise<void> {
-  console.log('resetRecording');
-  return new Promise((resolve, reject) => {
-    cleanUp()
-      .then(() => {
-        session.processedCode = [];
-        resolve();
-      })
-      .catch(err => {
-        throw new Error(err);
-      });
-  });
-}
-
 /**
  * Performs necessary cleanup between sessions.
  */
@@ -166,6 +152,20 @@ function cleanUp(): Promise<void> {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       resolve();
     });
+  });
+}
+
+function resetRecording(): Promise<void> {
+  console.log('resetRecording');
+  return new Promise((resolve, reject) => {
+    cleanUp()
+      .then(() => {
+        session.processedCode = [];
+        resolve();
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 }
 
@@ -223,13 +223,12 @@ function handleStateChange(action: ControlAction): Promise<void> {
  */
 function handleQuickKeys(command: string): void {
   let action: ControlAction;
-  console.log("this is the command", command);
+  console.log('this is the command', command);
   if (backgroundStatus.isPending) return;
   if (command === 'start-recording') {
     if (backgroundStatus.recStatus === 'off' || backgroundStatus.recStatus === 'paused') action = ControlAction.START;
     else if (backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
-  }
-  else if (command === 'reset-recording' && backgroundStatus.recStatus === 'paused') action = ControlAction.RESET;
+  } else if (command === 'reset-recording' && backgroundStatus.recStatus === 'paused') action = ControlAction.RESET;
   if (action !== undefined) {
     handleStateChange(action)
       .then(() => {
@@ -249,7 +248,7 @@ function suspend() {
 function install() {
   console.log('install');
   cleanUp();
-} 
+}
 
 /**
  * Initializes the extension.

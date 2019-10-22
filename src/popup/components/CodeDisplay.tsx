@@ -26,6 +26,6 @@ const areEqual = (
     if (prevBlocks[i] !== nextBlocks[i]) return false;
   }
   return true;
-}
+};
 
 export default React.memo(CodeDisplay, areEqual);
