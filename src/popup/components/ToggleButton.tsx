@@ -22,7 +22,7 @@ export default ({ recStatus, handleToggle, isValidTab }: ToggleButtonProps) => {
       <button type="button" className={buttonClass} onClick={handleClick} disabled={!isValidTab && (recStatus === 'off' || recStatus === 'paused')}>
         {(recStatus === 'off' || recStatus === 'paused') && !isValidTab && 'Invalid Tab'}
         {recStatus === 'off' && isValidTab && 'Start Recording'}
-        {recStatus === 'paused' && isValidTab && 'Resume Recording'}
+        {recStatus === 'paused' && isValidTab && 'Resume'}
         {recStatus === 'on' && 'Stop Recording'}
       </button>
     </>
