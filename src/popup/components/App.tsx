@@ -41,9 +41,7 @@ export default () => {
       chrome.runtime.onMessage.addListener(handleMessageFromBackground);
     });
     chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
-      if (activeTab[0].url.startsWith('chrome://')) {
-        setIsValidTab(false);
-      }
+      if (activeTab[0].url.startsWith('chrome://')) setIsValidTab(false);
     });
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
