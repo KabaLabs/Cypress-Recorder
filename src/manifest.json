@@ -8,7 +8,9 @@
     "clipboardWrite",
     "storage",
     "tabs",
-    "webNavigation",
+    "webNavigation"
+  ],
+  "optional_permissions": [
     "http://*/*",
     "https://*/*"
   ],
