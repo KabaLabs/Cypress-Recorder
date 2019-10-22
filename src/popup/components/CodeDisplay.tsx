@@ -6,12 +6,24 @@ export interface CodeDisplayProps {
 }
 
 const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
+
+  const styleObj = {
+    border: '3px solid black',
+    margin: 10
+  }
   const blocks = codeBlocks.map(block => (
-    <p>{block}</p>
+    
+    <span>
+        <p style={{border: '2px solid red'}} >
+          {block}
+          <span style={styleObj}>X</span>
+        </p>
+      </span>
   ));
 
   return (
     <div id="code-display">
+      
       {blocks}
     </div>
   );
