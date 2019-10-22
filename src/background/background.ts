@@ -109,7 +109,10 @@ function startRecording(): Promise<void> {
     chrome.storage.local.set({ status: 'on' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       injectEventRecorder()
-        .then(() => resolve())
+        .then(() => {
+          resolve();
+          chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
+        })
         .catch(err => reject(err));
     });
   });
