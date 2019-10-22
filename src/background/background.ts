@@ -8,7 +8,6 @@
 
 import { generateBlock, generateVisit } from '../helpers/codeGenerator';
 import {
-  RecordedSession,
   ParsedEvent,
   BackgroundStatus,
   RecState,
@@ -20,11 +19,7 @@ const backgroundStatus: BackgroundStatus = {
   recStatus: 'off',
 };
 
-const session: RecordedSession = {
-  processedCode: [],
-  host: null,
-};
-
+let processedCode: String[] = [];
 let activePort: chrome.runtime.Port | null = null;
 
 /**
@@ -63,25 +58,27 @@ function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
   const block = generateBlock(event);
   if (block !== null) {
-    session.processedCode.push(block);
-    chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+    processedCode.push(block);
+    chrome.storage.local.set({ codeBlocks: processedCode }, () => {
       chrome.runtime.sendMessage(block);
     });
   }
 }
 
 function handleFirstConnection(): void {
+  console.log('handleFirstConnection');
   chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
   chrome.webNavigation.onDOMContentLoaded.addListener(
     injectEventRecorder,
     { url: [{ hostEquals: activePort.name }] },
   );
-  session.host = activePort.sender.url;
-  const firstLineOfCode = generateVisit(session.host);
-  session.processedCode.push(firstLineOfCode);
-  chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
-    chrome.runtime.sendMessage(firstLineOfCode);
-  });
+  const firstLineOfCode = generateVisit(activePort.sender.url);
+  if (firstLineOfCode !== processedCode[0]) {
+    processedCode.push(firstLineOfCode);
+    chrome.storage.local.set({ codeBlocks: processedCode }, () => {
+      chrome.runtime.sendMessage(firstLineOfCode);
+    });
+  }
 }
 
 /**
@@ -97,7 +94,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   console.log('handleNewConnection', portToEventRecorder);
   activePort = portToEventRecorder;
   activePort.onMessage.addListener(handleEvents);
-  if (!session.host) handleFirstConnection();
+  if (backgroundStatus.recStatus !== 'on') handleFirstConnection();
 }
 
 /**
@@ -110,8 +107,8 @@ function startRecording(): Promise<void> {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       injectEventRecorder()
         .then(() => {
-          resolve();
           chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
+          resolve();
         })
         .catch(err => reject(err));
     });
@@ -129,10 +126,8 @@ function stopRecording(): Promise<void> {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
     chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-    chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
+    chrome.storage.local.set({ codeBlocks: processedCode, status: 'paused' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      session.processedCode = [];
-      session.host = null;
       activePort = null;
       chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
       resolve();
@@ -154,6 +149,20 @@ function cleanUp(): Promise<void> {
   });
 }
 
+function resetRecording(): Promise<void> {
+  console.log('resetRecording');
+  return new Promise((resolve, reject) => {
+    cleanUp()
+      .then(() => {
+        processedCode = [];
+        resolve();
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+}
+
 /**
  * Handles control messages sent from the view (popup) and conducting the appropriate actions.
  *
@@ -172,11 +181,11 @@ function handleControlAction(action: ControlAction): Promise<RecState> {
         break;
       case ControlAction.STOP:
         stopRecording()
-          .then(() => resolve('done'))
+          .then(() => resolve('paused'))
           .catch(err => reject(err));
         break;
       case ControlAction.RESET:
-        cleanUp()
+        resetRecording()
           .then(() => resolve('off'))
           .catch(err => reject(err));
         break;
@@ -208,11 +217,12 @@ function handleStateChange(action: ControlAction): Promise<void> {
  */
 function handleQuickKeys(command: string): void {
   let action: ControlAction;
-  console.log("this is the command", command);
+  console.log('this is the command', command);
   if (backgroundStatus.isPending) return;
-  if (command === 'start-recording' && backgroundStatus.recStatus === 'off') action = ControlAction.START;
-  else if (command === 'start-recording' && backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
-  else if (command === 'reset-recording' && backgroundStatus.recStatus === 'done') action = ControlAction.RESET;
+  if (command === 'start-recording') {
+    if (backgroundStatus.recStatus === 'off' || backgroundStatus.recStatus === 'paused') action = ControlAction.START;
+    else if (backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
+  } else if (command === 'reset-recording' && backgroundStatus.recStatus === 'paused') action = ControlAction.RESET;
   if (action !== undefined) {
     handleStateChange(action)
       .then(() => {
@@ -224,30 +234,19 @@ function handleQuickKeys(command: string): void {
   }
 }
 
-function suspend() {
-  console.log('suspend');
-  cleanUp();
-}
-
-function install() {
-  console.log('install');
-  cleanUp();
-} 
-
 /**
  * Initializes the extension.
  */
 function initialize(): void {
   console.log('initialize');
+  chrome.runtime.onInstalled.addListener(cleanUp);
+  chrome.runtime.onConnect.addListener(handleNewConnection);
+  chrome.runtime.onMessage.addListener(handleStateChange);
+  chrome.commands.onCommand.addListener(handleQuickKeys);
   cleanUp()
     .then(() => {
       backgroundStatus.isPending = false;
     });
-  chrome.runtime.onMessage.addListener(handleStateChange);
-  chrome.runtime.onConnect.addListener(handleNewConnection);
-  chrome.commands.onCommand.addListener(handleQuickKeys);
-  chrome.runtime.onSuspend.addListener(suspend);
-  chrome.runtime.onInstalled.addListener(install);
 }
 
 initialize();
