@@ -12,12 +12,12 @@ const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
   }
   const blocks = codeBlocks.map(block => (
     
-    <span>
-        <p style={{border: '2px solid red'}} >
+    <ul className="code-wrapper">
+      <li className="delete-item">
           {block}
-          <span style={styleObj}>X</span>
-        </p>
-      </span>
+          <button className="invisible">X</button>
+        </li>
+      </ul>
   ));
 
   return (
