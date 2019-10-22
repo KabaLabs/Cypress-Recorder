@@ -10,6 +10,7 @@ import { EventType } from '../constants';
 
 let port: chrome.runtime.Port;
 
+
 /**
  * Parses DOM events into an object with the necessary data.
  *
