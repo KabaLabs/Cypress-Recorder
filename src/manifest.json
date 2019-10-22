@@ -36,13 +36,6 @@
       },
       "description": "start recording"
     },
-    "stop-recording": {
-      "suggested_key": {
-        "default": "Ctrl+Y",
-        "mac": "MacCtrl+Y"
-      },
-      "description": "stop recording"
-    },
     "reset-recording": {
       "suggested_key": {
         "default": "Ctrl+G",

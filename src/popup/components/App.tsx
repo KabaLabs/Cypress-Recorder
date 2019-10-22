@@ -18,8 +18,11 @@ export default () => {
     setCodeBlocks([...codeBlocks, lastBlock]);
   }, [lastBlock]);
 
-  const pushBlock = (block: CodeBlock): void => {
-    setLastBlock(block);
+  const handleMessageFromBackground = (message: CodeBlock | ControlAction): void => {
+    if (message as ControlAction === ControlAction.START) setRecStatus('on');
+    else if (message as ControlAction === ControlAction.STOP) setRecStatus('done');
+    else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
+    else setLastBlock(message as CodeBlock);
   };
 
   React.useEffect((): () => void => {
@@ -27,7 +30,7 @@ export default () => {
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
       if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'done') setRecStatus('done');
-      chrome.runtime.onMessage.addListener(pushBlock);
+      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
     });
     chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
       // check currentURL to see if it is valid for recording
@@ -36,7 +39,7 @@ export default () => {
       }
     });
     return () => {
-      chrome.runtime.onMessage.removeListener(pushBlock);
+      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
     }
   }, []);
 

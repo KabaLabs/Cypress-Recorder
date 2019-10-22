@@ -10,8 +10,15 @@ import { generateBlock, generateVisit } from '../helpers/codeGenerator';
 import {
   RecordedSession,
   ParsedEvent,
+  BackgroundStatus,
+  RecState,
 } from '../types';
 import { ControlAction } from '../constants';
+
+const backgroundStatus: BackgroundStatus = {
+  isPending: true,
+  recStatus: 'off',
+};
 
 const session: RecordedSession = {
   processedCode: [],
@@ -25,9 +32,16 @@ let activePort: chrome.runtime.Port | null = null;
  */
 function injectEventRecorder(
   details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
-): void {
+): Promise<void> {
   console.log('injectEventRecorder', details);
-  if (!details || details.frameId === 0) chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' });
+  return new Promise((resolve, reject) => {
+    if (!details || details.frameId === 0) {
+      chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' }, () => {
+        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+        resolve();
+      });
+    } else resolve();
+  });
 }
 
 /**
@@ -89,10 +103,15 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
 /**
  * Starts the recording process by injecting the event recorder into the active tab.
  */
-function startRecording(): void {
+function startRecording(): Promise<void> {
   console.log('startRecording');
-  chrome.storage.local.set({ status: 'on' }, () => {
-    injectEventRecorder();
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set({ status: 'on' }, () => {
+      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+      injectEventRecorder()
+        .then(() => resolve())
+        .catch(err => reject(err));
+    });
   });
 }
 
@@ -101,25 +120,34 @@ function startRecording(): void {
  *
  * @param {Function} sendResponse
  */
-function stopRecording(): void {
+function stopRecording(): Promise<void> {
   console.log('stopRecording');
-  ejectEventRecorder();
-  chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
-  chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-  chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
-    session.processedCode = [];
+  return new Promise((resolve, reject) => {
+    ejectEventRecorder();
+    chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
+    chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
+    chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
+      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+      session.processedCode = [];
+      session.host = null;
+      activePort = null;
+      resolve();
+    });
   });
-  session.host = null;
-  activePort = null;
 }
 
 /**
  * Performs necessary cleanup between sessions.
  */
-function cleanUp(): void {
+function cleanUp(): Promise<void> {
   console.log('cleanUp');
-  ejectEventRecorder();
-  chrome.storage.local.set({ status: 'off', codeBlocks: [] });
+  return new Promise((resolve, reject) => {
+    ejectEventRecorder();
+    chrome.storage.local.set({ status: 'off', codeBlocks: [] }, () => {
+      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+      resolve();
+    });
+  });
 }
 
 /**
@@ -130,25 +158,48 @@ function cleanUp(): void {
  * @param {Function} sendResponse
  */
 
- /**
-  * @param {CommandKey} command
-  * @param action 
+/**
+  * @param {ControlAction} action
   */
-function handleControlAction(action: ControlAction): void {
+function handleControlAction(action: ControlAction): Promise<RecState> {
   console.log('handleControlAction', action);
-  switch (action) {
-    case ControlAction.START:
-      startRecording();
-      break;
-    case ControlAction.STOP:
-      stopRecording();
-      break;
-    case ControlAction.RESET:
-      cleanUp();
-      break;
-    default:
-      throw new Error(`Invalid action: ${action}`);
-  }
+  return new Promise((resolve, reject) => {
+    switch (action) {
+      case ControlAction.START:
+        startRecording()
+          .then(() => resolve('on'))
+          .catch(err => reject(err));
+        break;
+      case ControlAction.STOP:
+        stopRecording()
+          .then(() => resolve('done'))
+          .catch(err => reject(err));
+        break;
+      case ControlAction.RESET:
+        cleanUp()
+          .then(() => resolve('off'))
+          .catch(err => reject(err));
+        break;
+      default:
+        throw new Error(`Invalid action: ${action}`);
+    }
+  });
+}
+
+function handleStateChange(action: ControlAction): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (backgroundStatus.isPending) reject();
+    else {
+      backgroundStatus.isPending = true;
+      handleControlAction(action)
+        .then(newStatus => {
+          backgroundStatus.recStatus = newStatus;
+          backgroundStatus.isPending = false;
+          resolve();
+        })
+        .catch(err => reject(err));
+    }
+  });
 }
 
 /*
@@ -158,12 +209,18 @@ function handleControlAction(action: ControlAction): void {
 function handleQuickKeys(command: string): void {
   let action: ControlAction;
   console.log("this is the command", command);
-  if (command === 'start-recording') action = ControlAction.START;
-  else if (command === 'stop-recording') action = ControlAction.STOP;
-  else if (command === 'reset-recording') action = ControlAction.RESET;
-  console.log("this is the action", action);
-
-  handleControlAction(action);
+  if (command === 'start-recording' && backgroundStatus.recStatus === 'off') action = ControlAction.START;
+  else if (command === 'start-recording' && backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
+  else if (command === 'reset-recording' && backgroundStatus.recStatus === 'done') action = ControlAction.RESET;
+  if (action !== undefined) {
+    handleStateChange(action)
+      .then(() => {
+        chrome.runtime.sendMessage(action);
+      })
+      .catch(err => {
+        throw new Error(`handleQuickKeys: ${err}`);
+      });
+  }
 }
 
 function suspend() {
@@ -182,13 +239,13 @@ function install() {
  */
 function initialize(): void {
   console.log('initialize');
-  cleanUp();
-  chrome.runtime.onMessage.addListener(handleControlAction);
+  cleanUp()
+    .then(() => {
+      backgroundStatus.isPending = false;
+    });
+  chrome.runtime.onMessage.addListener(handleStateChange);
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.commands.onCommand.addListener(handleQuickKeys);
-  // chrome.commands.onCommand.addListener(function(c: CommandAction) {
-  //   console.log("the command", c)
-  // });
   chrome.runtime.onSuspend.addListener(suspend);
   chrome.runtime.onInstalled.addListener(install);
 }
