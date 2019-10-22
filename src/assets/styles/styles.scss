@@ -88,18 +88,6 @@ body {
   padding: 20;
 }
 
-#disabled-button {
-  background-color: rgb(106, 174, 143);
-  border: 1px solid rgb(248, 249, 250);
-  margin: 10px;
-  padding: 15px;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 400;
-  color: rgb(248, 249, 250);
-  line-height: 8px;
-}
-
 /**
  * Classes.
  */
@@ -120,6 +108,18 @@ body {
     color: rgb(49, 158, 107);
     transition: all 0.15s ease 0s;
   }
+}
+
+.disabled-button {
+  background-color: rgb(106, 174, 143);
+  border: 1px solid rgb(248, 249, 250);
+  margin: 10px;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgb(248, 249, 250);
+  line-height: 8px;
 }
 
 .text {
