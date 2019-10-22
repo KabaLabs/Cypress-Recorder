@@ -15,12 +15,20 @@ export default () => {
   const [lastBlock, setLastBlock] = React.useState<string>('');
 
   React.useEffect((): void => {
-    setCodeBlocks([...codeBlocks, lastBlock]);
+    if (lastBlock) setCodeBlocks([...codeBlocks, lastBlock]);
   }, [lastBlock]);
+
+  React.useEffect((): void => {
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+    if (recStatus === 'off') {
+      setCodeBlocks([]);
+      setLastBlock('');
+    }
+  }, [recStatus]);
 
   const handleMessageFromBackground = (message: CodeBlock | ControlAction): void => {
     if (message as ControlAction === ControlAction.START) setRecStatus('on');
-    else if (message as ControlAction === ControlAction.STOP) setRecStatus('done');
+    else if (message as ControlAction === ControlAction.STOP) setRecStatus('paused');
     else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
     else setLastBlock(message as CodeBlock);
   };
@@ -29,11 +37,10 @@ export default () => {
     chrome.storage.local.get(['status', 'codeBlocks'], result => {
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
       if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'done') setRecStatus('done');
+      else if (result.status === 'paused') setRecStatus('paused');
       chrome.runtime.onMessage.addListener(handleMessageFromBackground);
     });
     chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
-      // check currentURL to see if it is valid for recording
       if (activeTab[0].url.startsWith('chrome://')) {
         setIsValidTab(false);
       }
@@ -46,21 +53,16 @@ export default () => {
   const startRecording = () => {
     chrome.runtime.sendMessage(ControlAction.START);
     setRecStatus('on');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
   };
 
   const stopRecording = () => {
     chrome.runtime.sendMessage(ControlAction.STOP);
-    setRecStatus('done');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+    setRecStatus('paused');
   };
 
   const resetRecording = () => {
     chrome.runtime.sendMessage(ControlAction.RESET);
     setRecStatus('off');
-    setCodeBlocks([]);
-    setLastBlock('');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
   };
 
   const handleToggle = (action: ControlAction): void => {

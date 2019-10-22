@@ -5,7 +5,7 @@ export type BlockData = CodeBlock[];
 export type RecState =
   | 'off'
   | 'on'
-  | 'done';
+  | 'paused';
 
 export interface ParsedEvent {
   selector: string,

@@ -110,8 +110,8 @@ function startRecording(): Promise<void> {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       injectEventRecorder()
         .then(() => {
-          resolve();
           chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
+          resolve();
         })
         .catch(err => reject(err));
     });
@@ -129,14 +129,27 @@ function stopRecording(): Promise<void> {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
     chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-    chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'done' }, () => {
+    chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'paused' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      session.processedCode = [];
       session.host = null;
       activePort = null;
       chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
       resolve();
     });
+  });
+}
+
+function resetRecording(): Promise<void> {
+  console.log('resetRecording');
+  return new Promise((resolve, reject) => {
+    cleanUp()
+      .then(() => {
+        session.processedCode = [];
+        resolve();
+      })
+      .catch(err => {
+        throw new Error(err);
+      });
   });
 }
 
@@ -172,11 +185,11 @@ function handleControlAction(action: ControlAction): Promise<RecState> {
         break;
       case ControlAction.STOP:
         stopRecording()
-          .then(() => resolve('done'))
+          .then(() => resolve('paused'))
           .catch(err => reject(err));
         break;
       case ControlAction.RESET:
-        cleanUp()
+        resetRecording()
           .then(() => resolve('off'))
           .catch(err => reject(err));
         break;
@@ -210,9 +223,11 @@ function handleQuickKeys(command: string): void {
   let action: ControlAction;
   console.log("this is the command", command);
   if (backgroundStatus.isPending) return;
-  if (command === 'start-recording' && backgroundStatus.recStatus === 'off') action = ControlAction.START;
-  else if (command === 'start-recording' && backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
-  else if (command === 'reset-recording' && backgroundStatus.recStatus === 'done') action = ControlAction.RESET;
+  if (command === 'start-recording') {
+    if (backgroundStatus.recStatus === 'off' || backgroundStatus.recStatus === 'paused') action = ControlAction.START;
+    else if (backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
+  }
+  else if (command === 'reset-recording' && backgroundStatus.recStatus === 'paused') action = ControlAction.RESET;
   if (action !== undefined) {
     handleStateChange(action)
       .then(() => {
