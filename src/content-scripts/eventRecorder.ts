@@ -3,13 +3,11 @@
  *
  * Responsible for recording the DOM events.
  */
-
 import finder from '@medv/finder';
 import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
 let port: chrome.runtime.Port;
-
 
 /**
  * Parses DOM events into an object with the necessary data.
