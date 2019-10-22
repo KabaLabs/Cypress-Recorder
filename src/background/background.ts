@@ -234,30 +234,19 @@ function handleQuickKeys(command: string): void {
   }
 }
 
-function suspend() {
-  console.log('suspend');
-  cleanUp();
-}
-
-function install() {
-  console.log('install');
-  cleanUp();
-}
-
 /**
  * Initializes the extension.
  */
 function initialize(): void {
   console.log('initialize');
+  chrome.runtime.onInstalled.addListener(cleanUp);
+  chrome.runtime.onConnect.addListener(handleNewConnection);
+  chrome.runtime.onMessage.addListener(handleStateChange);
+  chrome.commands.onCommand.addListener(handleQuickKeys);
   cleanUp()
     .then(() => {
       backgroundStatus.isPending = false;
     });
-  chrome.runtime.onMessage.addListener(handleStateChange);
-  chrome.runtime.onConnect.addListener(handleNewConnection);
-  chrome.commands.onCommand.addListener(handleQuickKeys);
-  chrome.runtime.onSuspend.addListener(suspend);
-  chrome.runtime.onInstalled.addListener(install);
 }
 
 initialize();
