@@ -92,37 +92,13 @@ export default () => {
     }
   };
 
-<<<<<<< HEAD
-  const pushBlock = (block: CodeBlock): void => {
-    setLastBlock(block);
-  };
-
-  React.useEffect((): void => {
-    chrome.storage.local.get(['status', 'codeBlocks'], result => {
-      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
-      if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'done') setRecStatus('done');
-    });
-    chrome.runtime.onMessage.addListener(pushBlock);
-  }, []);
-
-  React.useEffect((): void => {
-    setCodeBlocks([...codeBlocks, lastBlock]);
-  }, [lastBlock]);
-
-=======
->>>>>>> staging
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
           ? <Info />
-<<<<<<< HEAD
-          : <Body codeBlocks={codeBlocks} recStatus={recStatus} />
-=======
           : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
->>>>>>> staging
         )
       }
       <Footer
