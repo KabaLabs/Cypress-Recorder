@@ -134,7 +134,7 @@ function stopRecording(): Promise<void> {
       session.processedCode = [];
       session.host = null;
       activePort = null;
-      chrome.browserAction.setIcon({ path: 'cypressconeICON.png' })
+      chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
       resolve();
     });
   });
