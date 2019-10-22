@@ -202,9 +202,10 @@ function handleStateChange(action: ControlAction): Promise<void> {
   });
 }
 
-/*
-  quick key initiator function
-*/
+/**
+ * quick key initiator function
+ * @param {string} command
+ */
 function handleQuickKeys(command: string): void {
   let action: ControlAction;
   console.log("this is the command", command);

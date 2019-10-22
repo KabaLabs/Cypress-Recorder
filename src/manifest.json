@@ -33,14 +33,16 @@
     "start-recording": {
       "suggested_key": {
         "default": "Alt+R",
-        "mac": "MacCtrl+R"
+        "mac": "MacCtrl+R",
+        "linux": "Alt+R"
       },
       "description": "start recording"
     },
     "reset-recording": {
       "suggested_key": {
         "default": "Alt+G",
-        "mac": "MacCtrl+G"
+        "mac": "MacCtrl+G",
+        "linux": "Alt+G"
       },
       "description": "reset recording"
     }
