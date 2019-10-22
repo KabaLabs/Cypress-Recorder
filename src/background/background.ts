@@ -109,7 +109,10 @@ function startRecording(): Promise<void> {
     chrome.storage.local.set({ status: 'on' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       injectEventRecorder()
-        .then(() => resolve())
+        .then(() => {
+          resolve();
+          chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
+        })
         .catch(err => reject(err));
     });
   });
@@ -131,7 +134,7 @@ function stopRecording(): Promise<void> {
       session.processedCode = [];
       session.host = null;
       activePort = null;
-      chrome.browserAction.setIcon({ path: 'cypressconeICON.png' })
+      chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
       resolve();
     });
   });
