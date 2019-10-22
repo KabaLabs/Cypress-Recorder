@@ -202,12 +202,14 @@ function handleStateChange(action: ControlAction): Promise<void> {
   });
 }
 
-/*
-  quick key initiator function
-*/
+/**
+ * quick key initiator function
+ * @param {string} command
+ */
 function handleQuickKeys(command: string): void {
   let action: ControlAction;
   console.log("this is the command", command);
+  if (backgroundStatus.isPending) return;
   if (command === 'start-recording' && backgroundStatus.recStatus === 'off') action = ControlAction.START;
   else if (command === 'start-recording' && backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
   else if (command === 'reset-recording' && backgroundStatus.recStatus === 'done') action = ControlAction.RESET;
@@ -217,7 +219,7 @@ function handleQuickKeys(command: string): void {
         chrome.runtime.sendMessage(action);
       })
       .catch(err => {
-        throw new Error(`handleQuickKeys: ${err}`);
+        throw new Error(err);
       });
   }
 }
