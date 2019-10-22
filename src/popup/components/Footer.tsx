@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ToggleButton from './ToggleButton';
+import ResetButton from './ResetButton';
 import ClipboardButton from './ClipboardButton';
 import { ControlAction } from '../../constants';
 
@@ -18,9 +19,7 @@ export default ({
 } : FooterProps) => (
   <div id="footer">
     <ToggleButton recStatus={recStatus} handleToggle={handleToggle} isValidTab={isValidTab} />
-    {recStatus === 'done' && <ClipboardButton copyToClipboard={copyToClipboard} />}
+    {recStatus === 'paused' && <ResetButton handleToggle={handleToggle} />}
+    {recStatus === 'paused' && <ClipboardButton copyToClipboard={copyToClipboard} />}
   </div>
 );
-
-// adjust footer component to have additional props
-// if isValidTab is false, render disabled button using HTML disabled property

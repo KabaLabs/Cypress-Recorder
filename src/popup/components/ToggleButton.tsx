@@ -10,9 +10,8 @@ export interface ToggleButtonProps {
 export default ({ recStatus, handleToggle, isValidTab }: ToggleButtonProps) => {
   const handleClick = (): void => {
     let action: ControlAction;
-    if (recStatus === 'off') action = ControlAction.START;
+    if (recStatus === 'off' || recStatus === 'paused') action = ControlAction.START;
     else if (recStatus === 'on') action = ControlAction.STOP;
-    else if (recStatus === 'done') action = ControlAction.RESET;
     handleToggle(action);
   };
 
@@ -20,11 +19,11 @@ export default ({ recStatus, handleToggle, isValidTab }: ToggleButtonProps) => {
 
   return (
     <>
-      <button type="button" className={buttonClass} onClick={handleClick} disabled={!isValidTab && recStatus === 'off'}>
-        {recStatus === 'off' && !isValidTab && 'Invalid Tab'}
+      <button type="button" className={buttonClass} onClick={handleClick} disabled={!isValidTab && (recStatus === 'off' || recStatus === 'paused')}>
+        {(recStatus === 'off' || recStatus === 'paused') && !isValidTab && 'Invalid Tab'}
         {recStatus === 'off' && isValidTab && 'Start Recording'}
+        {recStatus === 'paused' && isValidTab && 'Resume'}
         {recStatus === 'on' && 'Stop Recording'}
-        {recStatus === 'done' && 'Reset Recording'}
       </button>
     </>
   );
