@@ -2,11 +2,15 @@ import * as React from 'react';
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
+  destroyBlock: (index: number) => void
 }
 
-const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
-  const blocks = codeBlocks.map(block => (
-    <p>{block}</p>
+const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
+  const blocks = codeBlocks.map((block, index) => (
+    <>
+      <p>{block}</p>
+      <button className="destroy" onClick={() => destroyBlock(index)}>x</button>
+    </>
   ));
 
   return (

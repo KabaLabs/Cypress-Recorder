@@ -82,6 +82,11 @@ export default () => {
     }
   };
 
+  // destroyCodeblock should first set state to to be newly updated copy of codeblocks, send a message to background to handle localstorage/background's copy
+  // add a new control action to handle deletion
+  
+
+
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
