@@ -78,10 +78,12 @@ function handleFirstConnection(): void {
   );
   session.host = activePort.sender.url;
   const firstLineOfCode = generateVisit(session.host);
-  session.processedCode.push(firstLineOfCode);
-  chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
-    chrome.runtime.sendMessage(firstLineOfCode);
-  });
+  if (firstLineOfCode !== session.processedCode[0]) {
+    session.processedCode.push(firstLineOfCode);
+    chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+      chrome.runtime.sendMessage(firstLineOfCode);
+    });
+  }
 }
 
 /**
