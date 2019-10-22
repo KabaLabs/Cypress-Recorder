@@ -64,19 +64,9 @@ export default () => {
   };
 
   const handleToggle = (action: ControlAction): void => {
-    switch (action) {
-      case ControlAction.START:
-        startRecording();
-        break;
-      case ControlAction.STOP:
-        stopRecording();
-        break;
-      case ControlAction.RESET:
-        resetRecording();
-        break;
-      default:
-        throw new Error(`Unhandled action: ${action}`);
-    }
+    if (action === ControlAction.START) startRecording();
+    else if (action === ControlAction.STOP) stopRecording();
+    else if (action === ControlAction.RESET) resetRecording();
   };
 
   const toggleInfoDisplay = (): void => {
