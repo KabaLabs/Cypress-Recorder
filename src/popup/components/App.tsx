@@ -11,7 +11,37 @@ export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
+  const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
   const [lastBlock, setLastBlock] = React.useState<string>('');
+
+  React.useEffect((): void => {
+    setCodeBlocks([...codeBlocks, lastBlock]);
+  }, [lastBlock]);
+
+  const handleMessageFromBackground = (message: CodeBlock | ControlAction): void => {
+    if (message as ControlAction === ControlAction.START) setRecStatus('on');
+    else if (message as ControlAction === ControlAction.STOP) setRecStatus('done');
+    else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
+    else setLastBlock(message as CodeBlock);
+  };
+
+  React.useEffect((): () => void => {
+    chrome.storage.local.get(['status', 'codeBlocks'], result => {
+      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
+      if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'done') setRecStatus('done');
+      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+    });
+    chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
+      // check currentURL to see if it is valid for recording
+      if (activeTab[0].url.startsWith('chrome://')) {
+        setIsValidTab(false);
+      }
+    });
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
+    }
+  }, []);
 
   const startRecording = () => {
     chrome.runtime.sendMessage(ControlAction.START);
@@ -62,6 +92,7 @@ export default () => {
     }
   };
 
+<<<<<<< HEAD
   const pushBlock = (block: CodeBlock): void => {
     setLastBlock(block);
   };
@@ -79,16 +110,27 @@ export default () => {
     setCodeBlocks([...codeBlocks, lastBlock]);
   }, [lastBlock]);
 
+=======
+>>>>>>> staging
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
           ? <Info />
+<<<<<<< HEAD
           : <Body codeBlocks={codeBlocks} recStatus={recStatus} />
+=======
+          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
+>>>>>>> staging
         )
       }
-      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
+      <Footer
+        isValidTab={isValidTab}
+        recStatus={recStatus}
+        handleToggle={handleToggle}
+        copyToClipboard={copyToClipboard}
+      />
     </div>
   );
 };

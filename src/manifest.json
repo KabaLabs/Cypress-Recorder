@@ -1,31 +1,50 @@
 {
-    "name": "Cypress Recorder",
-    "version": "0.1.0",
-    "description": "Records a user session and generates cypress code for automation and testing purposes.",
-    "manifest_version": 2,
-    "permissions": [
-      "activeTab",
-      "clipboardWrite",
-      "storage",
-      "tabs",
-      "webNavigation"
+  "name": "Cypress Recorder",
+  "version": "0.1.0",
+  "description": "Records a user session and generates cypress code for automation and testing purposes.",
+  "manifest_version": 2,
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "storage",
+    "tabs",
+    "webNavigation",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "icons": {
+    "16": "./cypresscone16.png",
+    "32": "./cypresscone32.png",
+    "48": "./cypresscone48.png",
+    "128": "./cypresscone128.png"
+  },
+  "author": "Abbey Campbell, Adam Stover, Brad Morgan, Ken Sakuma",
+  "background": {
+    "scripts": [
+      "./background/background.js"
     ],
-    "optional_permissions": [
-      "http://*/*",
-      "https://*/*"
-    ],
-    "icons": { 
-      "16": "./cypresscone16.png",
-      "32": "./cypresscone32.png",
-      "48": "./cypresscone48.png",
-      "128": "./cypresscone128.png"
+    "persistent": false
+  },
+  "browser_action": {
+    "default_icon": "./cypressconeICON.png",
+    "default_popup": "./popup/index.html"
+  },
+  "commands": {
+    "start-recording": {
+      "suggested_key": {
+        "default": "Alt+R",
+        "mac": "MacCtrl+R",
+        "linux": "Alt+R"
+      },
+      "description": "start recording"
     },
-    "author": "Abbey Campbell, Adam Stover, Brad Morgan, Ken Sakuma",
-    "background": {
-      "scripts": ["./background/background.js"],
-      "persistent": false
-    },
-    "browser_action": {
-      "default_popup": "./popup/index.html"
+    "reset-recording": {
+      "suggested_key": {
+        "default": "Alt+G",
+        "mac": "MacCtrl+G",
+        "linux": "Alt+G"
+      },
+      "description": "reset recording"
     }
   }
+}

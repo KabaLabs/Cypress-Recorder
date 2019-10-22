@@ -22,3 +22,8 @@ export interface RecordedSession {
   host: string | null,
   processedCode: BlockData,
 }
+
+export interface BackgroundStatus {
+  isPending: boolean,
+  recStatus: RecState,
+}

@@ -3,7 +3,6 @@
  *
  * Responsible for recording the DOM events.
  */
-
 import finder from '@medv/finder';
 import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
