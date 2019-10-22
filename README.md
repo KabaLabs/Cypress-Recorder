@@ -31,4 +31,3 @@ Download [Cypress Recorder] from the Chrome Web Store. That's it! Once you see o
 ## Acknowledgments
 
 * Max Gonzalez [maximiliangonzalez] (https://github.com/maximiliangonzalez)
-

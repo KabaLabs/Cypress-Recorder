@@ -3,31 +3,76 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, BlockData } from '../../types';
+import { RecState, BlockData, CodeBlock } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
-  const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(true);
+  const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
+  const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
+  const [lastBlock, setLastBlock] = React.useState<string>('');
+
+  React.useEffect((): void => {
+    setCodeBlocks([...codeBlocks, lastBlock]);
+  }, [lastBlock]);
+
+  const handleMessageFromBackground = (message: CodeBlock | ControlAction): void => {
+    if (message as ControlAction === ControlAction.START) setRecStatus('on');
+    else if (message as ControlAction === ControlAction.STOP) setRecStatus('done');
+    else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
+    else setLastBlock(message as CodeBlock);
+  };
+
+  React.useEffect((): () => void => {
+    chrome.storage.local.get(['status', 'codeBlocks'], result => {
+      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
+      if (result.status === 'on') setRecStatus('on');
+      else if (result.status === 'done') setRecStatus('done');
+      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+    });
+    chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
+      // check currentURL to see if it is valid for recording
+      if (activeTab[0].url.startsWith('chrome://')) {
+        setIsValidTab(false);
+      }
+    });
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
+    }
+  }, []);
+
+  const startRecording = () => {
+    chrome.runtime.sendMessage(ControlAction.START);
+    setRecStatus('on');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
+
+  const stopRecording = () => {
+    chrome.runtime.sendMessage(ControlAction.STOP);
+    setRecStatus('done');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
+
+  const resetRecording = () => {
+    chrome.runtime.sendMessage(ControlAction.RESET);
+    setRecStatus('off');
+    setCodeBlocks([]);
+    setLastBlock('');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
 
   const handleToggle = (action: ControlAction): void => {
     switch (action) {
       case ControlAction.START:
-        setRecStatus('on');
-        chrome.runtime.sendMessage(action);
+        startRecording();
         break;
       case ControlAction.STOP:
-        setRecStatus('done');
-        chrome.runtime.sendMessage(action, (response: BlockData) => {
-          if (!response.length) setRecStatus('off');
-          else setCodeBlocks(response);
-        });
+        stopRecording();
         break;
       case ControlAction.RESET:
-        setRecStatus('off');
-        chrome.runtime.sendMessage(action);
+        resetRecording();
         break;
       default:
         throw new Error(`Unhandled action: ${action}`);
@@ -39,35 +84,29 @@ export default () => {
     else setShouldInfoDisplay(true);
   };
 
-  const copyToClipboard = async (): Promise<boolean> => {
+  const copyToClipboard = async (): Promise<void> => {
     try {
       await navigator.clipboard.writeText(codeBlocks.join('\n'));
-      return true;
     } catch (error) {
-      console.error(error);
-      return false;
+      throw new Error(error);
     }
   };
-
-  React.useEffect((): void => {
-    chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
-      if (!result || !result.status) chrome.storage.local.set({ status: recStatus });
-      else if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'done') setRecStatus('done');
-      if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
-    });
-  }, []);
 
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
-          ? <Body codeBlocks={codeBlocks} recStatus={recStatus} />
-          : <Info />
-          )
+          ? <Info />
+          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
+        )
       }
-      <Footer recStatus={recStatus} handleToggle={handleToggle} copyToClipboard={copyToClipboard} />
+      <Footer
+        isValidTab={isValidTab}
+        recStatus={recStatus}
+        handleToggle={handleToggle}
+        copyToClipboard={copyToClipboard}
+      />
     </div>
   );
 };
