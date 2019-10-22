@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { BlockData } from '../../types';
 
 export interface CodeDisplayProps {
-  codeBlocks: BlockData,
+  codeBlocks: string[],
 }
 
 const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {

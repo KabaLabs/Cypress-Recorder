@@ -5,7 +5,7 @@
  * store the current url, as well each subsequest user interaction with the browser.
  */
 
-import { ParsedEvent, CodeBlock } from '../types';
+import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
 /**
@@ -13,11 +13,11 @@ import { EventType } from '../constants';
  * @param {ParsedEvent} event
  */
 
-function handleClick(event: ParsedEvent): CodeBlock {
+function handleClick(event: ParsedEvent): string {
   return `cy.get('${event.selector}').click();`;
 }
 
-function handleKeydown(event: ParsedEvent): CodeBlock | null {
+function handleKeydown(event: ParsedEvent): string | null {
   switch (event.key) {
     case 'Backspace':
       return `cy.get('${event.selector}').type('{backspace}');`;
@@ -44,16 +44,16 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
   }
 }
 
-function handleChange(event: ParsedEvent): CodeBlock {
+function handleChange(event: ParsedEvent): string {
   if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
   return `cy.get('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
 }
 
-function handleDoubleclick(event: ParsedEvent): CodeBlock {
+function handleDoubleclick(event: ParsedEvent): string {
   return `cy.get('${event.selector}').dblclick();`;
 }
 
-function handleSubmit(event: ParsedEvent): CodeBlock {
+function handleSubmit(event: ParsedEvent): string {
   return `cy.get('${event.selector}').submit();`;
 }
 
@@ -61,7 +61,7 @@ function handleSubmit(event: ParsedEvent): CodeBlock {
  * Generates a line of Cypress code that replicates an action by a user.
  * @param {ParsedEvent} event
  */
-export function generateBlock(event: ParsedEvent): CodeBlock {
+export function generateBlock(event: ParsedEvent): string {
   switch (event.action) {
     case EventType.CLICK:
       return handleClick(event);
@@ -100,6 +100,6 @@ export function generateBlock(event: ParsedEvent): CodeBlock {
 //     .concat(session.events.map(event => generateBlock(event))
 //     .filter(block => block !== null));
 // }
-export function generateVisit(url: string): CodeBlock {
+export function generateVisit(url: string): string {
   return `cy.visit('${url}');`;
 }

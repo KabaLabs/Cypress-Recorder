@@ -8,7 +8,6 @@
 
 import { generateBlock, generateVisit } from '../helpers/codeGenerator';
 import {
-  RecordedSession,
   ParsedEvent,
   BackgroundStatus,
   RecState,
@@ -20,11 +19,7 @@ const backgroundStatus: BackgroundStatus = {
   recStatus: 'off',
 };
 
-const session: RecordedSession = {
-  processedCode: [],
-  host: null,
-};
-
+let processedCode: String[] = [];
 let activePort: chrome.runtime.Port | null = null;
 
 /**
@@ -63,24 +58,24 @@ function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
   const block = generateBlock(event);
   if (block !== null) {
-    session.processedCode.push(block);
-    chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+    processedCode.push(block);
+    chrome.storage.local.set({ codeBlocks: processedCode }, () => {
       chrome.runtime.sendMessage(block);
     });
   }
 }
 
 function handleFirstConnection(): void {
+  console.log('handleFirstConnection');
   chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
   chrome.webNavigation.onDOMContentLoaded.addListener(
     injectEventRecorder,
     { url: [{ hostEquals: activePort.name }] },
   );
-  session.host = activePort.sender.url;
-  const firstLineOfCode = generateVisit(session.host);
-  if (firstLineOfCode !== session.processedCode[0]) {
-    session.processedCode.push(firstLineOfCode);
-    chrome.storage.local.set({ codeBlocks: session.processedCode }, () => {
+  const firstLineOfCode = generateVisit(activePort.sender.url);
+  if (firstLineOfCode !== processedCode[0]) {
+    processedCode.push(firstLineOfCode);
+    chrome.storage.local.set({ codeBlocks: processedCode }, () => {
       chrome.runtime.sendMessage(firstLineOfCode);
     });
   }
@@ -99,7 +94,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   console.log('handleNewConnection', portToEventRecorder);
   activePort = portToEventRecorder;
   activePort.onMessage.addListener(handleEvents);
-  if (!session.host) handleFirstConnection();
+  if (backgroundStatus.recStatus !== 'on') handleFirstConnection();
 }
 
 /**
@@ -131,9 +126,8 @@ function stopRecording(): Promise<void> {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
     chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-    chrome.storage.local.set({ codeBlocks: session.processedCode, status: 'paused' }, () => {
+    chrome.storage.local.set({ codeBlocks: processedCode, status: 'paused' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      session.host = null;
       activePort = null;
       chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
       resolve();
@@ -160,7 +154,7 @@ function resetRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
     cleanUp()
       .then(() => {
-        session.processedCode = [];
+        processedCode = [];
         resolve();
       })
       .catch(err => {

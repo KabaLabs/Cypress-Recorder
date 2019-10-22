@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BlockData, RecState } from '../../types';
+import { RecState } from '../../types';
 
 import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
@@ -7,7 +7,7 @@ import LandingBox from './LandingBox';
 export interface BodyProps {
   isValidTab: boolean,
   recStatus: RecState,
-  codeBlocks: BlockData,
+  codeBlocks: string[],
 }
 
 export default ({ recStatus, codeBlocks, isValidTab }: BodyProps) => (

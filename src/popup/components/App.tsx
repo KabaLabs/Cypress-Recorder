@@ -3,13 +3,13 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, BlockData, CodeBlock } from '../../types';
+import { RecState } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
+  const [codeBlocks, setCodeBlocks] = React.useState<string[]>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
   const [lastBlock, setLastBlock] = React.useState<string>('');
@@ -26,11 +26,11 @@ export default () => {
     }
   }, [recStatus]);
 
-  const handleMessageFromBackground = (message: CodeBlock | ControlAction): void => {
+  const handleMessageFromBackground = (message: string | ControlAction): void => {
     if (message as ControlAction === ControlAction.START) setRecStatus('on');
     else if (message as ControlAction === ControlAction.STOP) setRecStatus('paused');
     else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
-    else setLastBlock(message as CodeBlock);
+    else setLastBlock(message as string);
   };
 
   React.useEffect((): () => void => {

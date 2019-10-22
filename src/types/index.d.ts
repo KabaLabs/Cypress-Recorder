@@ -1,7 +1,3 @@
-export type CodeBlock = string;
-
-export type BlockData = CodeBlock[];
-
 export type RecState =
   | 'off'
   | 'on'
@@ -16,11 +12,6 @@ export interface ParsedEvent {
   key?: string,
   href?: string,
   inputType?: string,
-}
-
-export interface RecordedSession {
-  host: string | null,
-  processedCode: BlockData,
 }
 
 export interface BackgroundStatus {
