@@ -21,6 +21,8 @@ const backgroundStatus: BackgroundStatus = {
 };
 
 let processedCode: String[] = [];
+let indexOfLastVisit: number = 0;
+let originalHost: string | null = null;
 let activePort: chrome.runtime.Port | null = null;
 
 /**
@@ -66,18 +68,37 @@ function handleEvents(event: ParsedEvent): void {
   }
 }
 
+function checkForBadNavigation(
+  details: chrome.webNavigation.WebNavigationTransitionCallbackDetails,
+): void {
+  console.log(details);
+  if (details.frameId === 0
+    && (!details.url.includes(originalHost)
+      || details.transitionQualifiers.includes('forward_back')
+      || details.transitionQualifiers.includes('from_address_bar'))
+  ) {
+    handleStateChange(ControlAction.STOP)
+      .catch(err => {
+        throw new Error(err);
+      });
+  }
+}
+
 function handleFirstConnection(): void {
   console.log('handleFirstConnection');
+  originalHost = activePort.name;
   chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
+  chrome.webNavigation.onCommitted.addListener(checkForBadNavigation);
   chrome.webNavigation.onDOMContentLoaded.addListener(
     injectEventRecorder,
-    { url: [{ hostEquals: activePort.name }] },
+    { url: [{ hostEquals: originalHost }] },
   );
-  const firstLineOfCode = generateVisit(activePort.sender.url);
-  if (firstLineOfCode !== processedCode[0]) {
-    processedCode.push(firstLineOfCode);
+  const visitCode = generateVisit(activePort.sender.url);
+  if (visitCode !== processedCode[indexOfLastVisit]) {
+    indexOfLastVisit = processedCode.length;
+    processedCode.push(visitCode);
     chrome.storage.local.set({ codeBlocks: processedCode }, () => {
-      chrome.runtime.sendMessage(firstLineOfCode);
+      chrome.runtime.sendMessage(visitCode);
     });
   }
 }
@@ -126,10 +147,12 @@ function stopRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
+    chrome.webNavigation.onCommitted.removeListener(checkForBadNavigation);
     chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
     chrome.storage.local.set({ codeBlocks: processedCode, status: 'paused' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       activePort = null;
+      originalHost = null;
       chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
       resolve();
     });
@@ -156,6 +179,7 @@ function resetRecording(): Promise<void> {
     cleanUp()
       .then(() => {
         processedCode = [];
+        indexOfLastVisit = 0;
         resolve();
       })
       .catch(err => {
@@ -238,19 +262,27 @@ function handleQuickKeys(command: string): void {
   }
 }
 
+function setUp() {
+  backgroundStatus.isPending = true;
+  cleanUp()
+    .then(() => {
+      backgroundStatus.isPending = false;
+    })
+    .catch(err => {
+      throw new Error(err);
+    });
+}
+
 /**
  * Initializes the extension.
  */
 function initialize(): void {
   console.log('initialize');
-  chrome.runtime.onInstalled.addListener(cleanUp);
+  chrome.runtime.onInstalled.addListener(setUp);
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onMessage.addListener(handleStateChange);
   chrome.commands.onCommand.addListener(handleQuickKeys);
-  cleanUp()
-    .then(() => {
-      backgroundStatus.isPending = false;
-    });
+  setUp();
 }
 
 initialize();

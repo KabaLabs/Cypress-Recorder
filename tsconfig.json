@@ -8,7 +8,6 @@
     "noEmit": true
   },
   "exclude": [
-    "node_modules",
-    "src/__tests__"
+    "node_modules"
   ]
 }
