@@ -82,10 +82,10 @@ export default () => {
     }
   };
 
-  // destroyCodeblock should first set state to to be newly updated copy of codeblocks, send a message to background to handle localstorage/background's copy
-  // add a new control action to handle deletion
-  
-
+  const destroyCodeblock = (index: number): void => {
+    setCodeBlocks(codeBlocks.slice(0, index).concat(codeBlocks.slice(index+1)));
+    chrome.runtime.sendMessage(ControlAction.DELETE);
+  };
 
   return (
     <div id="App">

@@ -11,6 +11,7 @@ import {
   ParsedEvent,
   BackgroundStatus,
   RecState,
+  ActionWithPayload,
 } from '../types';
 import { ControlAction } from '../constants';
 
@@ -195,8 +196,11 @@ function handleControlAction(action: ControlAction): Promise<RecState> {
   });
 }
 
-function handleStateChange(action: ControlAction): Promise<void> {
+function handleStateChange(action: ControlAction | ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
+    if(typeof action === 'object') {
+      
+    }
     if (backgroundStatus.isPending) reject();
     else {
       backgroundStatus.isPending = true;
