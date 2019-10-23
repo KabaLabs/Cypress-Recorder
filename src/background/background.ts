@@ -68,7 +68,7 @@ function handleEvents(event: ParsedEvent): void {
 }
 
 function checkForBadNavigation(
-  details?: chrome.webNavigation.WebNavigationTransitionCallbackDetails,
+  details: chrome.webNavigation.WebNavigationTransitionCallbackDetails,
 ): void {
   console.log(details);
   if (details.frameId === 0
