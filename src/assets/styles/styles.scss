@@ -96,22 +96,30 @@ body {
   align-items: flex-start;
   flex-grow: 1;
   padding: 20;
-  // overflow: hidden;
+  overflow-wrap: break-word;
   border: 2px dotted green;
 }
-.code-wrapper {
-  margin-left: 20px;
+ .code-wrapper {
+//  display: flex;
+
 }
 
 .invisible {
   display: none;
+  align-self: flex-end;
+
+}
+
+.delete-item {
+  display: flex;
 }
 
 .delete-item:hover {
-  border: 5px solid red;
+ 
 }
 .delete-item:hover .invisible {
   display: inline;
+  align-self: flex-end;
 }
 
 /**
