@@ -13,9 +13,9 @@ const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
   const blocks = codeBlocks.map(block => (
     
   
-      <span className=" code-wrapper delete-item">
+      <span className="delete-item">
           {block}
-          <button className="invisible">X</button>
+          <button className="clickable invisible">X</button>
         </span>
      
   ));
