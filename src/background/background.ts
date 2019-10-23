@@ -28,7 +28,7 @@ const session: RecordedSession = {
 let activePort: chrome.runtime.Port | null = null;
 
 /**
- * Injects the event recorder into the active tab.
+//  * Injects the event recorder into the active tab.
  */
 function injectEventRecorder(
   details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
@@ -208,7 +208,7 @@ function handleStateChange(action: ControlAction): Promise<void> {
  */
 function handleQuickKeys(command: string): void {
   let action: ControlAction;
-  console.log("this is the command", command);
+  console.log('this is the command', command);
   if (backgroundStatus.isPending) return;
   if (command === 'start-recording' && backgroundStatus.recStatus === 'off') action = ControlAction.START;
   else if (command === 'start-recording' && backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
