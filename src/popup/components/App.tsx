@@ -82,9 +82,12 @@ export default () => {
     }
   };
 
-  const destroyCodeblock = (index: number): void => {
+  const destroyBlock = (index: number): void => {
     setCodeBlocks(codeBlocks.slice(0, index).concat(codeBlocks.slice(index+1)));
-    chrome.runtime.sendMessage(ControlAction.DELETE);
+    chrome.runtime.sendMessage({
+      type: ControlAction.DELETE,
+      payload: index,
+    });
   };
 
   return (
@@ -93,7 +96,7 @@ export default () => {
       {
         (shouldInfoDisplay
           ? <Info />
-          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
+          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} destroyBlock={destroyBlock} />
         )
       }
       <Footer

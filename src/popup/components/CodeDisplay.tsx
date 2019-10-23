@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
-  destroyBlock: (index: number) => void
+  destroyBlock: (index: number) => void,
 }
 
 const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {

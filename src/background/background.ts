@@ -222,19 +222,25 @@ function handleControlAction(action: ControlAction): Promise<RecState> {
 
 function handleStateChange(action: ControlAction | ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
+    console.log(typeof action);
     if(typeof action === 'object') {
-      
-    }
-    if (backgroundStatus.isPending) reject();
-    else {
-      backgroundStatus.isPending = true;
-      handleControlAction(action)
-        .then(newStatus => {
-          backgroundStatus.recStatus = newStatus;
-          backgroundStatus.isPending = false;
-          resolve();
-        })
-        .catch(err => reject(err));
+      processedCode.splice(action.payload, 1);
+      chrome.storage.local.set({ codeBlocks: processedCode }, () => {
+        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+        else resolve();
+      })
+    } else {
+      if (backgroundStatus.isPending) reject();
+      else {
+        backgroundStatus.isPending = true;
+        handleControlAction(action as ControlAction)
+          .then(newStatus => {
+            backgroundStatus.recStatus = newStatus;
+            backgroundStatus.isPending = false;
+            resolve();
+          })
+          .catch(err => reject(err));
+      }
     }
   });
 }
