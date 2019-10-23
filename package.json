@@ -11,7 +11,32 @@
     "tsc": "node node_modules/.bin/tsc -p ./tsconfig.json",
     "rebuild": "npm run clean && npm run build"
   },
-  "author": "Abbey Campbell, Adam Stover, Brad Morgan, Ken Sakuma",
+  "contributors": [
+    {
+      "name": "Abbey Campbell",
+      "email": "campbellabbeya@gmail.com",
+      "url": "https://github.com/abbeycampbell"
+    },
+    {
+      "name": "Adam Stover",
+      "email": "adam.jacob.stover@gmail.com",
+      "url": "https://github.com/nehtaro"
+    },
+    {
+      "name": "Brad Morgan",
+      "email": "bkmorgan3@gmail.com",
+      "url": "https://github.com/bkmorgan3"
+    },
+    {
+      "name": "Ken Sakuma",
+      "email": "gxcadr@gmail.com",
+      "url": "https://github.com/gxcad"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KabaLabs/Cypress-Recorder"
+  },
   "license": "ISC",
   "jest": {
     "preset": "ts-jest",
