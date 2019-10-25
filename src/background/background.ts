@@ -219,7 +219,7 @@ function handleControlAction(action: ControlAction): Promise<RecState> {
           .catch(err => reject(err));
         break;
       default:
-        reject(`Invalid action: ${action}`);
+        reject(new Error(`Invalid action: ${action}`));
     }
   });
 }
@@ -236,22 +236,20 @@ function destroyBlock(index: number): Promise<void> {
 
 function handleStateChange(action: ControlAction | ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
-    if(typeof action === 'object') {
+    if (typeof action === 'object') {
       destroyBlock(action.payload)
         .then(() => resolve())
         .catch(err => reject(err));
-    } else {
-      if (backgroundStatus.isPending) reject();
-      else {
-        backgroundStatus.isPending = true;
-        handleControlAction(action as ControlAction)
-          .then(newStatus => {
-            backgroundStatus.recStatus = newStatus;
-            backgroundStatus.isPending = false;
-            resolve();
-          })
-          .catch(err => reject(err));
-      }
+    } else if (backgroundStatus.isPending) reject();
+    else {
+      backgroundStatus.isPending = true;
+      handleControlAction(action as ControlAction)
+        .then(newStatus => {
+          backgroundStatus.recStatus = newStatus;
+          backgroundStatus.isPending = false;
+          resolve();
+        })
+        .catch(err => reject(err));
     }
   });
 }
