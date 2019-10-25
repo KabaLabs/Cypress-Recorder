@@ -105,22 +105,23 @@ body {
 
 }
 
-.delete-item {
+.block-code {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  // border: 3px solid red;
 }
 
 
-.delete-item:hover .invisible {
+.block-code:hover .invisible {
   display: inline;
 }
 
-.clickable {
+.destroy {
   background-color: rgb(49, 158, 107);
   border: 1px solid rgb(248, 249, 250);
-  margin: 10px;
-  padding: 15px;
+  // margin: 10px;
+  padding: 10px;
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
