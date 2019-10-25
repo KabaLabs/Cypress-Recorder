@@ -2,22 +2,15 @@ import * as React from 'react';
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
+  destroyBlock: (index: number) => void,
 }
 
-const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
-
-  const styleObj = {
-    border: '3px solid black',
-    margin: 10
-  }
-  const blocks = codeBlocks.map(block => (
-    
-  
-      <span className="delete-item">
-          {block}
-          <button className="clickable invisible">X</button>
-        </span>
-     
+const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
+  const blocks = codeBlocks.map((block, index) => (
+    <>
+      <p>{block}</p>
+      <button className="destroy" onClick={() => destroyBlock(index)}>x</button>
+    </>
   ));
 
   return (
