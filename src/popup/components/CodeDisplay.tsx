@@ -8,14 +8,15 @@ export interface CodeDisplayProps {
 const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
   const blocks = codeBlocks.map((block, index) => (
     <>
-      <p>{block}</p>
-      <button className="destroy" onClick={() => destroyBlock(index)}>x</button>
+      <p className="block-code">
+      {block}
+      <button className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
+      </p>
     </>
   ));
 
   return (
     <div id="code-display">
-      
       {blocks}
     </div>
   );
