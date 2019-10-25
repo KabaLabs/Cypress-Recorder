@@ -14,9 +14,11 @@ export interface ParsedEvent {
   inputType?: string,
 }
 
-export interface BackgroundStatus {
+export interface Session {
   isPending: boolean,
-  recStatus: RecState,
+  lastURL: string,
+  originalHost: string,
+  activePort: chrome.runtime.Port | null,
 }
 
 export interface ActionWithPayload {
