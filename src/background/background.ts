@@ -68,7 +68,11 @@ function ejectEventRecorder(
 function handleEvents(event: ParsedEvent): void {
   console.log('handleEvents');
   const block = codeGenerator.createBlock(event);
-  if (block !== null) model.pushBlock(block);
+  if (block !== null) {
+    model.pushBlock(block)
+      .then(() => chrome.runtime.sendMessage(block))
+      .catch((err) => new Error(err));
+  }
 }
 
 function checkForBadNavigation(
