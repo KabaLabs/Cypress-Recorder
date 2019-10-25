@@ -18,3 +18,8 @@ export interface BackgroundStatus {
   isPending: boolean,
   recStatus: RecState,
 }
+
+export interface ActionWithPayload {
+  type: string,
+  payload: any,
+}

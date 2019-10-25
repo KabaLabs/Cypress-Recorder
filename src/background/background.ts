@@ -11,6 +11,7 @@ import {
   ParsedEvent,
   BackgroundStatus,
   RecState,
+  ActionWithPayload,
 } from '../types';
 import { ControlAction } from '../constants';
 
@@ -35,7 +36,7 @@ function injectEventRecorder(
     if (!details || details.frameId === 0) {
       chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-        resolve();
+        else resolve();
       });
     } else resolve();
   });
@@ -126,12 +127,14 @@ function startRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
     chrome.storage.local.set({ status: 'on' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      injectEventRecorder()
-        .then(() => {
-          chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
-          resolve();
-        })
-        .catch(err => reject(err));
+      else {
+        injectEventRecorder()
+          .then(() => {
+            chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
+            resolve();
+          })
+          .catch(err => reject(err));
+      }
     });
   });
 }
@@ -150,10 +153,12 @@ function stopRecording(): Promise<void> {
     chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
     chrome.storage.local.set({ codeBlocks: processedCode, status: 'paused' }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      activePort = null;
-      originalHost = null;
-      chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
-      resolve();
+      else {
+        activePort = null;
+        originalHost = null;
+        chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
+        resolve();
+      }
     });
   });
 }
@@ -167,7 +172,7 @@ function cleanUp(): Promise<void> {
     ejectEventRecorder();
     chrome.storage.local.set({ status: 'off', codeBlocks: [] }, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      resolve();
+      else resolve();
     });
   });
 }
@@ -214,17 +219,31 @@ function handleControlAction(action: ControlAction): Promise<RecState> {
           .catch(err => reject(err));
         break;
       default:
-        throw new Error(`Invalid action: ${action}`);
+        reject(new Error(`Invalid action: ${action}`));
     }
   });
 }
 
-function handleStateChange(action: ControlAction): Promise<void> {
+function destroyBlock(index: number): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (backgroundStatus.isPending) reject();
+    processedCode.splice(index, 1);
+    chrome.storage.local.set({ codeBlocks: processedCode }, () => {
+      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+      else resolve();
+    });
+  });
+}
+
+function handleStateChange(action: ControlAction | ActionWithPayload): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (typeof action === 'object') {
+      destroyBlock(action.payload)
+        .then(() => resolve())
+        .catch(err => reject(err));
+    } else if (backgroundStatus.isPending) reject();
     else {
       backgroundStatus.isPending = true;
-      handleControlAction(action)
+      handleControlAction(action as ControlAction)
         .then(newStatus => {
           backgroundStatus.recStatus = newStatus;
           backgroundStatus.isPending = false;
@@ -258,7 +277,7 @@ function handleQuickKeys(command: string): void {
   }
 }
 
-function setUp() {
+function setUp(): void {
   backgroundStatus.isPending = true;
   cleanUp()
     .then(() => {

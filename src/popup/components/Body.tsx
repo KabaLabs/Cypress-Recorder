@@ -8,11 +8,12 @@ export interface BodyProps {
   isValidTab: boolean,
   recStatus: RecState,
   codeBlocks: string[],
+  destroyBlock: (index: number) => void, 
 }
 
-export default ({ recStatus, codeBlocks, isValidTab }: BodyProps) => (
+export default ({ recStatus, codeBlocks, isValidTab, destroyBlock }: BodyProps) => (
   <div id="body">
     {recStatus === 'off' && <LandingBox isValidTab={isValidTab} />}
-    {recStatus !== 'off' && <CodeDisplay codeBlocks={codeBlocks} />}
+    {recStatus !== 'off' && <CodeDisplay codeBlocks={codeBlocks} destroyBlock={destroyBlock} />}
   </div>
 );
