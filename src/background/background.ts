@@ -128,7 +128,8 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
 function startRecording(): Promise<void> {
   console.log('startRecording');
   return new Promise((resolve, reject) => {
-    Promise.all([model.updateStatus('on'), injectEventRecorder()])
+    injectEventRecorder()
+      .then(() => model.updateStatus('on'))
       .then(() => {
         chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
         resolve();
