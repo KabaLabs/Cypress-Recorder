@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { shallow } from 'enzyme';
 import ToggleButton from '../../popup/components/ToggleButton';
-import { shallow } from "enzyme";
-import "../../setupTests"
+import '../../setupTests';
 import { ControlAction } from '../../constants';
 
 describe('toggle button', () => {

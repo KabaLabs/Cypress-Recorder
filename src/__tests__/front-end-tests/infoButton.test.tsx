@@ -1,27 +1,37 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import ToggleButton from '../../popup/components/ToggleButton';
+import InfoButton from '../../popup/components/InfoButton';
 import '../../setupTests';
-import { ControlAction } from '../../constants';
+// import { ControlAction } from '../../constants';
 
 describe('info button', () => {
   let wrapper;
-  let handleInfoMock;
+  let handleInfoToggleMock;
   beforeEach(() => {
-    handleInfoMock = jest.fn();
+    handleInfoToggleMock = jest.fn();
   });
-  it('should toggle shouldInfoDisplay state between true and false', () => {
-    wrapper = shallow(<ToggleButton recStatus="off" isValidTab={false} handleToggle={handleInfoMock}/>)
-    expect(wrapper).toMatchSnapshot();
+  it('button text should display "Info" when shouldInfoDisplay is false', () => {
+    wrapper = shallow((
+      <InfoButton
+        shouldInfoDisplay={false}
+        toggleInfoDisplay={handleInfoToggleMock}
+      />
+    ));
+    // expect(wrapper).toMatchSnapshot(); // Needs additional research to create snapshot
     const button = wrapper.find('button');
-    expect(button.text()).toBe('Invalid Tab');
-    expect(button.prop('disabled')).toBe(true);
+    expect(button.text()).toBe('Info');
   });
-  it('should call handletoggle with argument "startRec" when clicked and recStatus is "off" and tab is valid', () => {
-    wrapper = shallow(<ToggleButton recStatus='off' isValidTab={true} handleToggle={handleInfoMock}/>)
-    expect(wrapper).toMatchSnapshot();
+  it('button text should display "Recording Menu" when shouldInfoDisplay is true', () => {
+    wrapper = shallow(<InfoButton shouldInfoDisplay toggleInfoDisplay={handleInfoToggleMock} />);
+    // expect(wrapper).toMatchSnapshot(); // Needs additional research to create snapshot
+    const button = wrapper.find('button');
+    expect(button.text()).toBe('Recording Menu');
+  });
+  it('should invoke toggleInfoDisplay when button is clicked', () => {
+    wrapper = shallow(<InfoButton shouldInfoDisplay toggleInfoDisplay={handleInfoToggleMock} />);
+    // expect(wrapper).toMatchSnapshot(); // Needs additional research to create snapshot
     const button = wrapper.find('button');
     button.simulate('click');
-    expect(handleInfoMock).toHaveBeenCalledWith(ControlAction.START);
+    expect(handleInfoToggleMock).toHaveBeenCalled();
   });
 });
