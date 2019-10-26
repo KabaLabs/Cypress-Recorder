@@ -15,7 +15,7 @@ export default ({ recStatus, handleToggle, isValidTab }: ToggleButtonProps) => {
     handleToggle(action);
   };
 
-  const buttonClass: string = (!isValidTab && recStatus === 'off') ? 'disabled-button' : 'button';
+  const buttonClass: string = ((!isValidTab && recStatus === 'off') || (!isValidTab && recStatus === 'paused')) ? 'disabled-button' : 'button';
 
   return (
     <>
