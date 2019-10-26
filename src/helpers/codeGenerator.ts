@@ -57,27 +57,6 @@ function handleSubmit(event: ParsedEvent): string {
   return `cy.get('${event.selector}').submit();`;
 }
 
-/**
- * Generates a line of Cypress code that replicates an action by a user.
- * @param {ParsedEvent} event
- */
-export function generateBlock(event: ParsedEvent): string {
-  switch (event.action) {
-    case EventType.CLICK:
-      return handleClick(event);
-    case EventType.KEYDOWN:
-      return handleKeydown(event);
-    case EventType.CHANGE:
-      return handleChange(event);
-    case EventType.DBCLICK:
-      return handleDoubleclick(event);
-    case EventType.SUBMIT:
-      return handleSubmit(event);
-    default:
-      throw new Error(`Unhandled event: ${event.action}`);
-  }
-}
-
 // function generateTopWrapper(url: string): BlockData {
 //   return [
 //     `describe('End-to-end testing', function() {`,
@@ -100,6 +79,25 @@ export function generateBlock(event: ParsedEvent): string {
 //     .concat(session.events.map(event => generateBlock(event))
 //     .filter(block => block !== null));
 // }
-export function generateVisit(url: string): string {
-  return `cy.visit('${url}');`;
+
+export default {
+  createBlock: (event: ParsedEvent): string => {
+    switch (event.action) {
+      case EventType.CLICK:
+        return handleClick(event);
+      case EventType.KEYDOWN:
+        return handleKeydown(event);
+      case EventType.CHANGE:
+        return handleChange(event);
+      case EventType.DBCLICK:
+        return handleDoubleclick(event);
+      case EventType.SUBMIT:
+        return handleSubmit(event);
+      default:
+        throw new Error(`Unhandled event: ${event.action}`);
+    }
+  },
+  createVisit: (url: string): string => {
+    return `cy.visit('${url}');`;
+  },
 }
