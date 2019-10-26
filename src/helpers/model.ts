@@ -1,8 +1,6 @@
 import { RecState } from '../types';
 
 export default class Model {
-  isPending: boolean;
-
   status: RecState;
 
   processedCode: string[];
