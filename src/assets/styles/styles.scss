@@ -82,6 +82,7 @@ body {
 #landing-box, #active-box {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
@@ -90,10 +91,48 @@ body {
 #code-display {
   margin: 60px 0px;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: flex-start;
   flex-grow: 1;
   padding: 20;
+  overflow-wrap: break-word;
+  // border: 2px dotted green;
+}
+
+.invisible {
+  display: none;
+
+}
+
+.block-code {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  // border: 3px solid red;
+}
+
+
+.block-code:hover .invisible {
+  display: inline;
+}
+
+.destroy {
+  background-color: rgb(49, 158, 107);
+  border: 1px solid rgb(248, 249, 250);
+  // margin: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgb(248, 249, 250);
+  line-height: 8px;
+
+  &:hover {
+       background-color: rgb(248, 249, 250);
+    color: rgb(49, 158, 107);
+    transition: all 0.15s ease 0s;
+  }
 }
 
 /**
