@@ -10,5 +10,5 @@ export enum ControlAction {
   START = 'startRec',
   STOP = 'stopRec',
   RESET = 'resetRec',
-  SYNC = 'sync',
+  DELETE = 'deleteBlock',
 }

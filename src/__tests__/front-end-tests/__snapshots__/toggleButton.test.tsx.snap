@@ -1,34 +1,53 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`toggle button should call handletoggle with argument "startRec" when clicked and recStatus is "off" 1`] = `
+exports[`toggle button should call handletoggle with argument "startRec" when clicked and recStatus is "off" and tab is valid 1`] = `
 <Fragment>
   <button
     className="button"
+    disabled={false}
     onClick={[Function]}
+    type="button"
   >
     Start Recording
   </button>
 </Fragment>
 `;
 
-exports[`toggle button should render correct text when rec status is done 1`] = `
+exports[`toggle button should call handletoggle with argument "startRec" when clicked and recStatus is "paused" 1`] = `
 <Fragment>
   <button
     className="button"
+    disabled={false}
     onClick={[Function]}
+    type="button"
   >
-    Reset Recording
+    Resume
   </button>
 </Fragment>
 `;
 
-exports[`toggle button should render correct text when rec status is on 1`] = `
+exports[`toggle button should call handletoggle with argument "stopRec" when clicked and recStatus is "on" 1`] = `
 <Fragment>
   <button
     className="button"
+    disabled={false}
     onClick={[Function]}
+    type="button"
   >
     Stop Recording
+  </button>
+</Fragment>
+`;
+
+exports[`toggle button should not call handletoggle when clicked and recStatus is "off" and tab is invalid 1`] = `
+<Fragment>
+  <button
+    className="disabled-button"
+    disabled={true}
+    onClick={[Function]}
+    type="button"
+  >
+    Invalid Tab
   </button>
 </Fragment>
 `;

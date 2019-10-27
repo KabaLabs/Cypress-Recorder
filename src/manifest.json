@@ -1,6 +1,7 @@
 {
   "name": "Cypress Recorder",
-  "version": "0.2.0",
+  "short_name": "Cypress Rec",
+  "version": "0.3.0",
   "description": "Records a user session and generates cypress code for automation and testing purposes.",
   "manifest_version": 2,
   "permissions": [
