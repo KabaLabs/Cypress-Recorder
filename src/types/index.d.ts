@@ -1,11 +1,7 @@
-export type CodeBlock = string;
-
-export type BlockData = CodeBlock[];
-
 export type RecState =
   | 'off'
   | 'on'
-  | 'done';
+  | 'paused';
 
 export interface ParsedEvent {
   selector: string,
@@ -18,12 +14,14 @@ export interface ParsedEvent {
   inputType?: string,
 }
 
-export interface RecordedSession {
-  host: string | null,
-  processedCode: BlockData,
+export interface Session {
+  isPending: boolean,
+  lastURL: string,
+  originalHost: string,
+  activePort: chrome.runtime.Port | null,
 }
 
-export interface BackgroundStatus {
-  isPending: boolean,
-  recStatus: RecState,
+export interface ActionWithPayload {
+  type: string,
+  payload: any,
 }

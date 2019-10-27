@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { BlockData } from '../../types';
 
 export interface CodeDisplayProps {
-  codeBlocks: BlockData,
+  codeBlocks: string[],
+  destroyBlock: (index: number) => void,
 }
 
-const CodeDisplay = ({ codeBlocks }: CodeDisplayProps) => {
-  const blocks = codeBlocks.map(block => (
-    <p>{block}</p>
+const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
+  const blocks = codeBlocks.map((block, index) => (
+    <>
+      <p>{block}</p>
+      <button className="destroy" onClick={() => destroyBlock(index)}>x</button>
+    </>
   ));
 
   return (
@@ -26,6 +29,6 @@ const areEqual = (
     if (prevBlocks[i] !== nextBlocks[i]) return false;
   }
   return true;
-}
+};
 
 export default React.memo(CodeDisplay, areEqual);
