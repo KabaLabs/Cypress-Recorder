@@ -3,6 +3,7 @@ $primary-color: #333;
 $primary-background-color: #fff8dc;
 $max-height: 600px;
 $max-width: 800px;
+$that-green-color:  rgb(49, 158, 107);
 
 body {
   height: $max-height * .9;
@@ -34,7 +35,7 @@ body {
   position: fixed;
   width: 100%;
   top: 0px;
-  background-color: rgb(49, 158, 107);
+  background-color: $that-green-color;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -69,8 +70,8 @@ body {
   position: fixed;
   width: 100%;
   bottom: 0px;
-  background-color: rgb(49, 158, 107);
-  display: flex;
+  background-color:$that-green-color;
+  display:flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -118,10 +119,10 @@ body {
 }
 
 .destroy {
-  background-color: rgb(49, 158, 107);
+  background-color: rgba(49, 158, 107, 0.7);
   border: 1px solid rgb(248, 249, 250);
   // margin: 10px;
-  padding: 10px;
+  padding: 2px;
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
@@ -129,8 +130,8 @@ body {
   line-height: 8px;
 
   &:hover {
-       background-color: rgb(248, 249, 250);
-    color: rgb(49, 158, 107);
+    background-color: rgb(49, 158, 107);
+    color: rgb(248, 249, 250);
     transition: all 0.15s ease 0s;
   }
 }
