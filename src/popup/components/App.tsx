@@ -14,18 +14,6 @@ export default () => {
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
   const [lastBlock, setLastBlock] = React.useState<string>('');
 
-  React.useEffect((): void => {
-    if (lastBlock) setCodeBlocks([...codeBlocks, lastBlock]);
-  }, [lastBlock]);
-
-  React.useEffect((): void => {
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
-    if (recStatus === 'off') {
-      setCodeBlocks([]);
-      setLastBlock('');
-    }
-  }, [recStatus]);
-
   const handleMessageFromBackground = (message: string | ControlAction): void => {
     if (message as ControlAction === ControlAction.START) setRecStatus('on');
     else if (message as ControlAction === ControlAction.STOP) setRecStatus('paused');
@@ -48,18 +36,27 @@ export default () => {
     };
   }, []);
 
+  React.useEffect((): void => {
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+    if (recStatus === 'off') setCodeBlocks([]);
+  }, [recStatus]);
+
+  React.useEffect((): void => {
+    if (lastBlock) setCodeBlocks([...codeBlocks, lastBlock]);
+  }, [lastBlock]);
+
   const startRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.START);
+    chrome.runtime.sendMessage({ type: ControlAction.START });
     setRecStatus('on');
   };
 
   const stopRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.STOP);
+    chrome.runtime.sendMessage({ type: ControlAction.STOP });
     setRecStatus('paused');
   };
 
   const resetRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.RESET);
+    chrome.runtime.sendMessage({ type: ControlAction.RESET });
     setRecStatus('off');
   };
 

@@ -218,14 +218,14 @@ function handleControlAction(action: ControlAction): Promise<void> {
   });
 }
 
-function handleMessage(action: ControlAction | ActionWithPayload): Promise<void> {
+function handleMessage(action: ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (typeof action === 'object') {
+    if (action.type === ControlAction.DELETE) {
       model.deleteBlock(action.payload)
         .then(() => resolve())
         .catch(err => reject(err));
     } else {
-      handleControlAction(action as ControlAction)
+      handleControlAction(action.type)
         .then(() => resolve())
         .catch(err => reject(err));
     }
