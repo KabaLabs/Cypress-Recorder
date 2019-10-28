@@ -7,7 +7,7 @@
     "start": "npx tsc --noEmit && npx parcel ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "build": "npx tsc --noEmit && npx parcel build ./src/popup/index.html ./src/background/background.ts ./src/content-scripts/eventRecorder.ts",
     "test": "jest --verbose",
-    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist && cp -r ./src/assets/images/. dist",
+    "clean": "rm -rf dist .cache && mkdir dist && cp ./src/manifest.json dist && cp -r ./src/assets/images/. dist && cp ./src/popup/options.html dist && cp ./src/popup/options.js dist",
     "tsc": "npx tsc --noEmit",
     "rebuild": "npm run clean && npm run build"
   },
