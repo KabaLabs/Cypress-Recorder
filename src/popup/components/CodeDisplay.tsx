@@ -1,6 +1,11 @@
 import * as React from 'react';
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import { docco } from 'react-syntax-highlighter/styles/hljs'; 
+import SyntaxHighlighter, { registerLanguage } from "react-syntax-highlighter/light";
+import js from 'react-syntax-highlighter/languages/hljs/javascript';
+import docco from 'react-syntax-highlighter/styles/hljs/docco'; 
+
+registerLanguage('javascript', js);
+ 
+//SyntaxHighlighter.registerLanguage('javascript', js);
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
