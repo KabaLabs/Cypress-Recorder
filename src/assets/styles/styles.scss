@@ -119,10 +119,10 @@ body {
 }
 
 .destroy {
-  background-color: rgb(49, 158, 107);
+  background-color: rgba(49, 158, 107, 0.7);
   border: 1px solid rgb(248, 249, 250);
   // margin: 10px;
-  padding: 5px;
+  padding: 2px;
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
@@ -130,8 +130,8 @@ body {
   line-height: 8px;
 
   &:hover {
-       background-color: rgb(248, 249, 250);
-    color: rgb(49, 158, 107);
+    background-color: rgb(49, 158, 107);
+    color: rgb(248, 249, 250);
     transition: all 0.15s ease 0s;
   }
 }
