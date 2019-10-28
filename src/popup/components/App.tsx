@@ -87,6 +87,14 @@ export default () => {
     });
   };
 
+  const moveBlock = (dragIdx: number, dropIdx: number) => {
+    const temp = [...codeBlocks];
+    const holder = temp[dragIdx];
+    temp[dragIdx] = temp[dropIdx];
+    temp[dropIdx] = holder;
+    setCodeBlocks(temp);
+  }
+
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
@@ -99,6 +107,7 @@ export default () => {
               recStatus={recStatus}
               isValidTab={isValidTab}
               destroyBlock={destroyBlock}
+              moveBlock={moveBlock}
             />
           )
         )

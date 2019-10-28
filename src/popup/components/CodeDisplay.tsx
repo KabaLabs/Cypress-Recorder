@@ -3,22 +3,48 @@ import * as React from 'react';
 export interface CodeDisplayProps {
   codeBlocks: string[],
   destroyBlock: (index: number) => void,
+  moveBlock: (dragIdx: number, dropIdx: number) => void,
 }
 
-const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
+const CodeDisplay = ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
+  const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
+
+  const onDragStart = (e: React.DragEvent, i: number) => {
+    setDraggedIdx(i);
+  };
+
+  const onDragOver = (e: React.DragEvent, i: number) => {
+    if (draggedIdx !== i) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+
+  const onDrop = (e: React.DragEvent, i: number) => {
+    console.log('drop');
+    e.preventDefault();
+    moveBlock(draggedIdx, i);
+    setDraggedIdx(-1);
+  }
+
   const blocks = codeBlocks.map((block, index) => (
-    <>
-      <p className="block-code">
+    <li
+      className="block-code"
+      draggable
+      onDragStart={e => onDragStart(e, index)}
+      // onDragEnter={e => onDragEnter(e, index)}
+      onDragOver={e => onDragOver(e, index)}
+      onDrop={e => onDrop(e, index)}
+    >
       {block}
-      <button className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
-      </p>
-    </>
+      <button type="button" className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
+    </li>
   ));
 
   return (
-    <div id="code-display">
+    <ul id="code-display">
       {blocks}
-    </div>
+    </ul>
   );
 };
 

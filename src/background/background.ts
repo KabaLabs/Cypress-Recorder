@@ -168,6 +168,7 @@ function cleanUp(): Promise<void> {
   console.log('cleanUp');
   return new Promise((resolve, reject) => {
     if (session.activePort) ejectEventRecorder();
+    chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
     model.sync('off', [])
       .then(() => resolve())
       .catch(err => reject(err));
