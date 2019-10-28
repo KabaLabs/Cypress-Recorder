@@ -2,7 +2,6 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import InfoButton from '../../popup/components/InfoButton';
 import '../../setupTests';
-// import { ControlAction } from '../../constants';
 
 describe('info button', () => {
   let wrapper;
@@ -17,19 +16,19 @@ describe('info button', () => {
         toggleInfoDisplay={handleInfoToggleMock}
       />
     ));
-    // expect(wrapper).toMatchSnapshot(); // Needs additional research to create snapshot
+    expect(wrapper).toMatchSnapshot();
     const button = wrapper.find('button');
     expect(button.text()).toBe('Info');
   });
   it('button text should display "Recording Menu" when shouldInfoDisplay is true', () => {
     wrapper = shallow(<InfoButton shouldInfoDisplay toggleInfoDisplay={handleInfoToggleMock} />);
-    // expect(wrapper).toMatchSnapshot(); // Needs additional research to create snapshot
+    expect(wrapper).toMatchSnapshot();
     const button = wrapper.find('button');
     expect(button.text()).toBe('Recording Menu');
   });
   it('should invoke toggleInfoDisplay when button is clicked', () => {
     wrapper = shallow(<InfoButton shouldInfoDisplay toggleInfoDisplay={handleInfoToggleMock} />);
-    // expect(wrapper).toMatchSnapshot(); // Needs additional research to create snapshot
+    expect(wrapper).toMatchSnapshot();
     const button = wrapper.find('button');
     button.simulate('click');
     expect(handleInfoToggleMock).toHaveBeenCalled();
