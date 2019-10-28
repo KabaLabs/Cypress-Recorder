@@ -236,29 +236,6 @@ function handleMessage(action: ControlAction | ActionWithPayload): Promise<void>
  * quick key initiator function
  * @param {string} command
  */
-<<<<<<< HEAD
-function handleQuickKeys(command: string): void {
-  let action: ControlAction;
-  console.log('this is the command', command);
-  if (backgroundStatus.isPending) return;
-  if (command === 'start-recording' && backgroundStatus.recStatus === 'off') action = ControlAction.START;
-  else if (command === 'start-recording' && backgroundStatus.recStatus === 'on') action = ControlAction.STOP;
-  else if (command === 'reset-recording' && backgroundStatus.recStatus === 'done') action = ControlAction.RESET;
-  if (action !== undefined) {
-    handleStateChange(action)
-      .then(() => {
-        chrome.runtime.sendMessage(action);
-      })
-      .catch(err => {
-        throw new Error(err);
-      });
-  }
-}
-
-function suspend() {
-  console.log('suspend');
-  cleanUp();
-=======
 function handleQuickKeys(command: string): Promise<void> {
   console.log('this is the command', command);
   return new Promise((resolve, reject) => {
@@ -276,7 +253,6 @@ function handleQuickKeys(command: string): Promise<void> {
         .catch(err => reject(new Error(err)));
     }
   });
->>>>>>> staging
 }
 
 /**
