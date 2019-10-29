@@ -114,7 +114,10 @@ li {
   padding: 5px;
 
   & button {
-    display: none;
+    //display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 150ms, opacity 300ms;
   }
 
   &:hover {
@@ -127,8 +130,12 @@ li {
       align-self: flex-start;
     }
     & button {
-      display: inline;
-      align-self: flex-end;
+      // display: inline;
+      // transition: all 0.15s ease 0s;
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s linear 0s, opacity 300ms;
+      //align-self: flex-end;
     }
   }
 }
@@ -150,10 +157,10 @@ li.code-block {
 }
 
 
-li:hover .invisible {
-  display: inline;
-  align-self: flex-end;
-}
+// li:hover .invisible {
+//   display: inline;
+//   align-self: flex-end;
+// }
 
 .delete {
   background-color: rgba(49, 158, 107, 0.7);
