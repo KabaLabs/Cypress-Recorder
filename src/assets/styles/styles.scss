@@ -106,7 +106,7 @@ body {
 
 }
 
-.block-code {
+li {
   display: flex;
   justify-content: flex-start;
   width: 100%;
@@ -117,6 +117,18 @@ body {
   &:hover {
     cursor: grab;
   }
+}
+
+li.drag-origin {
+  background-color: gainsboro;
+}
+
+li.drag-over {
+  background-color: rgb(106,174,143);
+}
+
+li.code-block {
+  background-color: rgb(248, 249, 250);
 }
 
 
