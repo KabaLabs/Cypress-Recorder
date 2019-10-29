@@ -1,9 +1,5 @@
 import * as React from 'react';
-import SyntaxHighlighter, { registerLanguage } from "react-syntax-highlighter/light";
-import js from 'react-syntax-highlighter/languages/hljs/javascript';
-import docco from 'react-syntax-highlighter/styles/hljs/docco'; 
-
-registerLanguage('javascript', js);
+import CodeBlock from './CodeBlock';
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
@@ -11,37 +7,48 @@ export interface CodeDisplayProps {
   moveBlock: (dragIdx: number, dropIdx: number) => void,
 }
 
-const CodeDisplay = ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
+export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
   const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
+  const [dragOverIdx, setDragOverIdx] = React.useState<number>(-1);
 
   const onDragStart = (e: React.DragEvent, i: number) => {
     setDraggedIdx(i);
   };
 
   const onDragOver = (e: React.DragEvent, i: number) => {
-    if (draggedIdx !== i) e.preventDefault();
+    if (draggedIdx !== i) {
+      e.preventDefault();
+      setDragOverIdx(i);
+    }
   };
+
+  // const onDragLeave = (e: React.DragEvent, i: number) => {
+    
+  // };
 
   const onDrop = (e: React.DragEvent, i: number) => {
     e.preventDefault();
     moveBlock(draggedIdx, i);
     setDraggedIdx(-1);
+    setDragOverIdx(-1);
   }
 
-  const blocks = codeBlocks.map((block, index) => (
-    <li
-      className="block-code"
-      draggable
-      onDragStart={e => onDragStart(e, index)}
-      onDragOver={e => onDragOver(e, index)}
-      onDrop={e => onDrop(e, index)}
-    >
-      <SyntaxHighlighter language="javascript" style={docco}>
-      {block}
-      </SyntaxHighlighter>
-      <button type="button" className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
-    </li>
-  ));
+  const blocks = codeBlocks.map((block, index) => {
+    let dragStatus: string;
+    if (index === draggedIdx) dragStatus = 'drag-origin';
+    else if (index === dragOverIdx) dragStatus = 'drag-over';
+    else dragStatus = 'code-block';
+    return (
+      <CodeBlock
+        dragStatus={dragStatus}
+        text={block}
+        index={index}
+        destroyBlock={destroyBlock}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+      />
+  )});
 
   return (
     <ul id="code-display">
@@ -49,16 +56,3 @@ const CodeDisplay = ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) 
     </ul>
   );
 };
-
-const areEqual = (
-  { codeBlocks: prevBlocks }: CodeDisplayProps,
-  { codeBlocks: nextBlocks }: CodeDisplayProps,
-): boolean => {
-  if (prevBlocks.length !== nextBlocks.length) return false;
-  for (let i = 0; i !== prevBlocks.length; i += 1) {
-    if (prevBlocks[i] !== nextBlocks[i]) return false;
-  }
-  return true;
-};
-
-export default React.memo(CodeDisplay, areEqual);
