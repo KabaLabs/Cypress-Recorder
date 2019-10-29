@@ -11,7 +11,16 @@ export interface CodeBlockProps {
   onDrop: (e: React.DragEvent, i: number) => void,
 }
 
-export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, onDrop, dragStatus }: CodeBlockProps) => {
+export default ({
+  index,
+  text,
+  destroyBlock,
+  onDragStart,
+  onDragOver,
+  onDragEnd,
+  onDrop,
+  dragStatus,
+}: CodeBlockProps) => {
   const i = text.indexOf('(') + 1;
   const j = text.startsWith('cy.visit')
     ? text.lastIndexOf(')')
@@ -31,7 +40,7 @@ export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd,
       <span>
         {preSelector}
         <mark className="selector">
-        {selector}
+          {selector}
         </mark>
         {postSelector}
       </span>

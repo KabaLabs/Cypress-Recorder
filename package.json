@@ -46,7 +46,7 @@
       "js"
     ],
     "testMatch": [
-      "**/__tests__/*/*.(test|spec).(ts|tsx|js)"
+      "**/__tests__/*.(test|spec).(ts|tsx|js)"
     ]
   },
   "devDependencies": {

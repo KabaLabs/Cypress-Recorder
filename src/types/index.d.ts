@@ -1,4 +1,4 @@
-import { ControlAction } from "../constants";
+import { ControlAction } from '../constants';
 
 export type RecState =
   | 'off'

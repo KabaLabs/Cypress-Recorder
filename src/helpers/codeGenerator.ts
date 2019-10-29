@@ -31,14 +31,6 @@ function handleKeydown(event: ParsedEvent): string | null {
       return `cy.get('${event.selector}').type('{downarrow}');`;
     case 'ArrowLeft':
       return `cy.get('${event.selector}').type('{leftarrow}');`;
-    case 'Enter':
-      return null;
-    case 'Shift':
-      return null;
-    case 'Alt':
-      return null;
-    case 'Control':
-      return null;
     default:
       return null;
   }
@@ -57,29 +49,6 @@ function handleSubmit(event: ParsedEvent): string {
   return `cy.get('${event.selector}').submit();`;
 }
 
-// function generateTopWrapper(url: string): BlockData {
-//   return [
-//     `describe('End-to-end testing', function() {`,
-//     `\tbeforeEach(function () {`,
-//     `\t\tcy.visit('${url}');`,
-//     `\t});`,
-//     `\tit('Works as expected', function() {`,
-//   ];
-// }
-
-// function generateBottomWrapper(): BlockData {
-//   return [
-//     '\t});',
-//     '});',
-//   ];
-// }
-
-// export default function generateCode(session: RecordedSession): BlockData {
-//   return [`cy.visit('${session.sender.url}');` as CodeBlock]
-//     .concat(session.events.map(event => generateBlock(event))
-//     .filter(block => block !== null));
-// }
-
 export default {
   createBlock: (event: ParsedEvent): string => {
     switch (event.action) {
@@ -97,7 +66,5 @@ export default {
         throw new Error(`Unhandled event: ${event.action}`);
     }
   },
-  createVisit: (url: string): string => {
-    return `cy.visit('${url}');`;
-  },
-}
+  createVisit: (url: string): string => `cy.visit('${url}');`,
+};

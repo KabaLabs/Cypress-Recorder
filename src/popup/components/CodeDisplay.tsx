@@ -40,13 +40,13 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
   const onDragEnd = () => {
     setDraggedIdx(-1);
     setModifiedCodeBlocks([...codeBlocks]);
-  }
+  };
 
   const onDrop = (e: React.DragEvent, i: number) => {
     e.preventDefault();
     if (dragOriginIdx !== i) moveBlock(dragOriginIdx, i);
     setDragOriginIdx(-1);
-  }
+  };
 
   const blocks = modifiedCodeBlocks.map((block, idx) => (
     <CodeBlock

@@ -11,7 +11,7 @@ export default class Model {
 
   sync(): Promise<void> {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get(['status', 'codeBlocks'], (result) => {
+      chrome.storage.local.get(['status', 'codeBlocks'], result => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
         else {
           if (result.status === 'on' || result.status === 'paused') {
