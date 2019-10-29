@@ -14,14 +14,10 @@ const CodeDisplay = ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) 
   };
 
   const onDragOver = (e: React.DragEvent, i: number) => {
-    if (draggedIdx !== i) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
+    if (draggedIdx !== i) e.preventDefault();
   };
 
   const onDrop = (e: React.DragEvent, i: number) => {
-    console.log('drop');
     e.preventDefault();
     moveBlock(draggedIdx, i);
     setDraggedIdx(-1);
