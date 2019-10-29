@@ -27,7 +27,7 @@ export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd,
       // onDrop={e => onDrop(e, index)}
     >
       {preSelector}
-      <mark>
+      <mark className="selector">
         {selector}
       </mark>
       {postSelector}

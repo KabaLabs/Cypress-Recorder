@@ -103,7 +103,6 @@ body {
 
 .invisible {
   display: none;
-
 }
 
 li {
@@ -116,6 +115,7 @@ li {
 
   &:hover {
     cursor: grab;
+    opacity: .6;
   }
 }
 
