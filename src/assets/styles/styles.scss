@@ -121,6 +121,10 @@ li {
 
 li.drag-origin {
   background-color: gainsboro;
+
+  & mark {
+    background-color: gainsboro;
+  }
 }
 
 li.drag-over {
