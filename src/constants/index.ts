@@ -11,5 +11,5 @@ export enum ControlAction {
   STOP = 'stopRec',
   RESET = 'resetRec',
   DELETE = 'deleteBlock',
-  REORDER = 'reorderBlock',
+  MOVE = 'moveBlock',
 }
