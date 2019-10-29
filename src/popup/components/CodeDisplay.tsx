@@ -36,6 +36,7 @@ const CodeDisplay = ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) 
       onDragOver={e => onDragOver(e, index)}
       onDrop={e => onDrop(e, index)}
     >
+      <img src="https://img.icons8.com/small/16/000000/drag-reorder.png" className="drag-icon"></img>
       {block}
       <button type="button" className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
     </li>
