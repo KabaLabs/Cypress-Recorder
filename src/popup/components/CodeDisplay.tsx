@@ -1,4 +1,9 @@
 import * as React from 'react';
+import SyntaxHighlighter, { registerLanguage } from "react-syntax-highlighter/light";
+import js from 'react-syntax-highlighter/languages/hljs/javascript';
+import docco from 'react-syntax-highlighter/styles/hljs/docco'; 
+
+registerLanguage('javascript', js);
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
@@ -8,10 +13,12 @@ export interface CodeDisplayProps {
 const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
   const blocks = codeBlocks.map((block, index) => (
     <>
-      <p className="block-code">
+      <div className="block-code">
+      <SyntaxHighlighter language="javascript" style={docco}>
       {block}
+      </SyntaxHighlighter>
       <button className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
-      </p>
+      </div>
     </>
   ));
 
