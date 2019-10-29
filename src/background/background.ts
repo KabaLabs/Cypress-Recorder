@@ -40,7 +40,6 @@ function control(cb: (...args: any) => Promise<void>, ...args: any): void {
 function injectEventRecorder(
   details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
 ): Promise<void> {
-  console.log('injectEventRecorder', details);
   return new Promise((resolve, reject) => {
     if (!details || details.frameId === 0) {
       chrome.tabs.executeScript({ file: '/content-scripts/eventRecorder.js' }, () => {
@@ -66,11 +65,9 @@ function ejectEventRecorder(
  * @param {ParsedEvent} event
  */
 function handleEvents(event: ParsedEvent): void {
-  console.log('handleEvents');
   const block = codeGenerator.createBlock(event);
   if (block !== null) {
     model.pushBlock(block)
-      .then(() => chrome.runtime.sendMessage(block))
       .catch(err => new Error(err));
   }
 }
@@ -78,7 +75,6 @@ function handleEvents(event: ParsedEvent): void {
 function checkForBadNavigation(
   details: chrome.webNavigation.WebNavigationTransitionCallbackDetails,
 ): void {
-  console.log(details);
   if (details.frameId === 0
     && (!details.url.includes(session.originalHost)
       || details.transitionQualifiers.includes('forward_back')
@@ -89,7 +85,6 @@ function checkForBadNavigation(
 }
 
 function handleFirstConnection(): void {
-  console.log('handleFirstConnection');
   session.originalHost = session.activePort.name;
   chrome.webNavigation.onBeforeNavigate.addListener(ejectEventRecorder);
   chrome.webNavigation.onCommitted.addListener(checkForBadNavigation);
@@ -116,7 +111,6 @@ function handleFirstConnection(): void {
  * @param {chrome.runtime.Port} portToEventRecorder
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
-  console.log('handleNewConnection', portToEventRecorder);
   session.activePort = portToEventRecorder;
   session.activePort.onMessage.addListener(handleEvents);
   if (model.status !== 'on') handleFirstConnection();
@@ -126,7 +120,6 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
  * Starts the recording process by injecting the event recorder into the active tab.
  */
 function startRecording(): Promise<void> {
-  console.log('startRecording');
   return new Promise((resolve, reject) => {
     injectEventRecorder()
       .then(() => model.updateStatus('on'))
@@ -144,7 +137,6 @@ function startRecording(): Promise<void> {
  * @param {Function} sendResponse
  */
 function stopRecording(): Promise<void> {
-  console.log('stopRecording');
   return new Promise((resolve, reject) => {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
@@ -161,31 +153,27 @@ function stopRecording(): Promise<void> {
   });
 }
 
+function resetRecording(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    session.lastURL = '';
+    model.reset()
+      .then(() => resolve())
+      .catch(err => {
+        reject(err);
+      });
+  });
+}
+
 /**
  * Performs necessary cleanup between sessions.
  */
 function cleanUp(): Promise<void> {
-  console.log('cleanUp');
   return new Promise((resolve, reject) => {
-    if (session.activePort) ejectEventRecorder();
+    ejectEventRecorder();
     chrome.browserAction.setIcon({ path: 'cypressconeICON.png' });
-    model.sync('off', [])
+    model.sync()
       .then(() => resolve())
       .catch(err => reject(err));
-  });
-}
-
-function resetRecording(): Promise<void> {
-  console.log('resetRecording');
-  return new Promise((resolve, reject) => {
-    cleanUp()
-      .then(() => {
-        session.lastURL = '';
-        resolve();
-      })
-      .catch(err => {
-        reject(err);
-      });
   });
 }
 
@@ -195,7 +183,6 @@ function resetRecording(): Promise<void> {
  * @param {ControlAction} action
  */
 function handleControlAction(action: ControlAction): Promise<void> {
-  console.log('handleControlAction', action);
   return new Promise((resolve, reject) => {
     switch (action) {
       case ControlAction.START:
@@ -242,7 +229,6 @@ function handleMessage(action: ActionWithPayload): Promise<void> {
  * @param {string} command
  */
 function handleQuickKeys(command: string): Promise<void> {
-  console.log('this is the command', command);
   return new Promise((resolve, reject) => {
     let action: ControlAction;
     if (command === 'start-recording') {
@@ -264,7 +250,6 @@ function handleQuickKeys(command: string): Promise<void> {
  * Initializes the extension.
  */
 function initialize(): void {
-  console.log('initialize');
   chrome.runtime.onInstalled.addListener(() => control(cleanUp));
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onMessage.addListener(message => control(handleMessage, message));
