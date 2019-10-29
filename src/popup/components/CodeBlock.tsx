@@ -8,10 +8,10 @@ export interface CodeBlockProps {
   onDragStart: (e: React.DragEvent, i: number) => void,
   onDragOver: (e: React.DragEvent, i: number) => void,
   onDragEnd: () => void,
-  // onDrop: (e: React.DragEvent, i: number) => void,
+  onDrop: (e: React.DragEvent, i: number) => void,
 }
 
-export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, dragStatus }: CodeBlockProps) => {
+export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, onDrop, dragStatus }: CodeBlockProps) => {
   const i = text.indexOf('(') + 1;
   const j = text.indexOf(')');
   const preSelector = text.slice(0, i);
@@ -24,7 +24,7 @@ export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd,
       onDragStart={e => onDragStart(e, index)}
       onDragEnd={onDragEnd}
       onDragOver={e => onDragOver(e, index)}
-      // onDrop={e => onDrop(e, index)}
+      onDrop={e => onDrop(e, index)}
     >
       {preSelector}
       <mark>

@@ -226,7 +226,7 @@ function handleMessage(action: ActionWithPayload): Promise<void> {
         .then(() => resolve())
         .catch(err => reject(err));
     } else if (action.type === ControlAction.MOVE) {
-      model.swapBlocks(action.payload.dragIdx, action.payload.dropIdx)
+      model.moveBlock(action.payload.dragIdx, action.payload.dropIdx)
         .then(() => resolve())
         .catch(err => reject(err));
     } else {

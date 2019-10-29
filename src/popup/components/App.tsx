@@ -89,9 +89,8 @@ export default () => {
 
   const moveBlock = (dragIdx: number, dropIdx: number) => {
     const temp = [...codeBlocks];
-    const holder = temp[dragIdx];
-    temp[dragIdx] = temp[dropIdx];
-    temp[dropIdx] = holder;
+    const dragged = temp.splice(dragIdx, 1)[0];
+    temp.splice(dropIdx, 0, dragged);
     setCodeBlocks(temp);
     chrome.runtime.sendMessage({
       type: ControlAction.MOVE,

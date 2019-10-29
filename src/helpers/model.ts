@@ -40,11 +40,10 @@ export default class Model {
     });
   }
 
-  swapBlocks(i: number, j: number): Promise<void> {
+  moveBlock(i: number, j: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      const temp = this.processedCode[i];
-      this.processedCode[i] = this.processedCode[j];
-      this.processedCode[j] = temp;
+      const dragged = this.processedCode.splice(i, 1)[0];
+      this.processedCode.splice(j, 0, dragged);
       chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
         else resolve();

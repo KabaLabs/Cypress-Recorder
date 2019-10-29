@@ -8,46 +8,58 @@ export interface CodeDisplayProps {
 }
 
 export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
+  const [dragOriginIdx, setDragOriginIdx] = React.useState<number>(-1);
   const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
+  const [modifiedCodeBlocks, setModifiedCodeBlocks] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    setModifiedCodeBlocks([...codeBlocks]);
+  }, [codeBlocks]);
+
+  const swapBlocks = (i: number, j: number) => {
+    const temp = [...modifiedCodeBlocks];
+    const holder = temp[i];
+    temp[i] = temp[j];
+    temp[j] = holder;
+    setModifiedCodeBlocks(temp);
+  };
 
   const onDragStart = (e: React.DragEvent, i: number) => {
     setDraggedIdx(i);
+    setDragOriginIdx(i);
   };
 
   const onDragOver = (e: React.DragEvent, i: number) => {
+    e.preventDefault();
     if (draggedIdx !== i) {
-      e.preventDefault();
-      moveBlock(draggedIdx, i);
+      swapBlocks(draggedIdx, i);
       setDraggedIdx(i);
     }
   };
 
   const onDragEnd = () => {
     setDraggedIdx(-1);
+    setModifiedCodeBlocks([...codeBlocks]);
   }
 
-  // const onDrop = (e: React.DragEvent, i: number) => {
-  //   e.preventDefault();
-  //   moveBlock(draggedIdx, i);
-  // }
+  const onDrop = (e: React.DragEvent, i: number) => {
+    e.preventDefault();
+    if (dragOriginIdx !== i) moveBlock(dragOriginIdx, i);
+    setDragOriginIdx(-1);
+  }
 
-  const blocks = codeBlocks.map((block, index) => {
-    let dragStatus: string;
-    if (index === draggedIdx) dragStatus = 'drag-origin';
-    // else if (index === dragOverIdx) dragStatus = 'drag-over';
-    else dragStatus = 'code-block';
-    return (
-      <CodeBlock
-        dragStatus={dragStatus}
-        text={block}
-        index={index}
-        destroyBlock={destroyBlock}
-        onDragStart={onDragStart}
-        onDragOver={onDragOver}
-        onDragEnd={onDragEnd}
-        // onDrop={onDrop}
-      />
-  )});
+  const blocks = modifiedCodeBlocks.map((block, idx) => (
+    <CodeBlock
+      dragStatus={idx === draggedIdx ? 'drag-origin' : 'code-block'}
+      text={block}
+      index={idx}
+      destroyBlock={destroyBlock}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onDrop={onDrop}
+    />
+  ));
 
   return (
     <ul id="code-display">
