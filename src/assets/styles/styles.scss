@@ -3,7 +3,8 @@ $primary-color: #333;
 $primary-background-color: #fff8dc;
 $max-height: 600px;
 $max-width: 800px;
-$that-green-color:  rgb(49, 158, 107);
+$cypress-green:  rgb(49, 158, 107);
+$pale-green: rgb(248,251,249);
 
 body {
   height: $max-height * .9;
@@ -35,14 +36,14 @@ body {
   position: fixed;
   width: 100%;
   top: 0px;
-  background-color: $that-green-color;
+  background-color: $cypress-green;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 #body {
-  background-color: rgb(248, 249, 250);
+  background-color: $pale-green;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,14 +52,14 @@ body {
 }
 
 #title {
-  color: rgb(248, 249, 250);
+  color: $pale-green;
   font-size: 22px;
   margin-left: 10px;
   font-weight: 200;
 }
 
 #infobox {
-  background-color: rgb(248, 249, 250);
+  background-color: $pale-green;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,7 +71,7 @@ body {
   position: fixed;
   width: 100%;
   bottom: 0px;
-  background-color:$that-green-color;
+  background-color: $cypress-green;
   display:flex;
   justify-content: space-between;
   align-items: center;
@@ -98,12 +99,7 @@ body {
   flex-grow: 1;
   padding: 20;
   overflow-wrap: break-word;
-  //border: 2px dotted green;
 }
-
-// .invisible {
-//   display: none;
-// }
 
 li {
   display: flex;
@@ -114,7 +110,6 @@ li {
   padding: 5px;
 
   & button {
-    //display: none;
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s linear 150ms, opacity 300ms;
@@ -130,12 +125,9 @@ li {
       align-self: flex-start;
     }
     & button {
-      // display: inline;
-      // transition: all 0.15s ease 0s;
       visibility: visible;
       opacity: 1;
       transition: visibility 0s linear 0s, opacity 300ms;
-      //align-self: flex-end;
     }
   }
 }
@@ -148,19 +140,9 @@ li.drag-origin {
   }
 }
 
-li.drag-over {
-  background-color: rgb(106,174,143);
-}
-
 li.code-block {
-  background-color: rgb(248, 249, 250);
+  background-color: $pale-green;
 }
-
-
-// li:hover .invisible {
-//   display: inline;
-//   align-self: flex-end;
-// }
 
 .delete {
   background-color: rgba(49, 158, 107, 0.7);
@@ -170,20 +152,19 @@ li.code-block {
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
-  color: rgb(248, 249, 250);
+  color: $pale-green;
   line-height: 8px;
 
   &:hover {
-    //fill-opacity: 1;
-    background-color: rgb(49, 158, 107);
-    color: rgb(248, 249, 250);
+    background-color: $cypress-green;
+    color: $pale-green;
     transition: all 0.15s ease 0s;
   }
 }
 
 mark {
-  color: $that-green-color;
-  background-color: rgb(248, 249, 250);
+  color: $cypress-green;
+  background-color: $pale-green;
 }
 
 /**
@@ -191,32 +172,32 @@ mark {
  */
 
 .button {
-  background-color: rgb(49, 158, 107);
-  border: 1px solid rgb(248, 249, 250);
+  background-color: $cypress-green;
+  border: 1px solid $pale-green;
   margin: 10px;
   padding: 15px;
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
-  color: rgb(248, 249, 250);
+  color: $pale-green;
   line-height: 8px;
 
   &:hover {
-    background-color: rgb(248, 249, 250);
-    color: rgb(49, 158, 107);
+    background-color: $pale-green;
+    color: $cypress-green;
     transition: all 0.15s ease 0s;
   }
 }
 
 .disabled-button {
   background-color: rgb(106, 174, 143);
-  border: 1px solid rgb(248, 249, 250);
+  border: 1px solid $pale-green;
   margin: 10px;
   padding: 15px;
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
-  color: rgb(248, 249, 250);
+  color: $pale-green;
   line-height: 8px;
 }
 
@@ -228,7 +209,7 @@ mark {
 }
 
 .white-text {
-  color: white;
+  color: $pale-green;
   font-size: 14px;
   margin-left: 10px;
 }
