@@ -22,15 +22,14 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
     }
   };
 
-  // const onDragLeave = (e: React.DragEvent, i: number) => {
-    
-  // };
+  const onDragEnd = () => {
+    setDraggedIdx(-1);
+    setDragOverIdx(-1);
+  }
 
   const onDrop = (e: React.DragEvent, i: number) => {
     e.preventDefault();
     moveBlock(draggedIdx, i);
-    setDraggedIdx(-1);
-    setDragOverIdx(-1);
   }
 
   const blocks = codeBlocks.map((block, index) => {
@@ -46,6 +45,7 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
         destroyBlock={destroyBlock}
         onDragStart={onDragStart}
         onDragOver={onDragOver}
+        onDragEnd={onDragEnd}
         onDrop={onDrop}
       />
   )});

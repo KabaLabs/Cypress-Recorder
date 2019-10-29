@@ -7,21 +7,21 @@ registerLanguage('javascript', js);
 
 export interface CodeBlockProps {
   index: number,
+  text: string,
+  dragStatus: string,
+  destroyBlock: (i: number) => void,
   onDragStart: (e: React.DragEvent, i: number) => void,
   onDragOver: (e: React.DragEvent, i: number) => void,
+  onDragEnd: () => void,
   onDrop: (e: React.DragEvent, i: number) => void,
-  text: string,
-  destroyBlock: (i: number) => void,
-  dragStatus: string,
 }
 
-export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDrop, dragStatus }: CodeBlockProps) => (
+export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, onDrop, dragStatus }: CodeBlockProps) => (
   <li
     className={dragStatus}
     draggable
-    //isBeingDragged={index === draggedIdx}
     onDragStart={e => onDragStart(e, index)}
-    // onDragEnter={e => onDragEnter(e, index)}
+    onDragEnd={onDragEnd}
     onDragOver={e => onDragOver(e, index)}
     onDrop={e => onDrop(e, index)}
   >
