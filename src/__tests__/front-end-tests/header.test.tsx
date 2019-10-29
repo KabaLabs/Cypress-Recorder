@@ -1,41 +1,33 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import Header from '../../popup/components/Header';
+import InfoButton from '../../popup/components/InfoButton';
 import '../../setupTests';
-// import { ControlAction } from '../../constants';
 
-describe('toggle button', () => {
+describe('Header', () => {
   let wrapper;
   let toggleInfoMock;
   beforeEach(() => {
     toggleInfoMock = jest.fn();
+
   });
   it('Title should say "Cypress Recorder"', () => {
-    wrapper = shallow(<Header shouldInfoDisplay={false} handleToggle={toggleInfoMock} />);
+    wrapper = shallow(<Header shouldInfoDisplay={false} toggleInfoDisplay={toggleInfoMock} />);
     expect(wrapper).toMatchSnapshot();
     const title = wrapper.find('#title');
     expect(title.text()).toBe('Cypress Recorder');
-    // expect(button.prop('disabled')).toBe(true);
   });
-  // it('should call handletoggle with argument "startRec" when clicked and recStatus is "off" and tab is valid', () => {
-  //   wrapper = shallow(<ToggleButton recStatus='off' isValidTab={true} handleToggle={handleToggleMock}/>)
-  //   expect(wrapper).toMatchSnapshot();
-  //   const button = wrapper.find('button');
-  //   button.simulate('click');
-  //   expect(handleToggleMock).toHaveBeenCalledWith(ControlAction.START);
-  // });
-  // it('should call handletoggle with argument "stopRec" when clicked and recStatus is "on"', () => {
-  //   wrapper = shallow(<ToggleButton recStatus='on' isValidTab={true} handleToggle={handleToggleMock}/>)
-  //   expect(wrapper).toMatchSnapshot();
-  //   const button = wrapper.find('button');
-  //   button.simulate('click');
-  //   expect(handleToggleMock).toHaveBeenCalledWith(ControlAction.STOP);
-  // });
-  // it('should call handletoggle with argument "startRec" when clicked and recStatus is "paused"', () => {
-  //   wrapper = shallow(<ToggleButton recStatus='paused' isValidTab={true} handleToggle={handleToggleMock}/>)
-  //   expect(wrapper).toMatchSnapshot();
-  //   const button = wrapper.find('button');
-  //   button.simulate('click');
-  //   expect(handleToggleMock).toHaveBeenCalledWith(ControlAction.START);
-  // });
+  it('When shouldInfoDisplay is false, button should say "Info"', () => {
+    wrapper = mount(<InfoButton shouldInfoDisplay={false} toggleInfoDisplay={toggleInfoMock} />);
+    expect(wrapper).toMatchSnapshot();
+    const button = wrapper.find('button');
+    expect(button.text()).toBe('Info');
+  });
+  it('When shouldInfoDisplay is true, button should say "Recording Menu"', () => {
+    wrapper = mount(<InfoButton shouldInfoDisplay toggleInfoDisplay={toggleInfoMock} />);
+    expect(wrapper).toMatchSnapshot();
+    const button = wrapper.find('button');
+    expect(button.text()).toBe('Recording Menu');
+  });
 });

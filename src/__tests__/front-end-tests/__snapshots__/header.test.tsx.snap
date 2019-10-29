@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header Title should say "Cypress Recorder" 1`] = `
+<div
+  id="header"
+>
+  <h1
+    id="title"
+  >
+    Cypress Recorder
+  </h1>
+  <Component
+    shouldInfoDisplay={false}
+    toggleInfoDisplay={[MockFunction]}
+  />
+</div>
+`;
+
+exports[`Header When shouldInfoDisplay is false, button should say "Info" 1`] = `
+<Component
+  shouldInfoDisplay={false}
+  toggleInfoDisplay={[MockFunction]}
+>
+  <button
+    className="button"
+    onClick={[Function]}
+    type="button"
+  >
+    Info
+  </button>
+</Component>
+`;
+
+exports[`Header When shouldInfoDisplay is true, button should say "Recording Menu" 1`] = `
+<Component
+  shouldInfoDisplay={true}
+  toggleInfoDisplay={[MockFunction]}
+>
+  <button
+    className="button"
+    onClick={[Function]}
+    type="button"
+  >
+    Recording Menu
+  </button>
+</Component>
+`;
