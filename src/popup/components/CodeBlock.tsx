@@ -1,9 +1,4 @@
 import * as React from 'react';
-import SyntaxHighlighter, { registerLanguage } from "react-syntax-highlighter/light";
-import js from 'react-syntax-highlighter/languages/hljs/javascript';
-import docco from 'react-syntax-highlighter/styles/hljs/docco'; 
-
-registerLanguage('javascript', js);
 
 export interface CodeBlockProps {
   index: number,
@@ -16,18 +11,27 @@ export interface CodeBlockProps {
   // onDrop: (e: React.DragEvent, i: number) => void,
 }
 
-export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, dragStatus }: CodeBlockProps) => (
-  <li
-    className={dragStatus}
-    draggable
-    onDragStart={e => onDragStart(e, index)}
-    onDragEnd={onDragEnd}
-    onDragOver={e => onDragOver(e, index)}
-    // onDrop={e => onDrop(e, index)}
-  >
-    <SyntaxHighlighter language="javascript" style={docco}>
-      {text}
-    </SyntaxHighlighter>
-    <button type="button" className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
-  </li>
-);
+export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, dragStatus }: CodeBlockProps) => {
+  const i = text.indexOf('(') + 1;
+  const j = text.indexOf(')');
+  const preSelector = text.slice(0, i);
+  const selector = text.slice(i, j);
+  const postSelector = text.slice(j);
+  return (
+    <li
+      className={dragStatus}
+      draggable
+      onDragStart={e => onDragStart(e, index)}
+      onDragEnd={onDragEnd}
+      onDragOver={e => onDragOver(e, index)}
+      // onDrop={e => onDrop(e, index)}
+    >
+      {preSelector}
+      <mark>
+        {selector}
+      </mark>
+      {postSelector}
+      <button type="button" className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
+    </li>
+  );
+};
