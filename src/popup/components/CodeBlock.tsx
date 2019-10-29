@@ -13,17 +13,17 @@ export interface CodeBlockProps {
   onDragStart: (e: React.DragEvent, i: number) => void,
   onDragOver: (e: React.DragEvent, i: number) => void,
   onDragEnd: () => void,
-  onDrop: (e: React.DragEvent, i: number) => void,
+  // onDrop: (e: React.DragEvent, i: number) => void,
 }
 
-export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, onDrop, dragStatus }: CodeBlockProps) => (
+export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd, dragStatus }: CodeBlockProps) => (
   <li
     className={dragStatus}
     draggable
     onDragStart={e => onDragStart(e, index)}
     onDragEnd={onDragEnd}
     onDragOver={e => onDragOver(e, index)}
-    onDrop={e => onDrop(e, index)}
+    // onDrop={e => onDrop(e, index)}
   >
     <SyntaxHighlighter language="javascript" style={docco}>
       {text}

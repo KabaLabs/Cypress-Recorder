@@ -9,7 +9,6 @@ export interface CodeDisplayProps {
 
 export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
   const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
-  const [dragOverIdx, setDragOverIdx] = React.useState<number>(-1);
 
   const onDragStart = (e: React.DragEvent, i: number) => {
     setDraggedIdx(i);
@@ -18,24 +17,24 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
   const onDragOver = (e: React.DragEvent, i: number) => {
     if (draggedIdx !== i) {
       e.preventDefault();
-      setDragOverIdx(i);
+      moveBlock(draggedIdx, i);
+      setDraggedIdx(i);
     }
   };
 
   const onDragEnd = () => {
     setDraggedIdx(-1);
-    setDragOverIdx(-1);
   }
 
-  const onDrop = (e: React.DragEvent, i: number) => {
-    e.preventDefault();
-    moveBlock(draggedIdx, i);
-  }
+  // const onDrop = (e: React.DragEvent, i: number) => {
+  //   e.preventDefault();
+  //   moveBlock(draggedIdx, i);
+  // }
 
   const blocks = codeBlocks.map((block, index) => {
     let dragStatus: string;
     if (index === draggedIdx) dragStatus = 'drag-origin';
-    else if (index === dragOverIdx) dragStatus = 'drag-over';
+    // else if (index === dragOverIdx) dragStatus = 'drag-over';
     else dragStatus = 'code-block';
     return (
       <CodeBlock
@@ -46,7 +45,7 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
         onDragStart={onDragStart}
         onDragOver={onDragOver}
         onDragEnd={onDragEnd}
-        onDrop={onDrop}
+        // onDrop={onDrop}
       />
   )});
 
