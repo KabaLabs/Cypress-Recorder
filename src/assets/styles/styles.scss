@@ -75,6 +75,16 @@ body {
   display:flex;
   justify-content: space-between;
   align-items: center;
+
+  & #toggle {
+    justify-self: flex-start;
+  }
+  & #reset {
+    justify-self: center;
+  }
+  & #copy {
+    justify-self: flex-end;
+  }
 }
 
 /**
