@@ -78,6 +78,7 @@
   "dependencies": {
     "@medv/finder": "^1.1.2",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-dom": "^16.10.2",
+    "react-syntax-highlighter": "9.0.1"
   }
 }
