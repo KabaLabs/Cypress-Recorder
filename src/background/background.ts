@@ -71,7 +71,7 @@ function handleEvents(event: ParsedEvent): void {
   if (block !== null) {
     model.pushBlock(block)
       .then(() => chrome.runtime.sendMessage(block))
-      .catch((err) => new Error(err));
+      .catch(err => new Error(err));
   }
 }
 
@@ -223,6 +223,10 @@ function handleMessage(action: ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
     if (action.type === ControlAction.DELETE) {
       model.deleteBlock(action.payload)
+        .then(() => resolve())
+        .catch(err => reject(err));
+    } else if (action.type === ControlAction.MOVE) {
+      model.swapBlocks(action.payload.dragIdx, action.payload.dropIdx)
         .then(() => resolve())
         .catch(err => reject(err));
     } else {

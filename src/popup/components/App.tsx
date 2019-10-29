@@ -93,7 +93,11 @@ export default () => {
     temp[dragIdx] = temp[dropIdx];
     temp[dropIdx] = holder;
     setCodeBlocks(temp);
-  }
+    chrome.runtime.sendMessage({
+      type: ControlAction.MOVE,
+      payload: { dragIdx, dropIdx },
+    });
+  };
 
   return (
     <div id="App">
