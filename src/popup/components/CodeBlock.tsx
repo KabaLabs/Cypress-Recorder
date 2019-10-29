@@ -26,12 +26,14 @@ export default ({ index, text, destroyBlock, onDragStart, onDragOver, onDragEnd,
       onDragOver={e => onDragOver(e, index)}
       // onDrop={e => onDrop(e, index)}
     >
-      {preSelector}
-      <mark className="selector">
+      <span>
+        {preSelector}
+        <mark className="selector">
         {selector}
-      </mark>
-      {postSelector}
-      <button type="button" className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
+        </mark>
+        {postSelector}
+      </span>
+      <button type="button" className="delete" onClick={() => destroyBlock(index)}>x</button>
     </li>
   );
 };

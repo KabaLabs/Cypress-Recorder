@@ -98,24 +98,38 @@ body {
   flex-grow: 1;
   padding: 20;
   overflow-wrap: break-word;
-  // border: 2px dotted green;
+  //border: 2px dotted green;
 }
 
-.invisible {
-  display: none;
-}
+// .invisible {
+//   display: none;
+// }
 
 li {
   display: flex;
-  justify-content: flex-start;
-  width: 100%;
+  justify-content: space-between;
+  width: 98.5%;
   border: 1px solid gainsboro;
   border-radius: 2px;
   padding: 5px;
 
+  & button {
+    display: none;
+  }
+
   &:hover {
     cursor: grab;
-    opacity: .6;
+
+    & span {
+      opacity: .7;
+    }
+    & mark {
+      align-self: flex-start;
+    }
+    & button {
+      display: inline;
+      align-self: flex-end;
+    }
   }
 }
 
@@ -141,11 +155,11 @@ li:hover .invisible {
   align-self: flex-end;
 }
 
-.destroy {
+.delete {
   background-color: rgba(49, 158, 107, 0.7);
-  border: 1px solid rgb(248, 249, 250);
-  // margin: 10px;
+  align-self: center;
   padding: 2px;
+  margin: 2px;
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
@@ -153,6 +167,7 @@ li:hover .invisible {
   line-height: 8px;
 
   &:hover {
+    //fill-opacity: 1;
     background-color: rgb(49, 158, 107);
     color: rgb(248, 249, 250);
     transition: all 0.15s ease 0s;
