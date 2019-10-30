@@ -24,6 +24,8 @@ const session: Session = {
   activePort: null,
 };
 
+let stopRecording: () => Promise<void>;
+
 function control(cb: (...args: any) => Promise<void>, ...args: any): void {
   if (session.isPending) return;
   session.isPending = true;
@@ -96,7 +98,7 @@ function handleFirstConnection(): void {
     const visitBlock = codeGenerator.createVisit(session.activePort.sender.url);
     session.lastURL = session.activePort.sender.url;
     model.pushBlock(visitBlock)
-      .then(() => chrome.runtime.sendMessage(visitBlock))
+      .then(() => chrome.runtime.sendMessage({ type: ControlAction.PUSH, payload: visitBlock }))
       .catch(err => new Error(err));
   }
 }
@@ -136,8 +138,8 @@ function startRecording(): Promise<void> {
  *
  * @param {Function} sendResponse
  */
-function stopRecording(): Promise<void> {
-  return new Promise((resolve, reject) => {
+stopRecording = () => (
+  new Promise((resolve, reject) => {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
     chrome.webNavigation.onCommitted.removeListener(checkForBadNavigation);
@@ -150,8 +152,8 @@ function stopRecording(): Promise<void> {
         resolve();
       })
       .catch(err => reject(err));
-  });
-}
+  })
+);
 
 function resetRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -206,18 +208,18 @@ function handleControlAction(action: ControlAction): Promise<void> {
   });
 }
 
-function handleMessage(action: ActionWithPayload): Promise<void> {
+function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (action.type === ControlAction.DELETE) {
-      model.deleteBlock(action.payload)
+    if (type === ControlAction.DELETE) {
+      model.deleteBlock(payload)
         .then(() => resolve())
         .catch(err => reject(err));
-    } else if (action.type === ControlAction.MOVE) {
-      model.moveBlock(action.payload.dragIdx, action.payload.dropIdx)
+    } else if (type === ControlAction.MOVE) {
+      model.moveBlock(payload.dragIdx, payload.dropIdx)
         .then(() => resolve())
         .catch(err => reject(err));
     } else {
-      handleControlAction(action.type)
+      handleControlAction(type)
         .then(() => resolve())
         .catch(err => reject(err));
     }
@@ -238,7 +240,7 @@ function handleQuickKeys(command: string): Promise<void> {
     if (action) {
       handleControlAction(action)
         .then(() => {
-          chrome.runtime.sendMessage(action);
+          chrome.runtime.sendMessage({ type: action });
           resolve();
         })
         .catch(err => reject(new Error(err)));

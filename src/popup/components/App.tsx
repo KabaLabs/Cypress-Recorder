@@ -3,7 +3,7 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState } from '../../types';
+import { RecState, ActionWithPayload } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
@@ -15,18 +15,13 @@ export default () => {
 
   const startRecording = (): void => {
     setRecStatus('on');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
   };
-
   const stopRecording = (): void => {
     setRecStatus('paused');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
   };
-
   const resetRecording = (): void => {
     setRecStatus('off');
     setCodeBlocks([]);
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
   };
 
   React.useEffect((): void => {
@@ -41,19 +36,21 @@ export default () => {
   }, []);
 
   React.useEffect((): () => void => {
-    function handleMessageFromBackground(message: string | ControlAction): void {
-      if (message as ControlAction === ControlAction.START && isValidTab) startRecording();
-      else if (message as ControlAction === ControlAction.STOP) stopRecording();
-      else if (message as ControlAction === ControlAction.RESET) resetRecording();
-      else setCodeBlocks([...codeBlocks, message as string]);
+    function handleMessageFromBackground({ type, payload }: ActionWithPayload): void {
+      setShouldInfoDisplay(false);
+      if (type === ControlAction.START && isValidTab) startRecording();
+      else if (type === ControlAction.STOP) stopRecording();
+      else if (type === ControlAction.RESET) resetRecording();
+      else if (type === ControlAction.PUSH) setCodeBlocks(blocks => [...blocks, payload]);
     }
     chrome.runtime.onMessage.addListener(handleMessageFromBackground);
     return () => {
-      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
     };
-  }, [codeBlocks, shouldInfoDisplay]);
+  }, []);
 
   const handleToggle = (action: ControlAction): void => {
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
     if (action === ControlAction.START) startRecording();
     else if (action === ControlAction.STOP) stopRecording();
     else if (action === ControlAction.RESET) resetRecording();
@@ -61,8 +58,7 @@ export default () => {
   };
 
   const toggleInfoDisplay = (): void => {
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
-    else setShouldInfoDisplay(true);
+    setShouldInfoDisplay(should => !should);
   };
 
   const copyToClipboard = async (): Promise<void> => {
