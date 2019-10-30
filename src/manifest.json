@@ -39,7 +39,7 @@
         "mac": "MacCtrl+R",
         "linux": "Alt+R"
       },
-      "description": "start recording"
+      "description": "Toggle recording"
     },
     "reset-recording": {
       "suggested_key": {
@@ -47,7 +47,7 @@
         "mac": "MacCtrl+G",
         "linux": "Alt+G"
       },
-      "description": "reset recording"
+      "description": "Reset recording"
     }
   }
 }
