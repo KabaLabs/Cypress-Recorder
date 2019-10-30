@@ -1,29 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Body Should render CodeDisplay when recStatus is on 1`] = `
-<div
-  id="body"
->
-  <Component
-    codeBlocks={Array []}
-    destroyBlock={[MockFunction]}
-    moveBlock={[MockFunction]}
-  />
-</div>
-`;
-
-exports[`Body Should render CodeDisplay when recStatus is paused 1`] = `
-<div
-  id="body"
->
-  <Component
-    codeBlocks={Array []}
-    destroyBlock={[MockFunction]}
-    moveBlock={[MockFunction]}
-  />
-</div>
-`;
-
 exports[`Body Should render LandingBox when recStatus is off 1`] = `
 <div
   id="body"
