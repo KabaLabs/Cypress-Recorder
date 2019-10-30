@@ -6,7 +6,7 @@ export interface ResetButtonProps {
 }
 
 export default ({ handleToggle }: ResetButtonProps) => (
-  <>
+  <div id="reset-wrap">
     <button
       type="button"
       id="reset"
@@ -15,5 +15,5 @@ export default ({ handleToggle }: ResetButtonProps) => (
     >
       Reset
     </button>
-  </>
+  </div>
 );

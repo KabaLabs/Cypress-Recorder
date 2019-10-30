@@ -18,13 +18,13 @@ export default ({ recStatus, handleToggle, isValidTab }: ToggleButtonProps) => {
   const buttonClass: string = (!isValidTab && (recStatus === 'off' || recStatus === 'paused')) ? 'disabled-button' : 'button';
 
   return (
-    <>
+    <div id="toggle-wrap">
       <button type="button" id="toggle" className={buttonClass} onClick={handleClick} disabled={!isValidTab && (recStatus === 'off' || recStatus === 'paused')}>
         {(recStatus === 'off' || recStatus === 'paused') && !isValidTab && 'Invalid Tab'}
         {recStatus === 'off' && isValidTab && 'Start Recording'}
         {recStatus === 'paused' && isValidTab && 'Resume'}
         {recStatus === 'on' && 'Stop Recording'}
       </button>
-    </>
+    </div>
   );
 };
