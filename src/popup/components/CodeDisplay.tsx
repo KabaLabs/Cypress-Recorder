@@ -1,8 +1,9 @@
 import * as React from 'react';
 import CodeBlock from './CodeBlock';
+import { Block } from '../../types';
 
 export interface CodeDisplayProps {
-  codeBlocks: string[],
+  codeBlocks: Block[],
   destroyBlock: (index: number) => void,
   moveBlock: (dragIdx: number, dropIdx: number) => void,
 }
@@ -10,7 +11,7 @@ export interface CodeDisplayProps {
 export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
   const [dragOriginIdx, setDragOriginIdx] = React.useState<number>(-1);
   const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
-  const [modifiedCodeBlocks, setModifiedCodeBlocks] = React.useState<string[]>([]);
+  const [modifiedCodeBlocks, setModifiedCodeBlocks] = React.useState<Block[]>([]);
 
   React.useEffect(() => {
     setModifiedCodeBlocks([...codeBlocks]);
@@ -50,8 +51,9 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
 
   const blocks = modifiedCodeBlocks.map((block, idx) => (
     <CodeBlock
+      key={block.id}
       dragStatus={idx === draggedIdx ? 'drag-origin' : 'code-block'}
-      text={block}
+      text={block.value}
       index={idx}
       destroyBlock={destroyBlock}
       onDragStart={onDragStart}

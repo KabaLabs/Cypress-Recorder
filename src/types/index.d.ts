@@ -27,3 +27,8 @@ export interface ActionWithPayload {
   type: ControlAction,
   payload?: any,
 }
+
+export interface Block {
+  value: string,
+  id: string,
+}

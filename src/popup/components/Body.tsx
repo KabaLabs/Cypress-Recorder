@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RecState } from '../../types';
+import { RecState, Block } from '../../types';
 
 import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
@@ -7,7 +7,7 @@ import LandingBox from './LandingBox';
 export interface BodyProps {
   isValidTab: boolean,
   recStatus: RecState,
-  codeBlocks: string[],
+  codeBlocks: Block[],
   destroyBlock: (index: number) => void,
   moveBlock: (dragIdx: number, dropIdx: number) => void,
 }

@@ -1,9 +1,10 @@
-import { RecState } from '../types';
+import { generate } from 'shortid';
+import { RecState, Block } from '../types';
 
 export default class Model {
   status: RecState;
 
-  processedCode: string[];
+  processedCode: Block[];
 
   constructor() {
     this.sync();
@@ -41,12 +42,16 @@ export default class Model {
     });
   }
 
-  pushBlock(block: string): Promise<void> {
+  pushBlock(block: string): Promise<Block> {
     return new Promise((resolve, reject) => {
-      this.processedCode.push(block);
+      const newBlock: Block = {
+        value: block,
+        id: generate(),
+      };
+      this.processedCode.push(newBlock);
       chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-        else resolve();
+        else resolve(newBlock);
       });
     });
   }
