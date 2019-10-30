@@ -139,7 +139,7 @@ li {
   & button {
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0s linear 150ms, opacity 300ms;
+    transition: visibility 0s ease-out 75ms, opacity 300ms;
   }
 
   &:hover {
