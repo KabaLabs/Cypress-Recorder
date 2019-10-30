@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InfoButton Button text should display "Info" when shouldInfoDisplay is false 1`] = `
+<Fragment>
+  <button
+    className="button"
+    onClick={[Function]}
+    type="button"
+  >
+    Info
+  </button>
+</Fragment>
+`;

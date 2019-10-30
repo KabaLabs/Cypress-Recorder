@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`toggle button Should call handleToggle with argument "startRec" when clicked and recStatus is "off" and tab is valid 1`] = `
+<div
+  id="toggle-wrap"
+>
+  <button
+    className="button"
+    disabled={false}
+    id="toggle"
+    onClick={[Function]}
+    type="button"
+  >
+    Start Recording
+  </button>
+</div>
+`;

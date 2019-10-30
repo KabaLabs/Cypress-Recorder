@@ -45,6 +45,9 @@
       "tsx",
       "js"
     ],
+    "moduleNameMapper": {
+      "\\.(scss)$": "<rootDir>/src/__mocks__/styleMock.ts"
+    },
     "testMatch": [
       "**/__tests__/*.(test|spec).(ts|tsx|js)"
     ]
