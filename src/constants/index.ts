@@ -12,4 +12,5 @@ export enum ControlAction {
   RESET = 'resetRec',
   DELETE = 'deleteBlock',
   MOVE = 'moveBlock',
+  PUSH = 'pushBlock',
 }

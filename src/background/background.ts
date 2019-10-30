@@ -96,7 +96,7 @@ function handleFirstConnection(): void {
     const visitBlock = codeGenerator.createVisit(session.activePort.sender.url);
     session.lastURL = session.activePort.sender.url;
     model.pushBlock(visitBlock)
-      .then(() => chrome.runtime.sendMessage(visitBlock))
+      .then(() => chrome.runtime.sendMessage({ type: ControlAction.PUSH, payload: visitBlock }))
       .catch(err => new Error(err));
   }
 }
@@ -206,18 +206,18 @@ function handleControlAction(action: ControlAction): Promise<void> {
   });
 }
 
-function handleMessage(action: ActionWithPayload): Promise<void> {
+function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (action.type === ControlAction.DELETE) {
-      model.deleteBlock(action.payload)
+    if (type === ControlAction.DELETE) {
+      model.deleteBlock(payload)
         .then(() => resolve())
         .catch(err => reject(err));
-    } else if (action.type === ControlAction.MOVE) {
-      model.moveBlock(action.payload.dragIdx, action.payload.dropIdx)
+    } else if (type === ControlAction.MOVE) {
+      model.moveBlock(payload.dragIdx, payload.dropIdx)
         .then(() => resolve())
         .catch(err => reject(err));
     } else {
-      handleControlAction(action.type)
+      handleControlAction(type)
         .then(() => resolve())
         .catch(err => reject(err));
     }
@@ -238,7 +238,7 @@ function handleQuickKeys(command: string): Promise<void> {
     if (action) {
       handleControlAction(action)
         .then(() => {
-          chrome.runtime.sendMessage(action);
+          chrome.runtime.sendMessage({ type: action });
           resolve();
         })
         .catch(err => reject(new Error(err)));
