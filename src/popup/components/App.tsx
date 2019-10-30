@@ -3,13 +3,13 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, ActionWithPayload } from '../../types';
+import { RecState, Block, ActionWithPayload } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  const [codeBlocks, setCodeBlocks] = React.useState<string[]>([]);
+  const [codeBlocks, setCodeBlocks] = React.useState<Block[]>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
 
@@ -70,7 +70,7 @@ export default () => {
   };
 
   const destroyBlock = (index: number): void => {
-    setCodeBlocks(codeBlocks.slice(0, index).concat(codeBlocks.slice(index + 1)));
+    setCodeBlocks(prevBlocks => prevBlocks.splice(index, 1));
     chrome.runtime.sendMessage({
       type: ControlAction.DELETE,
       payload: index,

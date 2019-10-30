@@ -98,7 +98,7 @@ function handleFirstConnection(): void {
     const visitBlock = codeGenerator.createVisit(session.activePort.sender.url);
     session.lastURL = session.activePort.sender.url;
     model.pushBlock(visitBlock)
-      .then(() => chrome.runtime.sendMessage({ type: ControlAction.PUSH, payload: visitBlock }))
+      .then(block => chrome.runtime.sendMessage({ type: ControlAction.PUSH, payload: block }))
       .catch(err => new Error(err));
   }
 }

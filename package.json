@@ -57,6 +57,7 @@
     "@types/node": "^12.7.12",
     "@types/react": "^16.9.5",
     "@types/react-dom": "^16.9.1",
+    "@types/shortid": "0.0.29",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
     "enzyme": "^3.10.0",
@@ -78,6 +79,7 @@
   "dependencies": {
     "@medv/finder": "^1.1.2",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-dom": "^16.10.2",
+    "shortid": "^2.2.15"
   }
 }
