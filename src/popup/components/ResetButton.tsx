@@ -9,6 +9,7 @@ export default ({ handleToggle }: ResetButtonProps) => (
   <>
     <button
       type="button"
+      id="reset"
       className="button"
       onClick={() => handleToggle(ControlAction.RESET)}
     >

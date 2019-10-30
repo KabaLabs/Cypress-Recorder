@@ -12,61 +12,52 @@ export default () => {
   const [codeBlocks, setCodeBlocks] = React.useState<string[]>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
-  const [lastBlock, setLastBlock] = React.useState<string>('');
 
-  React.useEffect((): void => {
-    if (lastBlock) setCodeBlocks([...codeBlocks, lastBlock]);
-  }, [lastBlock]);
-
-  React.useEffect((): void => {
+  const startRecording = (): void => {
+    setRecStatus('on');
     if (shouldInfoDisplay) setShouldInfoDisplay(false);
-    if (recStatus === 'off') {
-      setCodeBlocks([]);
-      setLastBlock('');
-    }
-  }, [recStatus]);
-
-  const handleMessageFromBackground = (message: string | ControlAction): void => {
-    if (message as ControlAction === ControlAction.START) setRecStatus('on');
-    else if (message as ControlAction === ControlAction.STOP) setRecStatus('paused');
-    else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
-    else setLastBlock(message as string);
   };
 
-  React.useEffect((): () => void => {
+  const stopRecording = (): void => {
+    setRecStatus('paused');
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
+
+  const resetRecording = (): void => {
+    setRecStatus('off');
+    setCodeBlocks([]);
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+  };
+
+  React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], result => {
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
       if (result.status === 'on') setRecStatus('on');
       else if (result.status === 'paused') setRecStatus('paused');
-      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
     });
     chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
       if (activeTab[0].url.startsWith('chrome://')) setIsValidTab(false);
     });
-    return () => {
-      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
-    };
   }, []);
 
-  const startRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.START);
-    setRecStatus('on');
-  };
-
-  const stopRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.STOP);
-    setRecStatus('paused');
-  };
-
-  const resetRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.RESET);
-    setRecStatus('off');
-  };
+  React.useEffect((): () => void => {
+    function handleMessageFromBackground(message: string | ControlAction): void {
+      if (message as ControlAction === ControlAction.START && isValidTab) startRecording();
+      else if (message as ControlAction === ControlAction.STOP) stopRecording();
+      else if (message as ControlAction === ControlAction.RESET) resetRecording();
+      else setCodeBlocks([...codeBlocks, message as string]);
+    }
+    chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+    return () => {
+      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+    };
+  }, [codeBlocks, shouldInfoDisplay]);
 
   const handleToggle = (action: ControlAction): void => {
     if (action === ControlAction.START) startRecording();
     else if (action === ControlAction.STOP) stopRecording();
     else if (action === ControlAction.RESET) resetRecording();
+    chrome.runtime.sendMessage({ type: action });
   };
 
   const toggleInfoDisplay = (): void => {
@@ -90,6 +81,17 @@ export default () => {
     });
   };
 
+  const moveBlock = (dragIdx: number, dropIdx: number): void => {
+    const temp = [...codeBlocks];
+    const dragged = temp.splice(dragIdx, 1)[0];
+    temp.splice(dropIdx, 0, dragged);
+    setCodeBlocks(temp);
+    chrome.runtime.sendMessage({
+      type: ControlAction.MOVE,
+      payload: { dragIdx, dropIdx },
+    });
+  };
+
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
@@ -102,6 +104,7 @@ export default () => {
               recStatus={recStatus}
               isValidTab={isValidTab}
               destroyBlock={destroyBlock}
+              moveBlock={moveBlock}
             />
           )
         )

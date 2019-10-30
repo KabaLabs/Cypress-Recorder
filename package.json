@@ -1,6 +1,6 @@
 {
   "name": "cypress-recorder",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Records a user session and generates cypress code for automation and testing purposes.",
   "main": "index.js",
   "scripts": {
@@ -46,7 +46,7 @@
       "js"
     ],
     "testMatch": [
-      "**/__tests__/*/*.(test|spec).(ts|tsx|js)"
+      "**/__tests__/*.(test|spec).(ts|tsx|js)"
     ]
   },
   "devDependencies": {
@@ -78,7 +78,6 @@
   "dependencies": {
     "@medv/finder": "^1.1.2",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-syntax-highlighter": "9.0.1"
+    "react-dom": "^16.10.2"
   }
 }

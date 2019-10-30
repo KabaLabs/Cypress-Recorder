@@ -6,13 +6,34 @@ export default class Model {
   processedCode: string[];
 
   constructor() {
-    this.sync('off', []);
+    this.sync();
   }
 
-  sync(newStatus?: RecState, newCode?: string[]): Promise<void> {
+  sync(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (newStatus) this.status = newStatus;
-      if (newCode) this.processedCode = newCode;
+      chrome.storage.local.get(['status', 'codeBlocks'], result => {
+        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+        else {
+          if (result.status === 'on' || result.status === 'paused') {
+            this.status = 'paused';
+            this.processedCode = result.codeBlocks || [];
+          } else {
+            this.status = 'off';
+            this.processedCode = [];
+          }
+          chrome.storage.local.set({ status: this.status, codeBlocks: this.processedCode }, () => {
+            if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+            else resolve();
+          });
+        }
+      });
+    });
+  }
+
+  reset(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.status = 'off';
+      this.processedCode = [];
       chrome.storage.local.set({ status: this.status, codeBlocks: this.processedCode }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
         else resolve();
@@ -33,6 +54,17 @@ export default class Model {
   deleteBlock(index: number): Promise<void> {
     return new Promise((resolve, reject) => {
       this.processedCode.splice(index, 1);
+      chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
+        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+        else resolve();
+      });
+    });
+  }
+
+  moveBlock(i: number, j: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const dragged = this.processedCode.splice(i, 1)[0];
+      this.processedCode.splice(j, 0, dragged);
       chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
         else resolve();

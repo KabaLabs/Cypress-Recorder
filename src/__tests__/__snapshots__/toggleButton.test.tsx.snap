@@ -5,6 +5,7 @@ exports[`toggle button should call handletoggle with argument "startRec" when cl
   <button
     className="button"
     disabled={false}
+    id="toggle"
     onClick={[Function]}
     type="button"
   >
@@ -18,6 +19,7 @@ exports[`toggle button should call handletoggle with argument "startRec" when cl
   <button
     className="button"
     disabled={false}
+    id="toggle"
     onClick={[Function]}
     type="button"
   >
@@ -31,6 +33,7 @@ exports[`toggle button should call handletoggle with argument "stopRec" when cli
   <button
     className="button"
     disabled={false}
+    id="toggle"
     onClick={[Function]}
     type="button"
   >
@@ -44,6 +47,7 @@ exports[`toggle button should not call handletoggle when clicked and recStatus i
   <button
     className="disabled-button"
     disabled={true}
+    id="toggle"
     onClick={[Function]}
     type="button"
   >

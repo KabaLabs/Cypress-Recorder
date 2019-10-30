@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import LandingBox from '../../popup/components/LandingBox';
-import '../../setupTests';
+import LandingBox from '../popup/components/LandingBox';
+import '../setupTests';
 
 describe('LandingBox', () => {
   let wrapper;

@@ -1,3 +1,5 @@
+import { ControlAction } from '../constants';
+
 export type RecState =
   | 'off'
   | 'on'
@@ -22,6 +24,6 @@ export interface Session {
 }
 
 export interface ActionWithPayload {
-  type: string,
-  payload: any,
+  type: ControlAction,
+  payload?: any,
 }

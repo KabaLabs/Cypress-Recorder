@@ -17,7 +17,7 @@ export default ({ copyToClipboard }: ClipboardButtonProps) => {
 
   return (
     <>
-      <button type="button" className="button" onClick={handleClick}>
+      <button type="button" id="copy" className="button" onClick={handleClick}>
         {success ? 'Copied!' : 'Copy to Clipboard'}
       </button>
     </>

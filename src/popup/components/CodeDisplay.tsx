@@ -1,43 +1,69 @@
 import * as React from 'react';
-import SyntaxHighlighter, { registerLanguage } from "react-syntax-highlighter/light";
-import js from 'react-syntax-highlighter/languages/hljs/javascript';
-import docco from 'react-syntax-highlighter/styles/hljs/docco'; 
-
-registerLanguage('javascript', js);
+import CodeBlock from './CodeBlock';
 
 export interface CodeDisplayProps {
   codeBlocks: string[],
   destroyBlock: (index: number) => void,
+  moveBlock: (dragIdx: number, dropIdx: number) => void,
 }
 
-const CodeDisplay = ({ codeBlocks, destroyBlock }: CodeDisplayProps) => {
-  const blocks = codeBlocks.map((block, index) => (
-    <>
-      <div className="block-code">
-      <SyntaxHighlighter language="javascript" style={docco}>
-      {block}
-      </SyntaxHighlighter>
-      <button className="invisible destroy" onClick={() => destroyBlock(index)}>x</button>
-      </div>
-    </>
+export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
+  const [dragOriginIdx, setDragOriginIdx] = React.useState<number>(-1);
+  const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
+  const [modifiedCodeBlocks, setModifiedCodeBlocks] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    setModifiedCodeBlocks([...codeBlocks]);
+  }, [codeBlocks]);
+
+  const swapBlocks = (i: number, j: number) => {
+    const temp = [...modifiedCodeBlocks];
+    const holder = temp[i];
+    temp[i] = temp[j];
+    temp[j] = holder;
+    setModifiedCodeBlocks(temp);
+  };
+
+  const onDragStart = (e: React.DragEvent, i: number) => {
+    setDraggedIdx(i);
+    setDragOriginIdx(i);
+  };
+
+  const onDragOver = (e: React.DragEvent, i: number) => {
+    e.preventDefault();
+    if (draggedIdx !== i) {
+      swapBlocks(draggedIdx, i);
+      setDraggedIdx(i);
+    }
+  };
+
+  const onDragEnd = () => {
+    setDraggedIdx(-1);
+    setModifiedCodeBlocks([...codeBlocks]);
+  };
+
+  const onDrop = (e: React.DragEvent, i: number) => {
+    e.preventDefault();
+    if (dragOriginIdx !== i) moveBlock(dragOriginIdx, i);
+    setDragOriginIdx(-1);
+  };
+
+  const blocks = modifiedCodeBlocks.map((block, idx) => (
+    <CodeBlock
+      dragStatus={idx === draggedIdx ? 'drag-origin' : 'code-block'}
+      text={block}
+      index={idx}
+      destroyBlock={destroyBlock}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onDrop={onDrop}
+    />
   ));
 
   return (
-    <div id="code-display">
+    <ul id="code-display">
       {blocks}
-    </div>
+    </ul>
   );
 };
-
-const areEqual = (
-  { codeBlocks: prevBlocks }: CodeDisplayProps,
-  { codeBlocks: nextBlocks }: CodeDisplayProps,
-): boolean => {
-  if (prevBlocks.length !== nextBlocks.length) return false;
-  for (let i = 0; i !== prevBlocks.length; i += 1) {
-    if (prevBlocks[i] !== nextBlocks[i]) return false;
-  }
-  return true;
-};
-
-export default React.memo(CodeDisplay, areEqual);
