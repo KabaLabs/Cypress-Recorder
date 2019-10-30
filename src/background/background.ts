@@ -24,6 +24,8 @@ const session: Session = {
   activePort: null,
 };
 
+let stopRecording: () => Promise<void>;
+
 function control(cb: (...args: any) => Promise<void>, ...args: any): void {
   if (session.isPending) return;
   session.isPending = true;
@@ -136,8 +138,8 @@ function startRecording(): Promise<void> {
  *
  * @param {Function} sendResponse
  */
-function stopRecording(): Promise<void> {
-  return new Promise((resolve, reject) => {
+stopRecording = () => (
+  new Promise((resolve, reject) => {
     ejectEventRecorder();
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
     chrome.webNavigation.onCommitted.removeListener(checkForBadNavigation);
@@ -150,8 +152,8 @@ function stopRecording(): Promise<void> {
         resolve();
       })
       .catch(err => reject(err));
-  });
-}
+  })
+);
 
 function resetRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
