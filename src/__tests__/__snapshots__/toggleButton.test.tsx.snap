@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`toggle button should call handletoggle with argument "startRec" when clicked and recStatus is "off" and tab is valid 1`] = `
-<Fragment>
+<div
+  id="toggle-wrap"
+>
   <button
     className="button"
     disabled={false}
@@ -11,11 +13,13 @@ exports[`toggle button should call handletoggle with argument "startRec" when cl
   >
     Start Recording
   </button>
-</Fragment>
+</div>
 `;
 
 exports[`toggle button should call handletoggle with argument "startRec" when clicked and recStatus is "paused" 1`] = `
-<Fragment>
+<div
+  id="toggle-wrap"
+>
   <button
     className="button"
     disabled={false}
@@ -25,11 +29,13 @@ exports[`toggle button should call handletoggle with argument "startRec" when cl
   >
     Resume
   </button>
-</Fragment>
+</div>
 `;
 
 exports[`toggle button should call handletoggle with argument "stopRec" when clicked and recStatus is "on" 1`] = `
-<Fragment>
+<div
+  id="toggle-wrap"
+>
   <button
     className="button"
     disabled={false}
@@ -39,11 +45,13 @@ exports[`toggle button should call handletoggle with argument "stopRec" when cli
   >
     Stop Recording
   </button>
-</Fragment>
+</div>
 `;
 
 exports[`toggle button should not call handletoggle when clicked and recStatus is "off" and tab is invalid 1`] = `
-<Fragment>
+<div
+  id="toggle-wrap"
+>
   <button
     className="disabled-button"
     disabled={true}
@@ -53,5 +61,5 @@ exports[`toggle button should not call handletoggle when clicked and recStatus i
   >
     Invalid Tab
   </button>
-</Fragment>
+</div>
 `;
