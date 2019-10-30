@@ -70,7 +70,7 @@ export default () => {
   };
 
   const destroyBlock = (index: number): void => {
-    setCodeBlocks(prevBlocks => prevBlocks.splice(index, 1));
+    setCodeBlocks(prevBlocks => prevBlocks.filter((block, i) => i !== index));
     chrome.runtime.sendMessage({
       type: ControlAction.DELETE,
       payload: index,
