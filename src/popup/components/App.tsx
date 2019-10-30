@@ -3,85 +3,62 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, BlockData, CodeBlock } from '../../types';
+import { RecState, Block, ActionWithPayload } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
 export default () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
-  const [codeBlocks, setCodeBlocks] = React.useState<BlockData>([]);
+  const [codeBlocks, setCodeBlocks] = React.useState<Block[]>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
-  const [lastBlock, setLastBlock] = React.useState<string>('');
 
-  React.useEffect((): void => {
-    setCodeBlocks([...codeBlocks, lastBlock]);
-  }, [lastBlock]);
-
-  const handleMessageFromBackground = (message: CodeBlock | ControlAction): void => {
-    if (message as ControlAction === ControlAction.START) setRecStatus('on');
-    else if (message as ControlAction === ControlAction.STOP) setRecStatus('done');
-    else if (message as ControlAction === ControlAction.RESET) setRecStatus('off');
-    else setLastBlock(message as CodeBlock);
+  const startRecording = (): void => {
+    setRecStatus('on');
+  };
+  const stopRecording = (): void => {
+    setRecStatus('paused');
+  };
+  const resetRecording = (): void => {
+    setRecStatus('off');
+    setCodeBlocks([]);
   };
 
-  React.useEffect((): () => void => {
+  React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], result => {
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
       if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'done') setRecStatus('done');
-      chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+      else if (result.status === 'paused') setRecStatus('paused');
     });
     chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
-      // check currentURL to see if it is valid for recording
-      if (activeTab[0].url.startsWith('chrome://')) {
-        setIsValidTab(false);
-      }
+      if (activeTab[0].url.startsWith('chrome://')) setIsValidTab(false);
     });
-    return () => {
-      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
-    }
   }, []);
 
-  const startRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.START);
-    setRecStatus('on');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
-  };
-
-  const stopRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.STOP);
-    setRecStatus('done');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
-  };
-
-  const resetRecording = () => {
-    chrome.runtime.sendMessage(ControlAction.RESET);
-    setRecStatus('off');
-    setCodeBlocks([]);
-    setLastBlock('');
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
-  };
+  React.useEffect((): () => void => {
+    function handleMessageFromBackground({ type, payload }: ActionWithPayload): void {
+      setShouldInfoDisplay(false);
+      if (type === ControlAction.START && isValidTab) startRecording();
+      else if (type === ControlAction.STOP) stopRecording();
+      else if (type === ControlAction.RESET) resetRecording();
+      else if (type === ControlAction.PUSH) setCodeBlocks(blocks => [...blocks, payload]);
+    }
+    chrome.runtime.onMessage.addListener(handleMessageFromBackground);
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessageFromBackground);
+    };
+  }, []);
 
   const handleToggle = (action: ControlAction): void => {
-    switch (action) {
-      case ControlAction.START:
-        startRecording();
-        break;
-      case ControlAction.STOP:
-        stopRecording();
-        break;
-      case ControlAction.RESET:
-        resetRecording();
-        break;
-      default:
-        throw new Error(`Unhandled action: ${action}`);
-    }
+    if (shouldInfoDisplay) setShouldInfoDisplay(false);
+    if (action === ControlAction.START) startRecording();
+    else if (action === ControlAction.STOP) stopRecording();
+    else if (action === ControlAction.RESET) resetRecording();
+    chrome.runtime.sendMessage({ type: action });
   };
 
   const toggleInfoDisplay = (): void => {
-    if (shouldInfoDisplay) setShouldInfoDisplay(false);
-    else setShouldInfoDisplay(true);
+    setShouldInfoDisplay(should => !should);
   };
 
   const copyToClipboard = async (): Promise<void> => {
@@ -92,13 +69,40 @@ export default () => {
     }
   };
 
+  const destroyBlock = (index: number): void => {
+    setCodeBlocks(prevBlocks => prevBlocks.splice(index, 1));
+    chrome.runtime.sendMessage({
+      type: ControlAction.DELETE,
+      payload: index,
+    });
+  };
+
+  const moveBlock = (dragIdx: number, dropIdx: number): void => {
+    const temp = [...codeBlocks];
+    const dragged = temp.splice(dragIdx, 1)[0];
+    temp.splice(dropIdx, 0, dragged);
+    setCodeBlocks(temp);
+    chrome.runtime.sendMessage({
+      type: ControlAction.MOVE,
+      payload: { dragIdx, dropIdx },
+    });
+  };
+
   return (
     <div id="App">
       <Header shouldInfoDisplay={shouldInfoDisplay} toggleInfoDisplay={toggleInfoDisplay} />
       {
         (shouldInfoDisplay
           ? <Info />
-          : <Body codeBlocks={codeBlocks} recStatus={recStatus} isValidTab={isValidTab} />
+          : (
+            <Body
+              codeBlocks={codeBlocks}
+              recStatus={recStatus}
+              isValidTab={isValidTab}
+              destroyBlock={destroyBlock}
+              moveBlock={moveBlock}
+            />
+          )
         )
       }
       <Footer

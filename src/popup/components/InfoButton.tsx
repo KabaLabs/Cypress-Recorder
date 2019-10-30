@@ -9,7 +9,6 @@ export default ({ shouldInfoDisplay, toggleInfoDisplay }: InfoButtonProps) => {
   const handleClick = (): void => {
     toggleInfoDisplay();
   };
-
   return (
     <>
       <button type="button" className="button" onClick={handleClick}>

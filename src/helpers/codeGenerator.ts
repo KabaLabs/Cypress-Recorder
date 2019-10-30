@@ -5,7 +5,7 @@
  * store the current url, as well each subsequest user interaction with the browser.
  */
 
-import { ParsedEvent, CodeBlock } from '../types';
+import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
 /**
@@ -13,11 +13,11 @@ import { EventType } from '../constants';
  * @param {ParsedEvent} event
  */
 
-function handleClick(event: ParsedEvent): CodeBlock {
+function handleClick(event: ParsedEvent): string {
   return `cy.get('${event.selector}').click();`;
 }
 
-function handleKeydown(event: ParsedEvent): CodeBlock | null {
+function handleKeydown(event: ParsedEvent): string | null {
   switch (event.key) {
     case 'Backspace':
       return `cy.get('${event.selector}').type('{backspace}');`;
@@ -31,75 +31,40 @@ function handleKeydown(event: ParsedEvent): CodeBlock | null {
       return `cy.get('${event.selector}').type('{downarrow}');`;
     case 'ArrowLeft':
       return `cy.get('${event.selector}').type('{leftarrow}');`;
-    case 'Enter':
-      return null;
-    case 'Shift':
-      return null;
-    case 'Alt':
-      return null;
-    case 'Control':
-      return null;
     default:
       return null;
   }
 }
 
-function handleChange(event: ParsedEvent): CodeBlock {
+function handleChange(event: ParsedEvent): string {
   if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
   return `cy.get('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
 }
 
-function handleDoubleclick(event: ParsedEvent): CodeBlock {
+function handleDoubleclick(event: ParsedEvent): string {
   return `cy.get('${event.selector}').dblclick();`;
 }
 
-function handleSubmit(event: ParsedEvent): CodeBlock {
+function handleSubmit(event: ParsedEvent): string {
   return `cy.get('${event.selector}').submit();`;
 }
 
-/**
- * Generates a line of Cypress code that replicates an action by a user.
- * @param {ParsedEvent} event
- */
-export function generateBlock(event: ParsedEvent): CodeBlock {
-  switch (event.action) {
-    case EventType.CLICK:
-      return handleClick(event);
-    case EventType.KEYDOWN:
-      return handleKeydown(event);
-    case EventType.CHANGE:
-      return handleChange(event);
-    case EventType.DBCLICK:
-      return handleDoubleclick(event);
-    case EventType.SUBMIT:
-      return handleSubmit(event);
-    default:
-      throw new Error(`Unhandled event: ${event.action}`);
-  }
-}
-
-// function generateTopWrapper(url: string): BlockData {
-//   return [
-//     `describe('End-to-end testing', function() {`,
-//     `\tbeforeEach(function () {`,
-//     `\t\tcy.visit('${url}');`,
-//     `\t});`,
-//     `\tit('Works as expected', function() {`,
-//   ];
-// }
-
-// function generateBottomWrapper(): BlockData {
-//   return [
-//     '\t});',
-//     '});',
-//   ];
-// }
-
-// export default function generateCode(session: RecordedSession): BlockData {
-//   return [`cy.visit('${session.sender.url}');` as CodeBlock]
-//     .concat(session.events.map(event => generateBlock(event))
-//     .filter(block => block !== null));
-// }
-export function generateVisit(url: string): CodeBlock {
-  return `cy.visit('${url}');`;
-}
+export default {
+  createBlock: (event: ParsedEvent): string => {
+    switch (event.action) {
+      case EventType.CLICK:
+        return handleClick(event);
+      case EventType.KEYDOWN:
+        return handleKeydown(event);
+      case EventType.CHANGE:
+        return handleChange(event);
+      case EventType.DBCLICK:
+        return handleDoubleclick(event);
+      case EventType.SUBMIT:
+        return handleSubmit(event);
+      default:
+        throw new Error(`Unhandled event: ${event.action}`);
+    }
+  },
+  createVisit: (url: string): string => `cy.visit('${url}');`,
+};

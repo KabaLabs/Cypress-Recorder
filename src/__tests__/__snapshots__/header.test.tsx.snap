@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header Title should say "Cypress Recorder" 1`] = `
+<div
+  id="header"
+>
+  <h1
+    id="title"
+  >
+    Cypress Recorder
+  </h1>
+  <Component
+    shouldInfoDisplay={false}
+    toggleInfoDisplay={[MockFunction]}
+  />
+</div>
+`;
