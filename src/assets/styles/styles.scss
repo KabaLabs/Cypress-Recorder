@@ -77,7 +77,6 @@ body {
   align-items: center;
 
   & #toggle-wrap {
-    flex: 1;
     display:flex;
     justify-content: flex-start;
   }
@@ -85,7 +84,7 @@ body {
   & #reset-wrap {
     flex: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   & #copy-wrap {
