@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import Header from '../popup/components/Header';
+import Header, { HeaderProps } from '../popup/components/Header';
 import InfoButton from '../popup/components/InfoButton';
 import '../setupTests';
 
 
 describe('Header', () => {
   let wrapper;
-  let props;
+  let props: HeaderProps;
   beforeAll(() => {
     props = {
       shouldInfoDisplay: false,

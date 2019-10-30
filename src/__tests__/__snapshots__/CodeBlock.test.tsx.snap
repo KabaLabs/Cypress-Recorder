@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodeBlock CodeBlock Should render a CodeBlock 1`] = `
+<li
+  className="code-block"
+  draggable={true}
+  onDragEnd={[MockFunction]}
+  onDragOver={[Function]}
+  onDragStart={[Function]}
+  onDrop={[Function]}
+>
+  <span>
+    cy.get(
+    <mark
+      className="selector"
+    >
+      '.button'
+    </mark>
+    ).click();
+  </span>
+  <button
+    className="delete"
+    onClick={[Function]}
+    type="button"
+  >
+    x
+  </button>
+</li>
+`;

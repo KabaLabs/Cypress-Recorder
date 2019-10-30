@@ -1,24 +1,23 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import Body from '../popup/components/Body';
+import Body, { BodyProps } from '../popup/components/Body';
 import LandingBox from '../popup/components/LandingBox';
 import CodeDisplay from '../popup/components/CodeDisplay';
-
 import '../setupTests';
 
 describe('Body', () => {
+  let props: BodyProps;
   let wrapper;
-  let props;
   beforeAll(() => {
     props = {
       codeBlocks: [],
       isValidTab: true,
       destroyBlock: jest.fn(),
       moveBlock: jest.fn(),
+      recStatus: 'off',
     };
   });
   it('Should render LandingBox when recStatus is off', () => {
-    props.recStatus = 'off';
     wrapper = shallow(<Body {...props} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists(LandingBox)).toBe(true);
