@@ -16,10 +16,10 @@ export default ({ copyToClipboard }: ClipboardButtonProps) => {
   };
 
   return (
-    <>
+    <div id="copy-wrap">
       <button type="button" id="copy" className="button" onClick={handleClick}>
         {success ? 'Copied!' : 'Copy to Clipboard'}
       </button>
-    </>
+    </div>
   );
 };

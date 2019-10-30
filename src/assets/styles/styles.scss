@@ -76,14 +76,31 @@ body {
   justify-content: space-between;
   align-items: center;
 
+  & #toggle-wrap {
+    display:flex;
+    justify-content: flex-start;
+  }
+
+  & #reset-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  & #copy-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
   & #toggle {
-    justify-self: flex-start;
+    align-self: flex-start;
   }
   & #reset {
-    justify-self: center;
+    align-self: center;
   }
   & #copy {
-    justify-self: flex-end;
+    align-self: flex-end;
   }
 }
 
