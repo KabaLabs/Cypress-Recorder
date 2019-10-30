@@ -15,7 +15,7 @@ This extension will allow you to:
 * See the scripts render live as they are generated.
 * Delete accidental actions.
 * Reorder actions as necessary.
-* Pause and resume recording to avoid saving some actions.
+* Pause and resume recording within a single session.
 * Record navigation within a superdomain.
 * Copy the generated code to your clipboard.
 
@@ -52,6 +52,11 @@ We welcome contributions! Please read our [contributing guide] to learn about ou
 * **Ken Sakuma** [gxcad](https://github.com/gxcad)
 * **Adam Stover** [Nehtaro](https://github.com/Nehtaro)
 
+## License 
+
+ISC
+
 ## Acknowledgments
 
 * Big thanks to [maximiliangonzalez](https://github.com/maximiliangonzalez) for the guidance and seasoning:sparkles:
+* Inspiration for this project: [Puppeteer Recorder](https://github.com/checkly/puppeteer-recorder) 
