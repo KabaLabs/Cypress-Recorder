@@ -1,9 +1,9 @@
 # Cypress Recorder
 [![CircleCI](https://circleci.com/gh/KabaLabs/Cypress-Recorder/tree/master.svg?style=svg)](https://circleci.com/gh/KabaLabs/Cypress-Recorder/tree/master)
 
-Cypress Recorder is a Chrome developer tool that records user interaction within a web application and generates Cypress scripts to allow the developer to replicate that particular session. This will speed up your development cycle by facilitating the creation of unit and integration tests.
+Cypress Recorder is a Chrome developer tool that records user interaction within a web application and generates Cypress scripts to allow the developer to replicate that particular session. This will speed up your development cycle by facilitating the creation of end-to-end tests with [Cypress](https://www.cypress.io).
 
-![Screenshot](https://user-images.githubusercontent.com/53627801/67922272-8d292d00-fb67-11e9-836e-998d912617be.png)
+![Cypress Recorder Landing Page](https://user-images.githubusercontent.com/53627801/67972053-289fb980-fbcb-11e9-8993-146150db7fe8.png)
 
 ## Getting Started
 
@@ -20,6 +20,8 @@ This extension will allow you to:
 * Pause and resume recording within a single session.
 * Record navigation within a superdomain.
 * Copy the generated code to your clipboard.
+
+![Cypress Recorder in Use](https://user-images.githubusercontent.com/53627801/67922272-8d292d00-fb67-11e9-836e-998d912617be.png)
 
 ## Usage
 
