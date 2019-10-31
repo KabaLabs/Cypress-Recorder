@@ -3,9 +3,11 @@
 
 Cypress Recorder is a Chrome developer tool that records user interaction within a web application and generates Cypress scripts to allow the developer to replicate that particular session. This will speed up your development cycle by facilitating the creation of unit and integration tests.
 
+![Screenshot](https://user-images.githubusercontent.com/53627801/67922272-8d292d00-fb67-11e9-836e-998d912617be.png)
+
 ## Getting Started
 
-Download Cypress Recorder from the Chrome Web Store. That's it! Once you see our icon at the upper-right of your browser window, you are ready to start generating Cypress scripts.
+Download Cypress Recorder from the [Chrome Web Store](https://chrome.google.com/webstore/detail/cypress-recorder/glcapdcacdfkokcmicllhcjigeodacab). That's it! Once you see our icon at the upper-right of your browser window, you are ready to start generating Cypress scripts.
 
 ## Features
 

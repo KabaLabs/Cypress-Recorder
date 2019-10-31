@@ -63,7 +63,11 @@ export default () => {
 
   const copyToClipboard = async (): Promise<void> => {
     try {
-      await navigator.clipboard.writeText(codeBlocks.join('\n'));
+      let toBeCopied: string = '';
+      for (let i = 0; i !== codeBlocks.length; i += 1) {
+        toBeCopied += codeBlocks[i].value.concat('\n');
+      }
+      await navigator.clipboard.writeText(toBeCopied);
     } catch (error) {
       throw new Error(error);
     }
