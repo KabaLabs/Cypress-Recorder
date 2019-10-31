@@ -47,7 +47,7 @@ This extension will allow you to:
 
 ## Contributing
 
-We welcome contributions! Please read our contributing guide to learn about our development process (linting, testing, etc) and how to propose bugfixes and improvements to Cypress Recorder.
+We welcome contributions! Please read our [CONTRIBUTING](https://github.com/KabaLabs/Cypress-Recorder/blob/master/CONTRIBUTING.md) guide to learn about our development process (linting, testing, etc) and how to propose bugfixes and improvements to Cypress Recorder.
 
 ## Authors
 
