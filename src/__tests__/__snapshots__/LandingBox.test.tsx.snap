@@ -12,16 +12,3 @@ exports[`LandingBox Text should display "Click Start Recording to start" when is
   </p>
 </div>
 `;
-
-exports[`LandingBox Text should display "This is not a valid page for recording" when isValidTab is false 1`] = `
-<div
-  id="landing-box"
->
-  <CypressCone />
-  <p
-    className="text"
-  >
-    This is not a valid page for recording.
-  </p>
-</div>
-`;

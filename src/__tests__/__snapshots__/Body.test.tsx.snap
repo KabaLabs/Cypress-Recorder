@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Body Should render LandingBox when recStatus is off 1`] = `
+<div
+  id="body"
+>
+  <Component
+    isValidTab={true}
+  />
+</div>
+`;

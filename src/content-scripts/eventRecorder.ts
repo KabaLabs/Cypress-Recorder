@@ -11,8 +11,7 @@ let port: chrome.runtime.Port;
 
 /**
  * Parses DOM events into an object with the necessary data.
- *
- * @param {Event} event
+ * @param event
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
@@ -35,9 +34,8 @@ function parseEvent(event: Event): ParsedEvent {
 }
 
 /**
- * Handles DOM events.
- *
- * @param {Event} event
+ * Checks if DOM event was triggered by user; if so, it calls parseEvent on the data.
+ * @param event
  */
 function handleEvent(event: Event): void {
   if (event.isTrusted === true) port.postMessage(parseEvent(event));

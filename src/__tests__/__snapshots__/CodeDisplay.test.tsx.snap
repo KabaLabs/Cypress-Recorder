@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodeDisplay Should render an array of CodeBlocks 1`] = `
+<ul
+  id="code-display"
+/>
+`;

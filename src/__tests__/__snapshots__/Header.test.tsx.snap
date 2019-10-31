@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Header Title should say "Cypress Recorder" 1`] = `
+exports[`Header Should render Header with title of Cypress Recorder 1`] = `
 <div
   id="header"
 >

@@ -24,8 +24,11 @@ const session: Session = {
   activePort: null,
 };
 
-let stopRecording: () => Promise<void>;
-
+/**
+ * Controls the flow of execution by enforcing synchronicity.
+ * @param cb
+ * @param args
+ */
 function control(cb: (...args: any) => Promise<void>, ...args: any): void {
   if (session.isPending) return;
   session.isPending = true;
@@ -38,6 +41,9 @@ function control(cb: (...args: any) => Promise<void>, ...args: any): void {
 
 /**
  * Injects the event recorder into the active tab.
+ *
+ * @param details If the details argument is present, that means that web navigation occured, and
+ * we want to ensure that this navagation is occuring in the top-level frame.
  */
 function injectEventRecorder(
   details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
@@ -54,6 +60,7 @@ function injectEventRecorder(
 
 /**
  * Disconnects the event recorder.
+ * @param details
  */
 function ejectEventRecorder(
   details?: chrome.webNavigation.WebNavigationParentedCallbackDetails,
@@ -63,8 +70,7 @@ function ejectEventRecorder(
 
 /**
  * Handles events sent from the event recorder.
- *
- * @param {ParsedEvent} event
+ * @param event
  */
 function handleEvents(event: ParsedEvent): void {
   const block = codeGenerator.createBlock(event);
@@ -73,6 +79,11 @@ function handleEvents(event: ParsedEvent): void {
       .catch(err => new Error(err));
   }
 }
+
+/**
+ * Stops recording and sends back code to the view.
+ */
+let stopRecording: () => Promise<void>;
 
 function checkForBadNavigation(
   details: chrome.webNavigation.WebNavigationTransitionCallbackDetails,
@@ -109,8 +120,7 @@ function handleFirstConnection(): void {
  * Event recorders will open new connections upon injection into their tab;
  * upon establishing this connection, we need to listen to any new messages on this port;
  * this is how the event recorder sends the background information.
- *
- * @param {chrome.runtime.Port} portToEventRecorder
+ * @param portToEventRecorder
  */
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   session.activePort = portToEventRecorder;
@@ -133,11 +143,6 @@ function startRecording(): Promise<void> {
   });
 }
 
-/**
- * Stops recording and sends back code to the view.
- *
- * @param {Function} sendResponse
- */
 stopRecording = () => (
   new Promise((resolve, reject) => {
     ejectEventRecorder();
@@ -155,6 +160,9 @@ stopRecording = () => (
   })
 );
 
+/**
+ * Clears localstorage and resets recording status; clears last URL.
+ */
 function resetRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
     session.lastURL = '';
@@ -167,7 +175,7 @@ function resetRecording(): Promise<void> {
 }
 
 /**
- * Performs necessary cleanup between sessions.
+ * Performs necessary cleanup between sessions, while allowing for persistent data storage.
  */
 function cleanUp(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -180,9 +188,8 @@ function cleanUp(): Promise<void> {
 }
 
 /**
- * Handles control messages sent from the view (popup) and conducting the appropriate actions.
- *
- * @param {ControlAction} action
+ * Handles control messages sent from the view (popup) and conducts the appropriate actions.
+ * @param action
  */
 function handleControlAction(action: ControlAction): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -208,6 +215,11 @@ function handleControlAction(action: ControlAction): Promise<void> {
   });
 }
 
+/**
+ * Handles all actions coming from the view(popup).
+ * @param type
+ * @param payload
+ */
 function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
     if (type === ControlAction.DELETE) {
@@ -227,8 +239,8 @@ function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
 }
 
 /**
- * quick key initiator function
- * @param {string} command
+ * Handles control actions comming from keyboard shortcuts.
+ * @param command
  */
 function handleQuickKeys(command: string): Promise<void> {
   return new Promise((resolve, reject) => {
