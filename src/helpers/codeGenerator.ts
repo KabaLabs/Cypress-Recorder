@@ -1,16 +1,15 @@
 /**
- * Actually generates the Cypress code that will simulate the recorded user session.
+ * Generates the Cypress code that will simulate the recorded user session.
  *
  * Each time the user records, this function will generate a cy.visit command that will
  * store the current url, as well each subsequest user interaction with the browser.
  */
-
 import { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
 /**
  * Helper functions that handle each action type.
- * @param {ParsedEvent} event
+ * @param event
  */
 
 function handleClick(event: ParsedEvent): string {

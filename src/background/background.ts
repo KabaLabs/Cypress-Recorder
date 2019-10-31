@@ -26,8 +26,8 @@ const session: Session = {
 
 /**
  * Controls the flow of execution by enforcing synchronicity.
- * @param cb 
- * @param args 
+ * @param cb
+ * @param args
  */
 function control(cb: (...args: any) => Promise<void>, ...args: any): void {
   if (session.isPending) return;
@@ -41,8 +41,8 @@ function control(cb: (...args: any) => Promise<void>, ...args: any): void {
 
 /**
  * Injects the event recorder into the active tab.
- * 
- * @param details If the details argument is present, that means that web navigation occured, and 
+ *
+ * @param details If the details argument is present, that means that web navigation occured, and
  * we want to ensure that this navagation is occuring in the top-level frame.
  */
 function injectEventRecorder(
@@ -60,7 +60,7 @@ function injectEventRecorder(
 
 /**
  * Disconnects the event recorder.
- * @param details 
+ * @param details
  */
 function ejectEventRecorder(
   details?: chrome.webNavigation.WebNavigationParentedCallbackDetails,
@@ -218,7 +218,7 @@ function handleControlAction(action: ControlAction): Promise<void> {
 /**
  * Handles all actions coming from the view(popup).
  * @param type
- * @param payload 
+ * @param payload
  */
 function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
   return new Promise((resolve, reject) => {
