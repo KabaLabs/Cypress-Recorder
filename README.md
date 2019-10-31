@@ -62,3 +62,5 @@ ISC
 
 * Huge thanks to [maximiliangonzalez](https://github.com/maximiliangonzalez) for the guidance and seasoning:sparkles:
 * Inspiration for this project: [Puppeteer Recorder](https://github.com/checkly/puppeteer-recorder)
+
+赛普拉斯记录器是一个chrome开发人员工具，可记录用户使用Web应用程序过程中的所生成赛普拉斯代码，以允许开发人员复制该段时间的会话。 通过使用建立单元测试和集成测试，从而加快开发周期。
