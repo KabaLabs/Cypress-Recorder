@@ -54,7 +54,7 @@ We welcome contributions! Please read our [CONTRIBUTING](https://github.com/Kaba
 * **Abbey Campbell** [abbeycampbell](https://github.com/abbeycampbell)
 * **Bradley Morgan**  [bkmorgan3](https://github.com/bkmorgan3)
 * **Ken Sakuma** [gxcad](https://github.com/gxcad)
-* **Adam Stover** [Nehtaro](https://github.com/Nehtaro)
+* **Adam Stover** [Nehtaro](https://github.com/adam-stover)
 
 ## License
 
