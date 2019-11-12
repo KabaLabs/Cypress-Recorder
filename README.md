@@ -53,8 +53,8 @@ We welcome contributions! Please read our [CONTRIBUTING](https://github.com/Kaba
 
 * **Abbey Campbell** [abbeycampbell](https://github.com/abbeycampbell)
 * **Bradley Morgan**  [bkmorgan3](https://github.com/bkmorgan3)
-* **Ken Sakuma** [gxcad](https://github.com/gxcad)
-* **Adam Stover** [Nehtaro](https://github.com/adam-stover)
+* **Ken Sakuma** [ken-can-code](https://github.com/ken-can-code)
+* **Adam Stover** [adam-stover](https://github.com/adam-stover)
 
 ## License
 
@@ -66,3 +66,5 @@ ISC
 * Inspiration for this project: [Puppeteer Recorder](https://github.com/checkly/puppeteer-recorder)
 
 赛普拉斯记录器是一个chrome开发人员工具，可记录用户使用Web应用程序过程中的所生成赛普拉斯代码，以允许开发人员复制该段时间的会话。 通过使用建立单元测试和集成测试，从而加快开发周期。
+
+サイプレスレコーダーは、Webアプリケーション内のユーザーインタラクションを記録し、サイプレススクリプトを生成し、開発者が特定のセッションを複製できるようにするためのChrome開発者ようのツールです。 これにより、サイプレスを使用してエンドツーエンドのテストを簡単に作成でき、開発サイクルが短縮されます。
