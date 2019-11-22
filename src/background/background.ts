@@ -8,7 +8,7 @@
 
 import codeGenerator from '../helpers/codeGenerator';
 import {
-  ActionWithPayload,
+  Action,
   ParsedEvent,
   Session,
 } from '../types';
@@ -220,7 +220,7 @@ function handleControlAction(action: ControlAction): Promise<void> {
  * @param type
  * @param payload
  */
-function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
+function handleMessage({ type, payload }: Action): Promise<void> {
   return new Promise((resolve, reject) => {
     if (type === ControlAction.DELETE) {
       model.deleteBlock(payload)
