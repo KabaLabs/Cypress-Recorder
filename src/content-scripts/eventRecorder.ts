@@ -15,7 +15,6 @@ let port: chrome.runtime.Port;
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
-  console.dir(event);
   let selector: string;
   if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
   else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;

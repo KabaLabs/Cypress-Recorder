@@ -59,16 +59,18 @@ export default class Model {
    */
   private pushBlock(block: string): Promise<Block> {
     return new Promise((resolve, reject) => {
-      if (!block) return resolve(null);
-      const newBlock: Block = {
-        value: block,
-        id: generate(),
-      };
-      this.processedCode.push(newBlock);
-      chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
-        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-        else resolve(newBlock);
-      });
+      if (!block) resolve(null);
+      else {
+        const newBlock: Block = {
+          value: block,
+          id: generate(),
+        };
+        this.processedCode.push(newBlock);
+        chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
+          if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+          else resolve(newBlock);
+        });
+      }
     });
   }
 
@@ -128,17 +130,19 @@ export default class Model {
   parseBlock(event: ParsedEvent): Promise<Block> {
     return new Promise((resolve, reject) => {
       const block: string = this.generator.next(event).value;
-      if (!block) return resolve(null);
-      if (event.action === EventType.DBLCLICK) this.processedCode.splice(-2, 2);
-      else if (
-        this.processedCode[this.processedCode.length - 1].value.endsWith('.click();')
-        && ((event.action === EventType.SUBMIT && event.tag === 'FORM')
-          || event.action === EventType.CHANGE
-        )
-      ) this.processedCode.pop();
-      this.pushBlock(block)
-        .then(resolve)
-        .catch(reject);
+      if (!block) resolve(null);
+      else {
+        if (event.action === EventType.DBLCLICK) this.processedCode.splice(-2, 2);
+        else if (
+          this.processedCode[this.processedCode.length - 1].value.endsWith('.click();')
+          && ((event.action === EventType.SUBMIT && event.tag === 'FORM')
+            || event.action === EventType.CHANGE
+          )
+        ) this.processedCode.pop();
+        this.pushBlock(block)
+          .then(resolve)
+          .catch(reject);
+      }
     });
   }
 }

@@ -66,12 +66,12 @@ const createBlock = (event: ParsedEvent): string => {
 };
 
 function* codeGenerator(url: string): Generator<string, null, ParsedEvent> {
-  let block: string = `cy.visit('${url}');`
+  let block: string = `cy.visit('${url}');`;
   let event: ParsedEvent = yield block;
   while (event) {
     block = createBlock(event);
     event = yield block;
-  };
+  }
   return null;
 }
 
