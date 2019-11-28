@@ -48,22 +48,31 @@ function handleSubmit(event: ParsedEvent): string {
   return `cy.get('${event.selector}').submit();`;
 }
 
-export default {
-  createBlock: (event: ParsedEvent): string => {
-    switch (event.action) {
-      case EventType.CLICK:
-        return handleClick(event);
-      case EventType.KEYDOWN:
-        return handleKeydown(event);
-      case EventType.CHANGE:
-        return handleChange(event);
-      case EventType.DBCLICK:
-        return handleDoubleclick(event);
-      case EventType.SUBMIT:
-        return handleSubmit(event);
-      default:
-        throw new Error(`Unhandled event: ${event.action}`);
-    }
-  },
-  createVisit: (url: string): string => `cy.visit('${url}');`,
+const createBlock = (event: ParsedEvent): string => {
+  switch (event.action) {
+    case EventType.CLICK:
+      return handleClick(event);
+    case EventType.KEYDOWN:
+      return handleKeydown(event);
+    case EventType.CHANGE:
+      return handleChange(event);
+    case EventType.DBLCLICK:
+      return handleDoubleclick(event);
+    case EventType.SUBMIT:
+      return handleSubmit(event);
+    default:
+      throw new Error(`Unhandled event: ${event.action}`);
+  }
 };
+
+function* codeGenerator(url: string): Generator<string, null, ParsedEvent> {
+  let block: string = `cy.visit('${url}');`
+  let event: ParsedEvent = yield block;
+  while (event) {
+    block = createBlock(event);
+    event = yield block;
+  };
+  return null;
+}
+
+export default codeGenerator;

@@ -1,10 +1,14 @@
 import { generate } from 'shortid';
-import { RecState, Block } from '../types';
+import { RecState, Block, ParsedEvent } from '../types';
+import { EventType } from '../constants';
+import codeGenerator from './codeGenerator';
 
 export default class Model {
   status: RecState;
 
-  processedCode: Block[];
+  private generator: Generator<string, null, ParsedEvent>;
+
+  private processedCode: Block[];
 
   constructor() {
     this.sync();
@@ -53,8 +57,9 @@ export default class Model {
    * Adds a codeblock to the array of code blocks and updates Chrome local storage.
    * @param block
    */
-  pushBlock(block: string): Promise<Block> {
+  private pushBlock(block: string): Promise<Block> {
     return new Promise((resolve, reject) => {
+      if (!block) return resolve(null);
       const newBlock: Block = {
         value: block,
         id: generate(),
@@ -108,6 +113,32 @@ export default class Model {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
         else resolve();
       });
+    });
+  }
+
+  resume(url: string): Promise<Block> {
+    return new Promise((resolve, reject) => {
+      this.generator = codeGenerator(url);
+      this.pushBlock(this.generator.next().value as string)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  parseBlock(event: ParsedEvent): Promise<Block> {
+    return new Promise((resolve, reject) => {
+      const block: string = this.generator.next(event).value;
+      if (!block) return resolve(null);
+      if (event.action === EventType.DBLCLICK) this.processedCode.splice(-2, 2);
+      else if (
+        this.processedCode[this.processedCode.length - 1].value.endsWith('.click();')
+        && ((event.action === EventType.SUBMIT && event.tag === 'FORM')
+          || event.action === EventType.CHANGE
+        )
+      ) this.processedCode.pop();
+      this.pushBlock(block)
+        .then(resolve)
+        .catch(reject);
     });
   }
 }
