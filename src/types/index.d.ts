@@ -23,7 +23,7 @@ export interface Session {
   activePort: chrome.runtime.Port | null,
 }
 
-export interface ActionWithPayload {
+export interface Action {
   type: ControlAction,
   payload?: any,
 }

@@ -1,25 +1,21 @@
 import * as React from 'react';
 
 export interface CodeBlockProps {
-  index: number,
   text: string,
-  dragStatus: string,
-  destroyBlock: (i: number) => void,
-  onDragStart: (e: React.DragEvent, i: number) => void,
-  onDragOver: (e: React.DragEvent, i: number) => void,
-  onDragEnd: () => void,
-  onDrop: (e: React.DragEvent, i: number) => void,
+  destroyBlock: () => void,
+  handleDragStart: () => void,
+  handleDragOver: (e: React.DragEvent) => void,
+  handleDrop: (e: React.DragEvent) => void,
+  handleDragEnd: () => void,
 }
 
 export default ({
-  index,
   text,
   destroyBlock,
-  onDragStart,
-  onDragOver,
-  onDragEnd,
-  onDrop,
-  dragStatus,
+  handleDragStart,
+  handleDragOver,
+  handleDragEnd,
+  handleDrop,
 }: CodeBlockProps) => {
   const i = text.indexOf('(') + 1;
   const j = text.startsWith('cy.visit')
@@ -30,12 +26,12 @@ export default ({
   const postSelector = text.slice(j);
   return (
     <li
-      className={dragStatus}
+      className={'code-block'}
       draggable
-      onDragStart={e => onDragStart(e, index)}
-      onDragEnd={onDragEnd}
-      onDragOver={e => onDragOver(e, index)}
-      onDrop={e => onDrop(e, index)}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       <span>
         {preSelector}
@@ -44,7 +40,7 @@ export default ({
         </mark>
         {postSelector}
       </span>
-      <button type="button" className="delete" onClick={() => destroyBlock(index)}>x</button>
+      <button type="button" className="delete" onClick={destroyBlock}>x</button>
     </li>
   );
 };

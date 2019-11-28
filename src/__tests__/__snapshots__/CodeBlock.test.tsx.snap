@@ -5,9 +5,9 @@ exports[`CodeBlock CodeBlock Should render a CodeBlock 1`] = `
   className="code-block"
   draggable={true}
   onDragEnd={[MockFunction]}
-  onDragOver={[Function]}
-  onDragStart={[Function]}
-  onDrop={[Function]}
+  onDragOver={[MockFunction]}
+  onDragStart={[MockFunction]}
+  onDrop={[MockFunction]}
 >
   <span>
     cy.get(
@@ -20,7 +20,7 @@ exports[`CodeBlock CodeBlock Should render a CodeBlock 1`] = `
   </span>
   <button
     className="delete"
-    onClick={[Function]}
+    onClick={[MockFunction]}
     type="button"
   >
     x

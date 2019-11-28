@@ -6,9 +6,8 @@
  * back to the popup for display to the user.
  */
 
-import codeGenerator from '../helpers/codeGenerator';
 import {
-  ActionWithPayload,
+  Action,
   ParsedEvent,
   Session,
 } from '../types';
@@ -73,11 +72,7 @@ function ejectEventRecorder(
  * @param event
  */
 function handleEvents(event: ParsedEvent): void {
-  const block = codeGenerator.createBlock(event);
-  if (block !== null) {
-    model.pushBlock(block)
-      .catch(err => new Error(err));
-  }
+  model.parseBlock(event);
 }
 
 /**
@@ -106,9 +101,8 @@ function handleFirstConnection(): void {
     { url: [{ hostEquals: session.originalHost }] },
   );
   if (session.lastURL !== session.activePort.sender.url) {
-    const visitBlock = codeGenerator.createVisit(session.activePort.sender.url);
     session.lastURL = session.activePort.sender.url;
-    model.pushBlock(visitBlock)
+    model.resume(session.lastURL)
       .then(block => chrome.runtime.sendMessage({ type: ControlAction.PUSH, payload: block }))
       .catch(err => new Error(err));
   }
@@ -220,7 +214,7 @@ function handleControlAction(action: ControlAction): Promise<void> {
  * @param type
  * @param payload
  */
-function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
+function handleMessage({ type, payload }: Action): Promise<void> {
   return new Promise((resolve, reject) => {
     if (type === ControlAction.DELETE) {
       model.deleteBlock(payload)

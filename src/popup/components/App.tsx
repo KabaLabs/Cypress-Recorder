@@ -3,11 +3,11 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, Block, ActionWithPayload } from '../../types';
+import { RecState, Block, Action } from '../../types';
 import { ControlAction } from '../../constants';
 import '../../assets/styles/styles.scss';
 
-export default () => {
+const App: React.FunctionComponent = () => {
   const [recStatus, setRecStatus] = React.useState<RecState>('off');
   const [codeBlocks, setCodeBlocks] = React.useState<Block[]>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
@@ -36,7 +36,7 @@ export default () => {
   }, []);
 
   React.useEffect((): () => void => {
-    function handleMessageFromBackground({ type, payload }: ActionWithPayload): void {
+    function handleMessageFromBackground({ type, payload }: Action): void {
       setShouldInfoDisplay(false);
       if (type === ControlAction.START && isValidTab) startRecording();
       else if (type === ControlAction.STOP) stopRecording();
@@ -118,3 +118,5 @@ export default () => {
     </div>
   );
 };
+
+export default App;

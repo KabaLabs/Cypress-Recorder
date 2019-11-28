@@ -1,7 +1,7 @@
 export enum EventType {
   CLICK = 'click',
   CHANGE = 'change',
-  DBCLICK = 'dbclick',
+  DBLCLICK = 'dblclick',
   KEYDOWN = 'keydown',
   SUBMIT = 'submit',
 }

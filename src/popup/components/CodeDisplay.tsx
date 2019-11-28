@@ -9,28 +9,36 @@ export interface CodeDisplayProps {
 }
 
 export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
-  const [dragOriginIdx, setDragOriginIdx] = React.useState<number>(-1);
+  const [dragOrigin, setDragOrigin] = React.useState<number>(-1);
   const [draggedIdx, setDraggedIdx] = React.useState<number>(-1);
-  const [modifiedCodeBlocks, setModifiedCodeBlocks] = React.useState<Block[]>([]);
+  const [modified, setModified] = React.useState<number[]>([]);
+
+  const initModified = (): void => {
+    const temp = [];
+    for (let i = 0; i < codeBlocks.length; i += 1) {
+      temp.push(i);
+    }
+    setModified(temp);
+  }
 
   React.useEffect(() => {
-    setModifiedCodeBlocks([...codeBlocks]);
+    initModified();
   }, [codeBlocks]);
 
   const swapBlocks = (i: number, j: number) => {
-    const temp = [...modifiedCodeBlocks];
-    const holder = temp[i];
-    temp[i] = temp[j];
-    temp[j] = holder;
-    setModifiedCodeBlocks(temp);
+    const newModified = [...modified];
+    const temp = newModified[i];
+    newModified[i] = newModified[j];
+    newModified[j] = temp;
+    setModified(newModified);
   };
 
-  const onDragStart = (e: React.DragEvent, i: number) => {
+  const handleDragStart = (i: number) => {
     setDraggedIdx(i);
-    setDragOriginIdx(i);
+    setDragOrigin(i);
   };
 
-  const onDragOver = (e: React.DragEvent, i: number) => {
+  const handleDragOver = (e: React.DragEvent, i: number) => {
     e.preventDefault();
     if (draggedIdx !== i) {
       swapBlocks(draggedIdx, i);
@@ -38,30 +46,31 @@ export default ({ codeBlocks, destroyBlock, moveBlock }: CodeDisplayProps) => {
     }
   };
 
-  const onDragEnd = () => {
+  const handleDragEnd = () => {
     setDraggedIdx(-1);
-    setModifiedCodeBlocks([...codeBlocks]);
+    initModified();
   };
 
-  const onDrop = (e: React.DragEvent, i: number) => {
+  const handleDrop = (e: React.DragEvent, i: number) => {
     e.preventDefault();
-    if (dragOriginIdx !== i) moveBlock(dragOriginIdx, i);
-    setDragOriginIdx(-1);
+    if (dragOrigin !== i) moveBlock(dragOrigin, i);
+    setDragOrigin(-1);
   };
 
-  const blocks = modifiedCodeBlocks.map((block, idx) => (
-    <CodeBlock
-      key={block.id}
-      dragStatus={idx === draggedIdx ? 'drag-origin' : 'code-block'}
-      text={block.value}
-      index={idx}
-      destroyBlock={destroyBlock}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
-      onDrop={onDrop}
-    />
-  ));
+  const blocks: JSX.Element[] = [];
+  modified.forEach((i, displayIdx) => {
+    const block: Block | undefined = codeBlocks[i];
+    if (block) blocks.push(
+      <CodeBlock
+        key={block.id}
+        text={block.value}
+        destroyBlock={() => destroyBlock(i)}
+        handleDragStart={() => handleDragStart(i)}
+        handleDragOver={e => handleDragOver(e, displayIdx)}
+        handleDrop={e => handleDrop(e, displayIdx)}
+        handleDragEnd={handleDragEnd}
+      />);
+  });
 
   return (
     <ul id="code-display">
