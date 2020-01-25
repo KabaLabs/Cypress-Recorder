@@ -33,6 +33,7 @@ This extension will allow you to:
     On Macs:
     - Ctrl + R to start and stop recording
     - Ctrl + G to reset
+    
     On PCs and Linux:
     - Alt + R to start and stop recording
     - Alt + G to reset

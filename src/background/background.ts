@@ -28,14 +28,14 @@ const session: Session = {
  * @param cb
  * @param args
  */
-function control(cb: (...args: any) => Promise<void>, ...args: any): void {
+function control(cb: (command?: ActionWithPayload | string) => Promise<void>, command?: ActionWithPayload | string): void {
   if (session.isPending) return;
   session.isPending = true;
-  cb(...args)
-    .then(() => {
+  cb(command)
+    .catch(err => new Error(err))
+    .finally(() => {
       session.isPending = false;
-    })
-    .catch(err => new Error(err));
+    });
 }
 
 /**
@@ -258,7 +258,6 @@ function handleQuickKeys(command: string): Promise<void> {
  * Initializes the extension.
  */
 function initialize(): void {
-  chrome.runtime.onInstalled.addListener(() => control(cleanUp));
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onMessage.addListener(message => control(handleMessage, message));
   chrome.commands.onCommand.addListener(command => control(handleQuickKeys, command));
