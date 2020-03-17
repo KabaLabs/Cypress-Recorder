@@ -264,7 +264,6 @@ function handleQuickKeys(command: string): Promise<void> {
  * Initializes the extension.
  */
 function initialize(): void {
-  chrome.runtime.onInstalled.addListener(() => control(cleanUp));
   chrome.runtime.onConnect.addListener(handleNewConnection);
   chrome.runtime.onMessage.addListener(message => control(handleMessage, message));
   chrome.commands.onCommand.addListener(command => control(handleQuickKeys, command));
