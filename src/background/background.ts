@@ -29,7 +29,7 @@ const session: Session = {
  * @param cb
  * @param args
  */
-function control(cb: (cmd?: string | ActionWithPayload) => Promise<void>, cmd?: string | ActionWithPayload): void {
+function control(cb: (...args: any) => Promise<void>, cmd?: string | ActionWithPayload): void {
   if (session.isPending) return;
   session.isPending = true;
   cb(cmd)
