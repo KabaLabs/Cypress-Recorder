@@ -29,14 +29,14 @@ const session: Session = {
  * @param cb
  * @param args
  */
-function control(cb: (...args: any) => Promise<void>, ...args: any): void {
+function control(cb: (cmd?: string | ActionWithPayload) => Promise<void>, cmd?: string | ActionWithPayload): void {
   if (session.isPending) return;
   session.isPending = true;
-  cb(...args)
-    .then(() => {
+  cb(cmd)
+    .catch(err => new Error(err))
+    .finally(() => {
       session.isPending = false;
-    })
-    .catch(err => new Error(err));
+    });
 }
 
 /**
