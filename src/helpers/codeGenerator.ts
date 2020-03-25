@@ -57,7 +57,7 @@ export default {
         return handleKeydown(event);
       case EventType.CHANGE:
         return handleChange(event);
-      case EventType.DBCLICK:
+      case EventType.DBLCLICK:
         return handleDoubleclick(event);
       case EventType.SUBMIT:
         return handleSubmit(event);

@@ -82,6 +82,19 @@ export default class Model {
   }
 
   /**
+   * Pops the last block out of storage
+   */
+  popTwoBlocks(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.processedCode.splice(this.processedCode.length - 2, 2);
+      chrome.storage.local.set({ codeBlocks: this.processedCode }, () => {
+        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+        else resolve();
+      });
+    })
+  }
+
+  /**
    * Allows the user to drag and drop code blocks to new positions in the array.
    * @param i
    * @param j

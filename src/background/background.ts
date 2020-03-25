@@ -13,7 +13,7 @@ import {
   Session,
 } from '../types';
 import Model from '../helpers/model';
-import { ControlAction } from '../constants';
+import { ControlAction, EventType } from '../constants';
 
 const model = new Model();
 
@@ -75,8 +75,16 @@ function ejectEventRecorder(
 function handleEvents(event: ParsedEvent): void {
   const block = codeGenerator.createBlock(event);
   if (block !== null) {
-    model.pushBlock(block)
-      .catch(err => new Error(err));
+    if (event.action === EventType.DBLCLICK) {
+      model.popTwoBlocks()
+        .then(() => {
+          model.pushBlock(block);
+        })
+        .catch(err => new Error(err));
+    } else {
+      model.pushBlock(block)
+        .catch(err => new Error(err));
+    }
   }
 }
 
