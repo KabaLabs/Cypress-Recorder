@@ -13,13 +13,13 @@ exports[`App Should match snapshot, render Header, Body, and Footer 1`] = `
     destroyBlock={[Function]}
     isValidTab={true}
     moveBlock={[Function]}
-    recStatus="off"
+    recStatus={1}
   />
   <Component
     copyToClipboard={[Function]}
     handleToggle={[Function]}
     isValidTab={true}
-    recStatus="off"
+    recStatus={1}
   />
 </div>
 `;
