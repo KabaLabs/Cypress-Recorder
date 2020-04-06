@@ -14,3 +14,9 @@ export enum ControlAction {
   MOVE,
   PUSH,
 }
+
+export enum RecState {
+  ON,
+  OFF,
+  PAUSED,
+}

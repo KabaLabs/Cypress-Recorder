@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { RecState, Block } from '../../types';
+import { Block } from '../../types';
+import { RecState } from '../../constants';
 
 import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
@@ -20,7 +21,7 @@ export default ({
   moveBlock,
 }: BodyProps) => (
   <div id="body">
-    {recStatus === 'off' && <LandingBox isValidTab={isValidTab} />}
-    {recStatus !== 'off' && <CodeDisplay codeBlocks={codeBlocks} destroyBlock={destroyBlock} moveBlock={moveBlock} />}
+    {recStatus === RecState.OFF && <LandingBox isValidTab={isValidTab} />}
+    {recStatus !== RecState.OFF && <CodeDisplay codeBlocks={codeBlocks} destroyBlock={destroyBlock} moveBlock={moveBlock} />}
   </div>
 );

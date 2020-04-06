@@ -1,5 +1,6 @@
 import { generate } from 'shortid';
-import { RecState, Block } from '../types';
+import { Block } from '../types';
+import { RecState } from '../constants';
 
 export default class Model {
   status: RecState;
@@ -20,10 +21,10 @@ export default class Model {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
         else {
           if (result.status === 'on' || result.status === 'paused') {
-            this.status = 'paused';
+            this.status = RecState.PAUSED;
             this.processedCode = result.codeBlocks || [];
           } else {
-            this.status = 'off';
+            this.status = RecState.OFF;
             this.processedCode = [];
           }
           chrome.storage.local.set({ status: this.status, codeBlocks: this.processedCode }, () => {
@@ -40,7 +41,7 @@ export default class Model {
    */
   reset(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.status = 'off';
+      this.status = RecState.OFF;
       this.processedCode = [];
       chrome.storage.local.set({ status: this.status, codeBlocks: this.processedCode }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);

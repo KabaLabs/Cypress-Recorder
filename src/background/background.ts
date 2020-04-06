@@ -13,7 +13,7 @@ import {
   Session,
 } from '../types';
 import Model from '../helpers/model';
-import { ControlAction, EventType } from '../constants';
+import { ControlAction, EventType, RecState } from '../constants';
 
 const model = new Model();
 
@@ -133,7 +133,7 @@ function handleFirstConnection(): void {
 function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
   session.activePort = portToEventRecorder;
   session.activePort.onMessage.addListener(handleEvents);
-  if (model.status !== 'on') handleFirstConnection();
+  if (model.status !== RecState.ON) handleFirstConnection();
 }
 
 /**
@@ -142,7 +142,7 @@ function handleNewConnection(portToEventRecorder: chrome.runtime.Port): void {
 function startRecording(): Promise<void> {
   return new Promise((resolve, reject) => {
     injectEventRecorder()
-      .then(() => model.updateStatus('on'))
+      .then(() => model.updateStatus(RecState.ON))
       .then(() => {
         chrome.browserAction.setIcon({ path: 'cypressconeREC.png' });
         resolve();
@@ -157,7 +157,7 @@ stopRecording = () => (
     chrome.webNavigation.onDOMContentLoaded.removeListener(injectEventRecorder);
     chrome.webNavigation.onCommitted.removeListener(checkForBadNavigation);
     chrome.webNavigation.onBeforeNavigate.removeListener(ejectEventRecorder);
-    model.updateStatus('paused')
+    model.updateStatus(RecState.PAUSED)
       .then(() => {
         session.activePort = null;
         session.originalHost = null;
@@ -254,9 +254,9 @@ function handleQuickKeys(command: string): Promise<void> {
   return new Promise((resolve, reject) => {
     let action: ControlAction;
     if (command === 'start-recording') {
-      if (model.status === 'off' || model.status === 'paused') action = ControlAction.START;
-      else if (model.status === 'on') action = ControlAction.STOP;
-    } else if (command === 'reset-recording' && model.status === 'paused') action = ControlAction.RESET;
+      if (model.status === RecState.OFF || model.status === RecState.PAUSED) action = ControlAction.START;
+      else if (model.status === RecState.ON) action = ControlAction.STOP;
+    } else if (command === 'reset-recording' && model.status === RecState.PAUSED) action = ControlAction.RESET;
     if (action) {
       handleControlAction(action)
         .then(() => {
