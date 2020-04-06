@@ -1,10 +1,5 @@
 import { ControlAction } from '../constants';
 
-export type RecState =
-  | 'off'
-  | 'on'
-  | 'paused';
-
 export interface ParsedEvent {
   selector: string,
   action: string,
