@@ -19,7 +19,9 @@ function parseEvent(event: Event): ParsedEvent {
   if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
   else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
   else if ((event.target as Element).hasAttribute('data-testid')) selector = `[data-testid=${(event.target as Element).getAttribute('data-testid')}]`;
-  else selector = finder(event.target as Element);
+  else selector = finder(event.target as Element, { attr: (name, value) => {
+    return name === 'data-cy' || name === 'data-test' || name === 'data-testid';
+  }});
   const parsedEvent: ParsedEvent = {
     selector,
     action: event.type,
