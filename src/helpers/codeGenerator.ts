@@ -48,6 +48,11 @@ function handleSubmit(event: ParsedEvent): string {
   return `cy.get('${event.selector}').submit();`;
 }
 
+function handleUrl(url: string): string {
+  const { origin, pathname } = new URL(url);
+  return `cy.url().should('contains', '${origin + pathname}')`;
+}
+
 export default {
   createBlock: (event: ParsedEvent): string => {
     switch (event.action) {
@@ -66,4 +71,5 @@ export default {
     }
   },
   createVisit: (url: string): string => `cy.visit('${url}');`,
+  createUrl: (url: string): string => handleUrl(url),
 };
