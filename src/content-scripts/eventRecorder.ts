@@ -10,25 +10,45 @@ import { EventType } from '../constants';
 let port: chrome.runtime.Port;
 
 /**
+ * Reverse lookup the event.target to discover if it was an HTMLAnchorElement that was clicked
+ * @param target: HTMLElement
+ * @param originalTarget: HTMLElement
+ * @returns {HTMLElement}
+ */
+function parseEventTarget(target, originalTarget) {
+  if ((target as HTMLAnchorElement).hasAttribute('href')) {
+    return target;
+  } else {
+    if (target.parentElement) {
+      return parseEventTarget(target.parentElement, originalTarget);
+    } else {
+      return originalTarget;
+    }
+  }
+}
+
+/**
  * Parses DOM events into an object with the necessary data.
  * @param event
  * @returns {ParsedEvent}
  */
 function parseEvent(event: Event): ParsedEvent {
   let selector: string;
-  if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
-  else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
-  else if ((event.target as Element).hasAttribute('data-testid')) selector = `[data-testid=${(event.target as Element).getAttribute('data-testid')}]`;
-  else selector = finder(event.target as Element);
+  var newTarget = parseEventTarget(event.target, event.target);
+  console.log("the target", newTarget);
+  if ((newTarget as Element).hasAttribute('data-cy')) selector = `[data-cy=${(newTarget as Element).getAttribute('data-cy')}]`;
+  else if ((newTarget as Element).hasAttribute('data-test')) selector = `[data-test=${(newTarget as Element).getAttribute('data-test')}]`;
+  else if ((newTarget as Element).hasAttribute('data-testid')) selector = `[data-testid=${(newTarget as Element).getAttribute('data-testid')}]`;
+  else selector = finder(newTarget as Element);
   const parsedEvent: ParsedEvent = {
     selector,
     action: event.type,
-    tag: (event.target as Element).tagName,
-    value: (event.target as HTMLInputElement).value,
+    tag: (newTarget as Element).tagName,
+    value: (newTarget as HTMLInputElement).value,
   };
-  if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
-  if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;
-  if (parsedEvent.tag === 'INPUT') parsedEvent.inputType = (event.target as HTMLInputElement).type;
+  if ((newTarget as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (newTarget as HTMLAnchorElement).href;
+  if ((newTarget as Element).hasAttribute('id')) parsedEvent.id = (newTarget as Element).id;
+  if (parsedEvent.tag === 'INPUT') parsedEvent.inputType = (newTarget as HTMLInputElement).type;
   if (event.type === 'keydown') parsedEvent.key = (event as KeyboardEvent).key;
   return parsedEvent;
 }
