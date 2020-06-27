@@ -1,16 +1,22 @@
 export enum EventType {
   CLICK = 'click',
   CHANGE = 'change',
-  DBCLICK = 'dbclick',
+  DBLCLICK = 'dblclick',
   KEYDOWN = 'keydown',
   SUBMIT = 'submit',
 }
 
 export enum ControlAction {
-  START = 'startRec',
-  STOP = 'stopRec',
-  RESET = 'resetRec',
-  DELETE = 'deleteBlock',
-  MOVE = 'moveBlock',
-  PUSH = 'pushBlock',
+  START,
+  STOP,
+  RESET,
+  DELETE,
+  MOVE,
+  PUSH,
+}
+
+export enum RecState {
+  ON,
+  OFF,
+  PAUSED,
 }
