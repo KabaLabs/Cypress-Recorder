@@ -76,7 +76,7 @@
     "jest-enzyme": "^7.1.1",
     "parcel-bundler": "^1.12.4",
     "sass": "^1.23.0",
-    "ts-jest": "^24.1.0",
+    "ts-jest": "^26.1.1",
     "typescript": "^3.6.4"
   },
   "dependencies": {

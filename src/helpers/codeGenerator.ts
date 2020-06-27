@@ -50,7 +50,7 @@ function handleSubmit(event: ParsedEvent): string {
 
 function handleUrl(url: string): string {
   const { origin, pathname } = new URL(url);
-  return `cy.url().should('contains', '${origin + pathname}')`;
+  return `cy.url().should('contains', '${origin + pathname}');`;
 }
 
 export default {
