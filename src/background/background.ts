@@ -102,6 +102,11 @@ function checkForBadNavigation(
       || details.transitionQualifiers.includes('from_address_bar'))
   ) {
     control(stopRecording);
+  } else if (details.url.includes(session.originalHost)) {
+    const urlBlock = codeGenerator.createUrl(details.url);
+    model.pushBlock(urlBlock)
+      .then(block => chrome.runtime.sendMessage({ type: ControlAction.PUSH, payload: block }))
+      .catch(err => new Error(err));
   }
 }
 
