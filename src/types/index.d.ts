@@ -5,6 +5,7 @@ export interface ParsedEvent {
   action: string,
   tag: string,
   value: string,
+  location?: { x: any, y: any},
   id?: string,
   key?: string,
   href?: string,
