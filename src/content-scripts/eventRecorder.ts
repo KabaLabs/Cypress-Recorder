@@ -20,11 +20,13 @@ function parseEvent(event: Event): ParsedEvent {
   else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
   else if ((event.target as Element).hasAttribute('data-testid')) selector = `[data-testid=${(event.target as Element).getAttribute('data-testid')}]`;
   else selector = finder(event.target as Element);
+  const mouseEvent = (event as MouseEvent);
   const parsedEvent: ParsedEvent = {
     selector,
     action: event.type,
     tag: (event.target as Element).tagName,
     value: (event.target as HTMLInputElement).value,
+    location: { x: mouseEvent.offsetX, y: mouseEvent.offsetY},
   };
   if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
   if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;

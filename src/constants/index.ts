@@ -4,6 +4,7 @@ export enum EventType {
   DBLCLICK = 'dblclick',
   KEYDOWN = 'keydown',
   SUBMIT = 'submit',
+  RCLICK = 'contextmenu',
 }
 
 export enum ControlAction {

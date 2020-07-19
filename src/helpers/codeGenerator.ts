@@ -13,7 +13,11 @@ import { EventType } from '../constants';
  */
 
 function handleClick(event: ParsedEvent): string {
-  return `cy.get('${event.selector}').click();`;
+  return `cy.get('${event.selector}').click(${event.location.x}, ${event.location.y});`;
+}
+
+function handleRClick(event: ParsedEvent): string {
+  return `cy.get('${event.selector}').rightclick(${event.location.x}, ${event.location.y});`;
 }
 
 function handleKeydown(event: ParsedEvent): string | null {
@@ -41,7 +45,7 @@ function handleChange(event: ParsedEvent): string {
 }
 
 function handleDoubleclick(event: ParsedEvent): string {
-  return `cy.get('${event.selector}').dblclick();`;
+  return `cy.get('${event.selector}').dblclick(${event.location.x}, ${event.location.y});`;
 }
 
 function handleSubmit(event: ParsedEvent): string {
@@ -58,6 +62,8 @@ export default {
     switch (event.action) {
       case EventType.CLICK:
         return handleClick(event);
+        case EventType.RCLICK:
+          return handleRClick(event);
       case EventType.KEYDOWN:
         return handleKeydown(event);
       case EventType.CHANGE:
