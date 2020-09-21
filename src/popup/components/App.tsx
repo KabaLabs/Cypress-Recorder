@@ -3,32 +3,32 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { RecState, Block, ActionWithPayload } from '../../types';
-import { ControlAction } from '../../constants';
+import { Block, ActionWithPayload } from '../../types';
+import { ControlAction, RecState } from '../../constants';
 import '../../assets/styles/styles.scss';
 
 export default () => {
-  const [recStatus, setRecStatus] = React.useState<RecState>('off');
+  const [recStatus, setRecStatus] = React.useState<RecState>(RecState.OFF);
   const [codeBlocks, setCodeBlocks] = React.useState<Block[]>([]);
   const [shouldInfoDisplay, setShouldInfoDisplay] = React.useState<boolean>(false);
   const [isValidTab, setIsValidTab] = React.useState<boolean>(true);
 
   const startRecording = (): void => {
-    setRecStatus('on');
+    setRecStatus(RecState.ON);
   };
   const stopRecording = (): void => {
-    setRecStatus('paused');
+    setRecStatus(RecState.PAUSED);
   };
   const resetRecording = (): void => {
-    setRecStatus('off');
+    setRecStatus(RecState.OFF);
     setCodeBlocks([]);
   };
 
   React.useEffect((): void => {
     chrome.storage.local.get(['status', 'codeBlocks'], result => {
       if (result.codeBlocks) setCodeBlocks(result.codeBlocks);
-      if (result.status === 'on') setRecStatus('on');
-      else if (result.status === 'paused') setRecStatus('paused');
+      if (result.status === RecState.ON) setRecStatus(RecState.ON);
+      else if (result.status === RecState.PAUSED) setRecStatus(RecState.PAUSED);
     });
     chrome.tabs.query({ active: true, currentWindow: true }, activeTab => {
       if (activeTab[0].url.startsWith('chrome://')) setIsValidTab(false);

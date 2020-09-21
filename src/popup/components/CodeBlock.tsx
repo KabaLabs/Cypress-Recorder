@@ -21,10 +21,10 @@ export default ({
   onDrop,
   dragStatus,
 }: CodeBlockProps) => {
-  const i = text.indexOf('(') + 1;
-  const j = text.startsWith('cy.visit')
-    ? text.lastIndexOf(')')
-    : text.lastIndexOf(')', text.length - 4);
+  const i = text.startsWith('cy.url()')
+    ? text.lastIndexOf('\'', text.length - 4)
+    : text.indexOf('\'');
+  const j = text.lastIndexOf('\'') + 1;
   const preSelector = text.slice(0, i);
   const selector = text.slice(i, j);
   const postSelector = text.slice(j);
