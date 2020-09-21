@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Block } from '../../types';
+import type { Block } from '../../types';
 import { RecState } from '../../constants';
-
 import CodeDisplay from './CodeDisplay';
 import LandingBox from './LandingBox';
 

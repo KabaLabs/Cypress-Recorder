@@ -7,7 +7,7 @@
  */
 
 import codeGenerator from '../helpers/codeGenerator';
-import {
+import type {
   ActionWithPayload,
   ParsedEvent,
   Session,

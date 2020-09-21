@@ -1,6 +1,6 @@
 import * as React from 'react';
 import CodeBlock from './CodeBlock';
-import { Block } from '../../types';
+import type { Block } from '../../types';
 
 export interface CodeDisplayProps {
   codeBlocks: Block[],
