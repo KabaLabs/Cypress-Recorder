@@ -1,5 +1,5 @@
 import { generate } from 'shortid';
-import { Block } from '../types';
+import type { Block } from '../types';
 import { RecState } from '../constants';
 
 export default class Model {

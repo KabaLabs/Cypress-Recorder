@@ -3,7 +3,7 @@ import Header from './Header';
 import Info from './Info';
 import Footer from './Footer';
 import Body from './Body';
-import { Block, ActionWithPayload } from '../../types';
+import type { Block, ActionWithPayload } from '../../types';
 import { ControlAction, RecState } from '../../constants';
 import '../../assets/styles/styles.scss';
 
