@@ -26,7 +26,7 @@ This extension will allow you to:
 ## Usage
 
 * Open the extension and click 'Start Recording' to begin recording actions.
-* Click links, sumbit forms, etc.
+* Click links, submit forms, etc.
 * Check your saved actions by opening the popup at any time. To check recording status at a glance, note our icon: if recording, it will look like this: ![cypressconeREC](https://user-images.githubusercontent.com/22487388/67896806-5973e600-fb1a-11e9-8ee8-87b1e8338e3e.png)
 * Click 'Stop Recording' to stop recording. From there, you will have the option to resume recording, reset, or copy your generated code to your clipboard.
 * You can also use keyboard shortcuts:
