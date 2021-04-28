@@ -1,14 +1,12 @@
 {
   "name": "Cypress Recorder",
   "short_name": "Cypress Rec",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Records a user session and generates cypress code for automation and testing purposes.",
   "manifest_version": 2,
   "permissions": [
     "activeTab",
-    "clipboardWrite",
     "storage",
-    "tabs",
     "webNavigation"
   ],
   "optional_permissions": [
