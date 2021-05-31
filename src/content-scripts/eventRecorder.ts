@@ -4,6 +4,7 @@
  * Responsible for recording the DOM events.
  */
 import finder from '@medv/finder';
+import getXPath from 'get-xpath';
 import type { ParsedEvent } from '../types';
 import { EventType } from '../constants';
 
@@ -14,33 +15,44 @@ let port: chrome.runtime.Port;
  * @param event
  * @returns {ParsedEvent}
  */
-function parseEvent(event: Event): ParsedEvent {
+function parseEvent(event: Event): Promise<ParsedEvent> {
   let selector: string;
-  if ((event.target as Element).hasAttribute('data-cy')) selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
-  else if ((event.target as Element).hasAttribute('data-test')) selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
-  else if ((event.target as Element).hasAttribute('data-testid')) selector = `[data-testid=${(event.target as Element).getAttribute('data-testid')}]`;
-  else selector = finder(event.target as Element, { attr: (name, value) => {
-    return name === 'data-cy' || name === 'data-test' || name === 'data-testid';
-  }});
-  const parsedEvent: ParsedEvent = {
-    selector,
-    action: event.type,
-    tag: (event.target as Element).tagName,
-    value: (event.target as HTMLInputElement).value,
-  };
-  if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
-  if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;
-  if (parsedEvent.tag === 'INPUT') parsedEvent.inputType = (event.target as HTMLInputElement).type;
-  if (event.type === 'keydown') parsedEvent.key = (event as KeyboardEvent).key;
-  return parsedEvent;
+  const defaultConfig = { pattern: 'css selectors' }; // 默认配置
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(defaultConfig, (items) => {
+      if (items.pattern === 'xpath') {
+        selector = getXPath(event.target as Element);
+      } else if ((event.target as Element).hasAttribute('data-cy')) {
+        selector = `[data-cy=${(event.target as Element).getAttribute('data-cy')}]`;
+      } else if ((event.target as Element).hasAttribute('data-test')) {
+        selector = `[data-test=${(event.target as Element).getAttribute('data-test')}]`;
+      } else if ((event.target as Element).hasAttribute('data-testid')) {
+        selector = `[data-testid=${(event.target as Element).getAttribute('data-testid')}]`;
+      } else {
+        selector = finder(event.target as Element, { attr: (name, value) => name === 'data-cy' || name === 'data-test' || name === 'data-testid' });
+      }
+      const parsedEvent: ParsedEvent = {
+        selector,
+        action: event.type,
+        tag: (event.target as Element).tagName,
+        value: (event.target as HTMLInputElement).value,
+      };
+      if ((event.target as HTMLAnchorElement).hasAttribute('href')) parsedEvent.href = (event.target as HTMLAnchorElement).href;
+      if ((event.target as Element).hasAttribute('id')) parsedEvent.id = (event.target as Element).id;
+      if (parsedEvent.tag === 'INPUT') parsedEvent.inputType = (event.target as HTMLInputElement).type;
+      if (event.type === 'keydown') parsedEvent.key = (event as KeyboardEvent).key;
+      resolve(parsedEvent);
+    });
+  });
 }
 
 /**
  * Checks if DOM event was triggered by user; if so, it calls parseEvent on the data.
  * @param event
  */
-function handleEvent(event: Event): void {
-  if (event.isTrusted === true) port.postMessage(parseEvent(event));
+ async function handleEvent(event: Event): Promise<void> {
+  const message = await parseEvent(event);
+  if (event.isTrusted === true) port.postMessage(message);
 }
 
 /**

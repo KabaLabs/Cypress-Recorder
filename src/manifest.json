@@ -30,6 +30,10 @@
     "default_icon": "./cypressconeICON.png",
     "default_popup": "./popup/index.html"
   },
+  "options_ui": {
+    "page": "./options/index.html",
+    "chrome_style": true
+	},
   "commands": {
     "start-recording": {
       "suggested_key": {

@@ -72,8 +72,8 @@ function ejectEventRecorder(
  * Handles events sent from the event recorder.
  * @param event
  */
-function handleEvents(event: ParsedEvent): void {
-  const block = codeGenerator.createBlock(event);
+async function handleEvents(event: ParsedEvent): Promise<void> {
+  const block = await codeGenerator.createBlock(event);
   if (block !== null) {
     if (event.action === EventType.DBLCLICK) {
       model.popTwoBlocks()

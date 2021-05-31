@@ -11,41 +11,58 @@ import { EventType } from '../constants';
  * Helper functions that handle each action type.
  * @param event
  */
-
-function handleClick(event: ParsedEvent): string {
-  return `cy.get('${event.selector}').click();`;
+ async function getPatternMethod(): Promise<string> {
+  const defaultConfig = { pattern: 'css selectors' }; // 默认配置
+  return new Promise((resolve) => {
+    chrome.storage.local.get(defaultConfig, (items) => {
+      let method = 'get';
+      if (items.pattern === 'xpath') {
+        method = 'xpath';
+      }
+      resolve(method);
+    });
+  });
 }
 
-function handleKeydown(event: ParsedEvent): string | null {
+async function handleClick(event: ParsedEvent): Promise<string> {
+  const method = await getPatternMethod();
+  return `cy.${method}('${event.selector}').click();`;
+}
+
+async function handleKeydown(event: ParsedEvent): Promise<string | null> {
+  const method = await getPatternMethod();
   switch (event.key) {
     case 'Backspace':
-      return `cy.get('${event.selector}').type('{backspace}');`;
+      return `cy.${method}('${event.selector}').type('{backspace}');`;
     case 'Escape':
-      return `cy.get('${event.selector}').type('{esc}');`;
+      return `cy.${method}('${event.selector}').type('{esc}');`;
     case 'ArrowUp':
-      return `cy.get('${event.selector}').type('{uparrow}');`;
+      return `cy.${method}('${event.selector}').type('{uparrow}');`;
     case 'ArrowRight':
-      return `cy.get('${event.selector}').type('{rightarrow}');`;
+      return `cy.${method}('${event.selector}').type('{rightarrow}');`;
     case 'ArrowDown':
-      return `cy.get('${event.selector}').type('{downarrow}');`;
+      return `cy.${method}('${event.selector}').type('{downarrow}');`;
     case 'ArrowLeft':
-      return `cy.get('${event.selector}').type('{leftarrow}');`;
+      return `cy.${method}('${event.selector}').type('{leftarrow}');`;
     default:
       return null;
   }
 }
 
-function handleChange(event: ParsedEvent): string {
+async function handleChange(event: ParsedEvent): Promise<string> {
+  const method = await getPatternMethod();
   if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
-  return `cy.get('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
+  return `cy.${method}('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
 }
 
-function handleDoubleclick(event: ParsedEvent): string {
-  return `cy.get('${event.selector}').dblclick();`;
+async function handleDoubleclick(event: ParsedEvent): Promise<string> {
+  const method = await getPatternMethod();
+  return `cy.${method}('${event.selector}').dblclick();`;
 }
 
-function handleSubmit(event: ParsedEvent): string {
-  return `cy.get('${event.selector}').submit();`;
+async function handleSubmit(event: ParsedEvent): Promise<string> {
+  const method = await getPatternMethod();
+  return `cy.${method}('${event.selector}').submit();`;
 }
 
 function handleUrl(url: string): string {
@@ -54,7 +71,7 @@ function handleUrl(url: string): string {
 }
 
 export default {
-  createBlock: (event: ParsedEvent): string => {
+  createBlock: (event: ParsedEvent): Promise<string> => {
     switch (event.action) {
       case EventType.CLICK:
         return handleClick(event);
