@@ -6,63 +6,85 @@
  */
 import type { ParsedEvent } from '../types';
 import { EventType } from '../constants';
+import { getPatternMethod } from './pattern';
 
 /**
  * Helper functions that handle each action type.
  * @param event
  */
- async function getPatternMethod(): Promise<string> {
-  const defaultConfig = { pattern: 'css selectors' }; // 默认配置
-  return new Promise((resolve) => {
-    chrome.storage.local.get(defaultConfig, (items) => {
-      let method = 'get';
-      if (items.pattern === 'xpath') {
-        method = 'xpath';
-      }
-      resolve(method);
-    });
+
+function handleClick(event: ParsedEvent): Promise<string> {
+  return new Promise((resolve, reject) => {
+    getPatternMethod()
+      .then((method) => resolve(`cy.${method}('${event.selector}').click();`))
+      .catch(err => {
+        reject(err);
+      });
   });
 }
 
-async function handleClick(event: ParsedEvent): Promise<string> {
-  const method = await getPatternMethod();
-  return `cy.${method}('${event.selector}').click();`;
+function handleKeydown(event: ParsedEvent): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    getPatternMethod()
+      .then((method) => {
+        switch (event.key) {
+          case 'Backspace':
+            resolve(`cy.${method}('${event.selector}').type('{backspace}');`);
+          case 'Escape':
+            resolve(`cy.${method}('${event.selector}').type('{esc}');`);
+          case 'ArrowUp':
+            resolve(`cy.${method}('${event.selector}').type('{uparrow}');`);
+          case 'ArrowRight':
+            resolve(`cy.${method}('${event.selector}').type('{rightarrow}');`);
+          case 'ArrowDown':
+            resolve(`cy.${method}('${event.selector}').type('{downarrow}');`);
+          case 'ArrowLeft':
+            resolve(`cy.${method}('${event.selector}').type('{leftarrow}');`);
+          default:
+            resolve(null);
+        }
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
-async function handleKeydown(event: ParsedEvent): Promise<string | null> {
-  const method = await getPatternMethod();
-  switch (event.key) {
-    case 'Backspace':
-      return `cy.${method}('${event.selector}').type('{backspace}');`;
-    case 'Escape':
-      return `cy.${method}('${event.selector}').type('{esc}');`;
-    case 'ArrowUp':
-      return `cy.${method}('${event.selector}').type('{uparrow}');`;
-    case 'ArrowRight':
-      return `cy.${method}('${event.selector}').type('{rightarrow}');`;
-    case 'ArrowDown':
-      return `cy.${method}('${event.selector}').type('{downarrow}');`;
-    case 'ArrowLeft':
-      return `cy.${method}('${event.selector}').type('{leftarrow}');`;
-    default:
-      return null;
-  }
+function handleChange(event: ParsedEvent): Promise<string> {
+  return new Promise((resolve, reject) => {
+    getPatternMethod()
+      .then((method) => {
+        if (event.inputType === 'checkbox' || event.inputType === 'radio') resolve(null);
+        resolve(`cy.${method}('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
-async function handleChange(event: ParsedEvent): Promise<string> {
-  const method = await getPatternMethod();
-  if (event.inputType === 'checkbox' || event.inputType === 'radio') return null;
-  return `cy.${method}('${event.selector}').type('${event.value.replace(/'/g, "\\'")}');`;
+function handleDoubleclick(event: ParsedEvent): Promise<string> {
+  return new Promise((resolve, reject) => {
+    getPatternMethod()
+      .then((method) => {
+        resolve(`cy.${method}('${event.selector}').dblclick();`);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
-async function handleDoubleclick(event: ParsedEvent): Promise<string> {
-  const method = await getPatternMethod();
-  return `cy.${method}('${event.selector}').dblclick();`;
-}
-
-async function handleSubmit(event: ParsedEvent): Promise<string> {
-  const method = await getPatternMethod();
-  return `cy.${method}('${event.selector}').submit();`;
+function handleSubmit(event: ParsedEvent): Promise<string> {
+  return new Promise((resolve, reject) => {
+    getPatternMethod()
+      .then((method) => {
+        resolve(`cy.${method}('${event.selector}').submit();`);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
 function handleUrl(url: string): string {
