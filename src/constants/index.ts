@@ -20,3 +20,8 @@ export enum RecState {
   OFF,
   PAUSED,
 }
+
+export enum MatchPattern {
+  CSS = 'css selectors',
+  XPATH = 'xpath'
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+	<style>
+		body { font-size: 16px; width: 400px; height: 200px; padding: 10px; font-family: 'Roboto'; }
+		#save-status { position: absolute; right: 20px; bottom: 20px; }
+		#status { color: green; margin-right: 10px; }
+	</style>
+  <title>Options</title>
+</head>
+<body>
+	<label>Please select matching patterns:</label>
+	<select id="pattern">
+		<option value="css selectors">CSS selectors</option>
+		<option value="xpath">XPath</option>
+	</select>
+  
+  <div id="save-status">
+		<span id="status"></span>
+	  <input type="button" id="save" value="Save" />
+	</div>
+  <script src="./index.tsx"></script>
+</body>
+</html>
