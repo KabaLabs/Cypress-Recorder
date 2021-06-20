@@ -2,7 +2,7 @@
  * Generates the Cypress code that will simulate the recorded user session.
  *
  * Each time the user records, this function will generate a cy.visit command that will
- * store the current url, as well each subsequest user interaction with the browser.
+ * store the current url, as well each subsequent user interaction with the browser.
  */
 import type { ParsedEvent } from '../types';
 import { EventType } from '../constants';
