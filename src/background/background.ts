@@ -252,7 +252,7 @@ function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
 }
 
 /**
- * Handles control actions comming from keyboard shortcuts.
+ * Handles control actions coming from keyboard shortcuts.
  * @param command
  */
 function handleQuickKeys(command: string): Promise<void> {
