@@ -43,7 +43,7 @@ function control(cb: (...args: any) => Promise<void>, cmd?: string | ActionWithP
  * Injects the event recorder into the active tab.
  *
  * @param details If the details argument is present, that means that web navigation occurred, and
- * we want to ensure that this navigation is occuring in the top-level frame.
+ * we want to ensure that this navigation is occurring in the top-level frame.
  */
 function injectEventRecorder(
   details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
