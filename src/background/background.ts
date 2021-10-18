@@ -42,8 +42,8 @@ function control(cb: (...args: any) => Promise<void>, cmd?: string | ActionWithP
 /**
  * Injects the event recorder into the active tab.
  *
- * @param details If the details argument is present, that means that web navigation occured, and
- * we want to ensure that this navagation is occuring in the top-level frame.
+ * @param details If the details argument is present, that means that web navigation occurred, and
+ * we want to ensure that this navigation is occurring in the top-level frame.
  */
 function injectEventRecorder(
   details?: chrome.webNavigation.WebNavigationFramedCallbackDetails,
@@ -252,7 +252,7 @@ function handleMessage({ type, payload }: ActionWithPayload): Promise<void> {
 }
 
 /**
- * Handles control actions comming from keyboard shortcuts.
+ * Handles control actions coming from keyboard shortcuts.
  * @param command
  */
 function handleQuickKeys(command: string): Promise<void> {
