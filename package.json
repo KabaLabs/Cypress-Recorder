@@ -1,6 +1,6 @@
 {
   "name": "cypress-recorder",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Records a user session and generates cypress code for automation and testing purposes.",
   "main": "index.js",
   "scripts": {
